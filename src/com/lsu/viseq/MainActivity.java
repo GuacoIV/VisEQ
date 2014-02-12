@@ -53,16 +53,7 @@ public class MainActivity extends FragmentActivity
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		Session s = new Session();
-		Config c = new Config();
-		c.m_appKey = AppKey.m_appKey;
-		c.m_appKeySize = c.m_appKey.length;
-		c.m_cacheLocation = "temp";
-		c.m_settingsLocation = "temp";
-		c.m_userAgent = "VisEQ";
 		
-		//System.loadLibrary("libspotify");
-		//s.Initialise(c);
 		// adam was here
 		// kathryn was here too
 		// joseph was here as well
