@@ -1,6 +1,13 @@
 package com.lsu.viseq;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
+
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -8,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,6 +60,8 @@ public class MainActivity extends FragmentActivity
 		c.m_cacheLocation = "temp";
 		c.m_settingsLocation = "temp";
 		c.m_userAgent = "VisEQ";
+		
+		//System.loadLibrary("libspotify");
 		//s.Initialise(c);
 		// adam was here
 		// kathryn was here too
