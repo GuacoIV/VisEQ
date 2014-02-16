@@ -1,52 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.lsu.viseq"
+    package="com.lsu.vizeq"
     android:versionCode="1"
     android:versionName="1.0" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-sdk
-        android:minSdkVersion="13"
-        android:targetSdkVersion="22" />
+        android:minSdkVersion="16"
+        android:targetSdkVersion="16" />
 
     <application
-        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.lsu.viseq.MainActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.OTHER" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.lsu.viseq.SplashScreen"
-            android:label="@string/title_activity_splash_screen" >
+            android:name="com.lsu.vizeq.LoginActivity"
+            android:label="@string/app_name"
+            android:noHistory="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.lsu.viseq.LoginScreen"
-            android:label="@string/title_activity_login_screen"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
-            <intent-filter>
-                <action android:name="com.lsu.viseq.LOGIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
+        <service
+            android:name="com.lsu.vizeq.SpotifyService"
+            android:exported="false" >
+        </service>
+
+        <activity
+            android:name="com.lsu.vizeq.PlayerActivity"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <receiver android:name="com.lsu.vizeq.RemoteControlReceiver" >
+            <intent-filter android:priority="2147483647" >
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
+        </receiver>
+
+        <activity
+            android:name="com.lsu.vizeq.MainActivity"
+            android:label="@string/title_activity_main" >
+            <action android:name="com.lsu.vizeq.MAIN" />
+
+            <category android:name="android.intent.category.DEFAULT" />
         </activity>
         <activity
-            android:name="com.lsu.viseq.RoleScreen"
-            android:label="@string/title_activity_role_screen" >
-            <intent-filter>
-            	<action android:name="com.lsu.viseq.ROLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+            android:name="com.lsu.vizeq.RoleActivity"
+            android:label="@string/title_activity_role" >
         </activity>
     </application>
 
