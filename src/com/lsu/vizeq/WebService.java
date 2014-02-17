@@ -101,7 +101,7 @@ public class WebService {
 					mAlbumUri = album.getString("spotify");
 					mImageUri = album.getString("image");
 					// Now get track details from the webapi
-
+					//LSU Team, it looks like .get(http://ws.spotify.com/search/1/track?q=kaizers+orchestra) is the way to do a search
 					mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
 
 				} catch (JSONException e) {
