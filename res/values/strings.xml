@@ -7,5 +7,10 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_role">RoleActivity</string>
+    <string name="DJButton">Host as a DJ</string>
+    <string name="NotADJButton">Join a party</string>
+    <string name="title_activity_sound_visualization">SoundVisualizationActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 </resources>

@@ -38,6 +38,7 @@ import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
@@ -45,6 +46,7 @@ import android.net.wifi.WifiManager.WifiLock;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 import com.lsu.vizeq.R;
 
@@ -133,12 +135,30 @@ public class SpotifyService extends Service {
 		//PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 		//notification.setLatestEventInfo(this, "VizEQ", "Party!", pendingIntent);
 		//startForeground(NOTIFICATION, notification);
-		Builder noti = new Notification.Builder(this);
-	    noti.setContentTitle("VizEQ");
-	    //noti.setContentText(subject)
-	    noti.setSmallIcon(R.drawable.player_next_album);
-	     //.setLargeIcon(aBitmap)
-	    noti.build();
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(this)
+		        .setSmallIcon(R.drawable.player_next_album)
+		        .setContentTitle("VizEQ")
+		        .setContentText("VizEQ");
+		Intent resultIntent = new Intent(this, PlayerActivity.class);
+
+		// The stack builder object will contain an artificial back stack for the
+		// started Activity.
+		// This ensures that navigating backward from the Activity leads out of
+		// your application to the Home screen.
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		// Adds the back stack for the Intent (but not the Intent itself)
+		stackBuilder.addParentStack(PlayerActivity.class);
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent =
+		        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+		NotificationManager mNotificationManager =
+			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			// mId allows you to update the notification later on.
+		int mId = 1;
+			mNotificationManager.notify(mId, mBuilder.build());
 	}
 
 	public void login(String email, String password, LoginDelegate loginDelegate) {

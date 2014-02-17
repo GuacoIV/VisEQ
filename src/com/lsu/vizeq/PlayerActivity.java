@@ -207,7 +207,6 @@ public class PlayerActivity extends Activity {
 
 		Log.e("", "Your login id is " + Installation.id(this));
 		mWebservice = new WebService(Installation.id(this));
-
 		mWebservice.loadAlbum(new WebService.TracksLoadedDelegate() {
 			public void onTracksLoaded(ArrayList<Track> tracks, String albumUri, String imageUri) {
 				mTracks = tracks;

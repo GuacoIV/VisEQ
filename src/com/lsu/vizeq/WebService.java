@@ -47,22 +47,22 @@ public class WebService {
 
 	private AsyncHttpClient mPsytranceClient = new AsyncHttpClient();
 	private AsyncHttpClient mRemoveAlbumClient = new AsyncHttpClient();
-	
+
 	private AsyncHttpClient mSpotifyWebClient = new AsyncHttpClient();
 	private TracksLoadedDelegate mTracksLoadedDelegate;
 	private String mLoginId;
-	
+
 	private String mAlbumUri;
 	private String mImageUri;
-	
+
 	public static interface TracksLoadedDelegate {
 		void onTracksLoaded(ArrayList<Track> tracks, String albumUri, String imageUri);
 	}
-	
+
 	public WebService(String loginId) {
 		mLoginId = loginId;
 	}
-	
+
 	private JsonHttpResponseHandler SpotifyWebResponseHandler = new JsonHttpResponseHandler() {
 		public void onSuccess(JSONObject response) {
 			try {
@@ -70,45 +70,46 @@ public class WebService {
 				ArrayList<Track> result = new ArrayList<Track>();
 				String album = response.getJSONObject("album").getString("name");
 				String artist = response.getJSONObject("album").getString("artist");
-				
+
 				for (int i = 0; i < tracks.length(); i++) {
 					String track = tracks.getJSONObject(i).getString("name");
 					String uri = tracks.getJSONObject(i).getString("href");
+					//If I set uri = "spotify:track:6F5c58TMEs1byxUstkzVeM" then it plays Roar by Katy Perry every time
 					result.add(new Track(track, album, artist, uri));
 				}
-				
+
 				mTracksLoadedDelegate.onTracksLoaded(result, mAlbumUri, mImageUri);
-				
+
 			} catch (JSONException e) {
 				throw new RuntimeException("Could not parse the result from spotify webapi");
 			}
 		}
 	};
-	
+
 	public void loadAlbum(TracksLoadedDelegate tracksLoadedDelegate) {
-		
+
 		mTracksLoadedDelegate = tracksLoadedDelegate;
 		// Fetch the first album
-		
+
 		mPsytranceClient.get("http://psytrance.se/rest.php?style=psytrance&page=0&pageSize=1&filter=hide&uid=" + mLoginId, new JsonHttpResponseHandler() {
-			
+
 			public void onSuccess(JSONObject response) {
 				try {
 					JSONArray albums = response.getJSONArray("albums");
 					JSONObject album = albums.getJSONObject(0);
-					
+
 					mAlbumUri = album.getString("spotify");
 					mImageUri = album.getString("image");
 					// Now get track details from the webapi
-					
+
 					mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
-					
+
 				} catch (JSONException e) {
 					throw new RuntimeException("Could not parse the result from psytrance.se");
 				}
 			}
 		});
-		
+
 	}
 
 	public void loadNextAlbum(String username, String currentAlbum) {
@@ -122,6 +123,6 @@ public class WebService {
 				});
 
 	}
-	
+
 
 }

@@ -57,6 +57,16 @@
             android:name="com.lsu.vizeq.RoleActivity"
             android:label="@string/title_activity_role" >
         </activity>
+        <activity
+            android:name="com.lsu.vizeq.SoundVisualizationActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_sound_visualization"
+            android:theme="@style/FullscreenTheme" >
+        </activity>
+        <activity
+            android:name="com.lsu.vizeq.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
     </application>
 
 </manifest>
