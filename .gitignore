@@ -2,5 +2,4 @@
 gen
 obj
 jni/key.h
-libs/armeabi
 res/raw/star.wav
