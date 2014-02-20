@@ -67,6 +67,10 @@
             android:name="com.lsu.vizeq.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity
+            android:name="com.lsu.vizeq.HostActivity"
+            android:label="@string/title_activity_host" >
+        </activity>
     </application>
 
 </manifest>

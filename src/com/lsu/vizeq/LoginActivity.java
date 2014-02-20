@@ -80,7 +80,7 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
-
+		
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);
@@ -105,6 +105,18 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View view) {
 				attemptLogin();
+			}
+		});
+		
+		findViewById(R.id.Skip).setOnClickListener(new View.OnClickListener() 
+		{
+			
+			@Override
+			public void onClick(View v)
+			{
+				Intent nextIntent = new Intent(LoginActivity.this, RoleActivity.class);
+				startActivity(nextIntent);
+				
 			}
 		});
 
