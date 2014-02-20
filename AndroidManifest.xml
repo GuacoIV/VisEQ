@@ -25,7 +25,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -70,6 +70,39 @@
         <activity
             android:name="com.lsu.vizeq.HostActivity"
             android:label="@string/title_activity_host" >
+        </activity>
+        <activity
+            android:name="com.lsu.vizeq.SplashActivity"
+            android:label="@string/title_activity_splash" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.lsu.vizeq.HostMenuActivity"
+            android:label="@string/title_activity_host_menu" >
+        </activity>
+        <activity
+            android:name="com.lsu.vizeq.PreferenceVisualizationActivity"
+            android:label="@string/title_activity_preference_visualization" >
+        </activity>
+        <activity
+            android:name="com.lsu.vizeq.MusicQueueListActivity"
+            android:label="@string/title_musicqueue_list" >
+        </activity>
+        <activity
+            android:name="com.lsu.vizeq.MusicQueueDetailActivity"
+            android:label="@string/title_musicqueue_detail"
+            android:parentActivityName=".MusicQueueListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MusicQueueListActivity" />
+        </activity>
+        <activity
+            android:name="com.lsu.vizeq.MusicQueueActivity"
+            android:label="@string/title_activity_music_queue" >
         </activity>
     </application>
 

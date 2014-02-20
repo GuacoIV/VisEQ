@@ -13,5 +13,11 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_host">HostActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="title_activity_host_menu">HostMenuActivity</string>
+    <string name="title_activity_preference_visualization">PreferenceVisualizationActivity</string>
+    <string name="title_musicqueue_list">MusicQueues</string>
+    <string name="title_musicqueue_detail">MusicQueue Detail</string>
+    <string name="title_activity_music_queue">MusicQueueActivity</string>
 
 </resources>
