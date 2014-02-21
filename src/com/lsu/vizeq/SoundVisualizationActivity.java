@@ -4,6 +4,7 @@ import com.lsu.vizeq.util.SystemUiHider;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -143,6 +144,8 @@ public class SoundVisualizationActivity extends Activity
 			{
 				delayedHide(AUTO_HIDE_DELAY_MILLIS);
 			}
+			Intent nextIntent = new Intent(SoundVisualizationActivity.this, SettingsActivity.class);
+			startActivity(nextIntent);
 			return false;
 		}
 	};

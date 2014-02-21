@@ -10,7 +10,7 @@
     <string name="DJButton">Host as a DJ</string>
     <string name="NotADJButton">Join a party</string>
     <string name="title_activity_sound_visualization">SoundVisualizationActivity</string>
-    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_button">Settings</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_host">HostActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
