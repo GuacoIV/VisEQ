@@ -104,6 +104,10 @@
             android:name="com.lsu.vizeq.MusicQueueActivity"
             android:label="@string/title_activity_music_queue" >
         </activity>
+        <activity
+            android:name="com.lsu.vizeq.SearchActivity"
+            android:label="@string/title_activity_search" >
+        </activity>
     </application>
 
 </manifest>

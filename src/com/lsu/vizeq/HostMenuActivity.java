@@ -46,6 +46,16 @@ public class HostMenuActivity extends Activity
 			}
 			
 		});
+		findViewById(R.id.Search).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				Intent nextIntent = new Intent(HostMenuActivity.this, SearchActivity.class);
+				startActivity(nextIntent);	
+			}
+			
+		});
 	}
 
 	@Override
