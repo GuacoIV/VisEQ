@@ -1,15 +1,22 @@
 package com.lsu.vizeq;
 
-import com.lsu.vizeq.util.SystemUiHider;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
+
+import com.lsu.vizeq.util.SystemUiHider;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e. status bar and navigation/system bar) with user interaction.
@@ -53,6 +60,8 @@ public class SoundVisualizationActivity extends Activity
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);
 
+		new ReceiveColorTask().execute();
+		
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
 		mSystemUiHider = SystemUiHider.getInstance(this, contentView, HIDER_FLAGS);
@@ -138,8 +147,8 @@ public class SoundVisualizationActivity extends Activity
 	View.OnTouchListener mDelayHideTouchListener = new View.OnTouchListener()
 	{
 		@Override
-		public boolean onTouch(View view, MotionEvent motionEvent)
-		{
+		public boolean onTouch(View arg0, MotionEvent arg1) {
+			// TODO Auto-generated method stub
 			if (AUTO_HIDE)
 			{
 				delayedHide(AUTO_HIDE_DELAY_MILLIS);
@@ -168,4 +177,56 @@ public class SoundVisualizationActivity extends Activity
 		mHideHandler.removeCallbacks(mHideRunnable);
 		mHideHandler.postDelayed(mHideRunnable, delayMillis);
 	}
+	
+	private class ReceiveColorTask extends AsyncTask<Void, String, String>
+	{
+		DatagramSocket receiveSocket;
+		FrameLayout FL = (FrameLayout) findViewById(R.id.light);
+		@Override
+		protected void onCancelled() {
+			// TODO Auto-generated method stub
+			receiveSocket.close();
+		}
+
+		@Override
+		protected String doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			String color = "#000000";
+			try {
+				receiveSocket = new DatagramSocket(7770);
+				byte[] receiveData = new byte[8];
+				while (!isCancelled())
+				{
+					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+					receiveSocket.receive(receivePacket);
+					String data = new String(receivePacket.getData());
+					data = data.substring(0,7);
+					color = data;
+					publishProgress(color);
+					Log.d("UDP","Received!"+data);
+				}
+			} 
+			catch (Exception e) 
+			{
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+			receiveSocket.close();
+		}
+
+		@Override
+		protected void onProgressUpdate(String... values) {
+			// TODO Auto-generated method stub
+			//int color = Color.parseColor(values[0]);
+			FL.setBackgroundColor(Color.parseColor(values[0]));
+		}
+		
+	}
+	
 }

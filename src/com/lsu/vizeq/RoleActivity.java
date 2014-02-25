@@ -1,8 +1,14 @@
 package com.lsu.vizeq;
 
-import android.os.Bundle;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 

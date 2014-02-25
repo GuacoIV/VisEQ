@@ -22,7 +22,6 @@ public class HostActivity extends Activity
 			{
 				Intent nextIntent = new Intent(HostActivity.this, HostMenuActivity.class);
 				startActivity(nextIntent);	
-				
 			}
 			
 		});
