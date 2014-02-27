@@ -1,5 +1,7 @@
 package com.lsu.vizeq;
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +11,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -40,6 +44,7 @@ public class SearchActivity extends Activity
 		searchLayout = (LinearLayout) findViewById(R.id.SearchLayout);
 		final EditText searchText = (EditText) findViewById(R.id.SearchField);
 		final OnTouchListener rowTap;
+		final ArrayList<Track> queue = new ArrayList<Track>();
 		
 		rowTap = new OnTouchListener()
 		{
@@ -55,8 +60,21 @@ public class SearchActivity extends Activity
 				}
 				if (arg1.getAction() == MotionEvent.ACTION_UP)
 				{					
-					TrackRow row = (TrackRow)arg0;
+					final TrackRow row = (TrackRow)arg0;
 					row.setBackgroundColor(row.originalColor);
+					AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);
+			        builder.setMessage(R.string.QueueTopOrBottom)
+			               .setPositiveButton("Top", new DialogInterface.OnClickListener() {
+			                   public void onClick(DialogInterface dialog, int id) {
+			                       
+			                   }
+			               })
+			               .setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
+			                   public void onClick(DialogInterface dialog, int id) {
+			                	   queue.add(row.getTrack());
+			                   }
+			               });
+			        builder.create();
 					return true;
 				}
 				if (arg1.getAction() == MotionEvent.ACTION_CANCEL)

@@ -36,5 +36,11 @@ public class TrackRow extends TableRow
 	public CharSequence getTrackName() {
 		return mTrack;
 	}
+	
+	public Track getTrack()
+	{
+		Track tempTrack = new Track(mAlbum, mAlbum, mAlbum, mAlbum);
+		return tempTrack;
+	}
 
 }

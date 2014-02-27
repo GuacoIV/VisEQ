@@ -8,48 +8,84 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".SearchActivity" >
 
-    <EditText
-        android:id="@+id/SearchField"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="Search" />
 
-    <ScrollView
-        android:id="@+id/scrollView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/SearchField" >
-
-        <LinearLayout
-            android:id="@+id/SearchLayout"
+        <TabHost
+            android:id="@android:id/tabhost"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" >
 
-            <TableRow
-                android:id="@+id/tableRow1"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
 
-            </TableRow>
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" >
 
-        </LinearLayout>
-    </ScrollView>
+                </TabWidget>
 
-    <Button
-        android:id="@+id/SearchOK"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/scrollView1"
-        android:layout_alignTop="@+id/SearchField"
-        android:text="OK" />
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <LinearLayout
+                        android:id="@+id/tab1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+                        <EditText
+				        android:id="@+id/SearchField"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"
+				        android:layout_marginTop="20dp"
+				        android:ems="10"
+				        android:hint="Search" />
+                        <Button
+					        android:id="@+id/SearchOK"
+					        style="?android:attr/buttonStyleSmall"
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					        android:text="OK" />
+					
+					    <ScrollView
+					        android:id="@+id/scrollView1"
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					        android:layout_below="@+id/SearchField" >
+					
+					        <LinearLayout
+					            android:id="@+id/SearchLayout"
+					            android:layout_width="match_parent"
+					            android:layout_height="wrap_content"
+					            android:orientation="vertical" >
+					
+					            <TableRow
+					                android:id="@+id/tableRow1"
+					                android:layout_width="match_parent"
+					                android:layout_height="wrap_content" >
+
+					            </TableRow>
+					        </LinearLayout>
+					    </ScrollView>
+					
+					    
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tab2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" 
+                        android:orientation="vertical">
+                    </LinearLayout>
+               </FrameLayout>
+               </LinearLayout>
+              </TabHost>
+
+
 
 </RelativeLayout>

@@ -20,5 +20,6 @@
     <string name="title_musicqueue_detail">MusicQueue Detail</string>
     <string name="title_activity_music_queue">MusicQueueActivity</string>
     <string name="title_activity_search">SearchActivity</string>
+    <string name="QueueTopOrBottom">Add this track to top or bottom of queue?</string>
 
 </resources>
