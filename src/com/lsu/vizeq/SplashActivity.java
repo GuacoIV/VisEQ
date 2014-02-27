@@ -19,6 +19,7 @@ public class SplashActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
 		
+		
 		//Makes volume buttons control music stream even when nothing playing
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
 		
