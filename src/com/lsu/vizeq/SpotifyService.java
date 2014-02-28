@@ -137,7 +137,7 @@ public class SpotifyService extends Service {
 		//startForeground(NOTIFICATION, notification);
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.player_next_album)
+		        .setSmallIcon(R.drawable.launch)
 		        .setContentTitle("VizEQ")
 		        .setContentText("VizEQ");
 		Intent resultIntent = new Intent(this, PlayerActivity.class);
