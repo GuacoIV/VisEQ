@@ -1,6 +1,7 @@
 package com.lsu.vizeq;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.widget.TableRow;
 
 public class TrackRow extends TableRow
@@ -11,6 +12,8 @@ public class TrackRow extends TableRow
 	public String mArtist;
 	public String mUri;
 	public int originalColor;
+	public static int color1 = Color.rgb(200, 200, 200);
+	public static int color2 = Color.WHITE;
 	
 	public TrackRow(Context context, String track, String album, String artist, String uri) {
 		super(context);
@@ -39,7 +42,7 @@ public class TrackRow extends TableRow
 	
 	public Track getTrack()
 	{
-		Track tempTrack = new Track(mAlbum, mAlbum, mAlbum, mAlbum);
+		Track tempTrack = new Track(mTrack, mAlbum, mArtist, mUri);
 		return tempTrack;
 	}
 
