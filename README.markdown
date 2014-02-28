@@ -1,4 +1,4 @@
-VisEQ
+![alt text](https://github.com/GuacoIV/VisEQ/tree/master/res/drawable-xhdpi/launch.png "VizEQ Icon")VizEQ
 =====
 
 The beat and music preference visualization system.
