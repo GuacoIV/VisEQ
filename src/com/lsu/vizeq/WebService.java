@@ -31,6 +31,7 @@
 package com.lsu.vizeq;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,24 +92,25 @@ public class WebService {
 		mTracksLoadedDelegate = tracksLoadedDelegate;
 		// Fetch the first album
 
-		mPsytranceClient.get("http://psytrance.se/rest.php?style=psytrance&page=0&pageSize=1&filter=hide&uid=" + mLoginId, new JsonHttpResponseHandler() {
+		//mPsytranceClient.get("http://psytrance.se/rest.php?style=psytrance&page=0&pageSize=1&filter=hide&uid=" + mLoginId, new JsonHttpResponseHandler() {
 
-			public void onSuccess(JSONObject response) {
-				try {
-					JSONArray albums = response.getJSONArray("albums");
-					JSONObject album = albums.getJSONObject(0);
-
-					mAlbumUri = album.getString("spotify");
-					mImageUri = album.getString("image");
+			//public void onSuccess(JSONObject response) {
+				//try {
+					//JSONArray albums = response.getJSONArray("albums");
+					String album = "";
+					if (SearchActivity.queue != null) album = SearchActivity.queue.remove(0).getAlbumInfo();
+					mTracksLoadedDelegate.onTracksLoaded(SearchActivity.queue, album, ""); //last is image
+					//mAlbumUri = album.getString("spotify");
+					//mImageUri = album.getString("image");
 					// Now get track details from the webapi
 					//LSU Team, it looks like .get(http://ws.spotify.com/search/1/track?q=kaizers+orchestra) is the way to do a search
-					mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
+					//mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
 
-				} catch (JSONException e) {
-					throw new RuntimeException("Could not parse the result from psytrance.se");
-				}
-			}
-		});
+				//} catch (JSONException e) {
+				//	throw new RuntimeException("Could not load album");
+				//}
+			//}
+		//});
 
 	}
 

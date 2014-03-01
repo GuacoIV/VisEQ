@@ -52,4 +52,9 @@ class Track {
 		return mTrack;
 	}
 	
+	public String getAlbumInfo()
+	{
+		return mAlbum;
+	}
+	
 }

@@ -30,9 +30,9 @@ import android.widget.TextView;
 public class SearchActivity extends Activity
 {
 	LinearLayout searchLayout;
+	public static ArrayList<Track> queue;
 
 	AsyncHttpClient searchClient = new AsyncHttpClient();
-	WebService web = new WebService("");
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -41,7 +41,7 @@ public class SearchActivity extends Activity
 		searchLayout = (LinearLayout) findViewById(R.id.SearchLayout);
 		final EditText searchText = (EditText) findViewById(R.id.SearchField);
 		final OnTouchListener rowTap;
-		final ArrayList<Track> queue = new ArrayList<Track>();
+		queue = new ArrayList<Track>();
 		TabHost tabhost = (TabHost) findViewById(android.R.id.tabhost);
 	    tabhost.setup();
 	    TabSpec ts = tabhost.newTabSpec("tag1"); 
@@ -81,8 +81,10 @@ public class SearchActivity extends Activity
 			               .setPositiveButton("Top", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
 			                	   queue.add(0, row.getTrack());
-			                	   TrackRow queueRow = row;//new TrackRow(SearchActivity.this, row.mTrack, row.mAlbum, row.mArtist, row.mUri);
+			                	   TrackRow queueRow = row;
+			                	   queueRow.setOnTouchListener(null);
 			                	   searchLayout.removeView(queueRow);
+			                	   
 			                	   queueTab.addView(queueRow, 0);
 								if (queueTab.getChildCount() > 1)
 								{
@@ -108,7 +110,8 @@ public class SearchActivity extends Activity
 			               .setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
 			                	   queue.add(row.getTrack());
-			                	   TrackRow queueRow = row;//new TrackRow(SearchActivity.this, row.mTrack, row.mAlbum, row.mArtist, row.mUri);
+			                	   TrackRow queueRow = row;
+			                	   queueRow.setOnTouchListener(null);
 			                	   searchLayout.removeView(queueRow);
 			                	   queueTab.addView(queueRow);
 			                	   if (queueTab.getChildCount() > 0)
@@ -166,7 +169,7 @@ public class SearchActivity extends Activity
 								String trackName = tracks.getJSONObject(i).getString("name");
 								String trackArtist = tracks.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
 								String uri = tracks.getJSONObject(i).getString("href");
-								String trackAlbum = tracks.getJSONObject(i).getString("album");
+								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("href");
 								//Log.d("Search", trackName + ": " + trackArtist);
 								TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
 								TextView textViewToAdd = new TextView(SearchActivity.this);

@@ -129,7 +129,6 @@ public class SpotifyService extends Service {
 	}
 
 	private void showNotification() {
-		// TODO Deprecated... replace
 		//Notification notification = new Notification(R.drawable.player_next_album, "VizEQ is playing...", System.currentTimeMillis());
 		//Intent notificationIntent = new Intent(this, PlayerActivity.class);
 		//PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
