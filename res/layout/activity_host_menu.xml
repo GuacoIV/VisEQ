@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView1"
         android:layout_marginTop="68dp"
-        android:layout_toRightOf="@+id/textView1"
+        android:layout_centerHorizontal="true"
         android:text="Music Queue" />
 
     <Button

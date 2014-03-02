@@ -169,7 +169,7 @@ public class SearchActivity extends Activity
 								String trackName = tracks.getJSONObject(i).getString("name");
 								String trackArtist = tracks.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
 								String uri = tracks.getJSONObject(i).getString("href");
-								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("href");
+								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
 								//Log.d("Search", trackName + ": " + trackArtist);
 								TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
 								TextView textViewToAdd = new TextView(SearchActivity.this);

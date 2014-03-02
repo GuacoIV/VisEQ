@@ -55,6 +55,7 @@ public class SpotifyService extends Service {
 	private static int NOTIFICATION = 29213;
 	private final IBinder mBinder = new LocalBinder();
 	private WifiLock mWifiLock;
+	private static boolean libLoaded = false;
 
 	static interface LoginDelegate {
 		void onLogin();
@@ -92,7 +93,11 @@ public class SpotifyService extends Service {
 
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
 			throw new RuntimeException("Storage card not available");
-		LibSpotifyWrapper.init(LibSpotifyWrapper.class.getClassLoader(), Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.lsu.vizeq");
+		if (libLoaded == false) 
+		{
+			LibSpotifyWrapper.init(LibSpotifyWrapper.class.getClassLoader(), Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.lsu.vizeq");
+			libLoaded = true;
+		}
 
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
