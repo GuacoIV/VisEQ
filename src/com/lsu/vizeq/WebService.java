@@ -102,9 +102,13 @@ public class WebService {
 						if (SearchActivity.queue.size() > 0)
 						{
 							//was remove before
-							Track trackToAdd = SearchActivity.queue.remove(0);
 							ArrayList<Track> fakeQueue = new ArrayList<Track>();
-							fakeQueue.add(trackToAdd);
+							Track trackToAdd = null;
+							for (int i = 0; i < SearchActivity.queue.size(); i++)
+							{
+								trackToAdd = SearchActivity.queue.get(i);							
+								fakeQueue.add(trackToAdd);
+							}
 							mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), "http://o.scdn.co/300/37019113a43313ef1625fa3b6d437bbb87182820"); //last is image
 						}
 					}
