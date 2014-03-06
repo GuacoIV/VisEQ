@@ -16,7 +16,8 @@
     <application
         android:icon="@drawable/launch"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:name=".MyApplication" >
         <activity
             android:name="com.lsu.vizeq.LoginActivity"
             android:label="@string/app_name"

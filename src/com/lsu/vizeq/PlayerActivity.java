@@ -39,6 +39,8 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -80,6 +82,7 @@ public class PlayerActivity extends Activity {
 
 	private String mAlbumUri;
 	private int mIndex = 0;
+	MyApplication myapp;
 	
     public InetAddress getBroadcastAddress() throws IOException
     {
@@ -224,13 +227,14 @@ public class PlayerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
 		
+		myapp = (MyApplication) this.getApplicationContext();
+		
 		//light sending stuff
 		new Thread( new Runnable()
 		{
 			public void run()
 			{
 				try {
-					InetAddress IPAddress = getBroadcastAddress();
 					DatagramSocket sendSocket = new DatagramSocket();
 					int count = 0;
 					while(true)
@@ -239,8 +243,17 @@ public class PlayerActivity extends Activity {
 						String data = "#FF0000";
 						if (count%2==0) data = "#000000";
 						sendData = data.getBytes();
-						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
-						sendSocket.send(sendPacket);
+						Iterator it = myapp.connectedUsers.entrySet().iterator();
+						while (it.hasNext())
+						{
+							Map.Entry pairs= (Map.Entry) it.next();
+							InetAddress IPAddress = InetAddress.getByName((String) pairs.getValue());
+							String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
+							Log.d("UDP",test);
+							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
+							sendSocket.send(sendPacket);
+							//Log.d("UDP","Sent! "+ (String) pairs.getValue());
+						}
 						Log.d("UDP","Sent!");
 						Thread.sleep(500);
 						count++;
