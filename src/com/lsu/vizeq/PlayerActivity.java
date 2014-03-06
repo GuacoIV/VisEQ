@@ -33,6 +33,9 @@
 package com.lsu.vizeq;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -46,6 +49,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
@@ -75,6 +80,20 @@ public class PlayerActivity extends Activity {
 
 	private String mAlbumUri;
 	private int mIndex = 0;
+	
+    public InetAddress getBroadcastAddress() throws IOException
+    {
+    	WifiManager wifi = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+    	DhcpInfo dhcp = wifi.getDhcpInfo();
+    	
+    	int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
+    	byte[] quads = new byte[4];
+    	for(int k = 0; k < 4; k++)
+    	{
+    		quads[k] = (byte) ((broadcast >> k * 8) & 0xFF);
+    	}
+    	return InetAddress.getByAddress(quads);
+    }
 
 	private final PlayerUpdateDelegate playerPositionDelegate = new PlayerUpdateDelegate() {
 
@@ -204,6 +223,38 @@ public class PlayerActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
+		
+		//light sending stuff
+		new Thread( new Runnable()
+		{
+			public void run()
+			{
+				try {
+					InetAddress IPAddress = getBroadcastAddress();
+					DatagramSocket sendSocket = new DatagramSocket();
+					int count = 0;
+					while(true)
+					{
+						byte[] sendData = new byte[7];
+						String data = "#FF0000";
+						if (count%2==0) data = "#000000";
+						sendData = data.getBytes();
+						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
+						sendSocket.send(sendPacket);
+						Log.d("UDP","Sent!");
+						Thread.sleep(500);
+						count++;
+						if(count == 2000) break;
+					}
+					sendSocket.close();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}
+		}).start();
+		//end light sending stuff
+		
 		
 		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
 		seekBar.setMax(300);

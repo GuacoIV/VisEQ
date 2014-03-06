@@ -194,7 +194,7 @@ public class SoundVisualizationActivity extends Activity
 			String color = "#000000";
 			try {
 				receiveSocket = new DatagramSocket(7770);
-				byte[] receiveData = new byte[8];
+				byte[] receiveData = new byte[7];
 				while (!isCancelled())
 				{
 					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
