@@ -55,6 +55,7 @@ public class SpotifyService extends Service {
 	private static int NOTIFICATION = 29213;
 	private final IBinder mBinder = new LocalBinder();
 	private WifiLock mWifiLock;
+	private static boolean libLoaded = false;
 
 	static interface LoginDelegate {
 		void onLogin();
@@ -92,7 +93,11 @@ public class SpotifyService extends Service {
 
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
 			throw new RuntimeException("Storage card not available");
-		LibSpotifyWrapper.init(LibSpotifyWrapper.class.getClassLoader(), Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.lsu.vizeq");
+		if (libLoaded == false) 
+		{
+			LibSpotifyWrapper.init(LibSpotifyWrapper.class.getClassLoader(), Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.lsu.vizeq");
+			libLoaded = true;
+		}
 
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -129,7 +134,6 @@ public class SpotifyService extends Service {
 	}
 
 	private void showNotification() {
-		// TODO Deprecated... replace
 		//Notification notification = new Notification(R.drawable.player_next_album, "VizEQ is playing...", System.currentTimeMillis());
 		//Intent notificationIntent = new Intent(this, PlayerActivity.class);
 		//PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -137,7 +141,7 @@ public class SpotifyService extends Service {
 		//startForeground(NOTIFICATION, notification);
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.player_next_album)
+		        .setSmallIcon(R.drawable.launch)
 		        .setContentTitle("VizEQ")
 		        .setContentText("VizEQ");
 		Intent resultIntent = new Intent(this, PlayerActivity.class);

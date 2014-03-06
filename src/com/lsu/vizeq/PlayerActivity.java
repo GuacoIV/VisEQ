@@ -166,8 +166,11 @@ public class PlayerActivity extends Activity {
 	public void updateTrackState() {
 		ImageView view = (ImageView) findViewById(R.id.star_image);
 		view.setBackgroundResource(R.drawable.star_disabled_state);
-		((TextView) findViewById(R.id.track_info)).setText(mTracks.get(mIndex).getTrackInfo());
-		((TextView) findViewById(R.id.track_name)).setText(mTracks.get(mIndex).getTrackName());
+		if (mTracks.size() > 0)
+		{
+			((TextView) findViewById(R.id.track_info)).setText(mTracks.get(mIndex).getTrackInfo());
+			((TextView) findViewById(R.id.track_name)).setText(mTracks.get(mIndex).getTrackName());
+		}
 	}
 
 	protected void onNewIntent(Intent intent) {
@@ -201,10 +204,17 @@ public class PlayerActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
-
+		
 		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
 		seekBar.setMax(300);
+		mBinder = new ServiceBinder(this);
+		mBinder.bindService(new ServiceBinderDelegate() {
 
+			@Override
+			public void onIsBound() {
+
+			}
+		});
 		Log.e("", "Your login id is " + Installation.id(this));
 		mWebservice = new WebService(Installation.id(this));
 		mWebservice.loadAlbum(new WebService.TracksLoadedDelegate() {
@@ -235,8 +245,9 @@ public class PlayerActivity extends Activity {
 					}
 				};
 				coverLoader.execute(new String[] { imageUri });
+				
 				// load the track
-				mBinder.getService().playNext(mTracks.get(mIndex).getSpotifyUri(), playerPositionDelegate);
+				//mBinder.getService().playNext(mTracks.get(mIndex).getSpotifyUri(), playerPositionDelegate); //had getSpotifyUri
 				// track might not be loaded yet but assume it is
 				mIsTrackLoaded = true;
 			}
@@ -260,14 +271,7 @@ public class PlayerActivity extends Activity {
 			}
 		});
 
-		mBinder = new ServiceBinder(this);
-		mBinder.bindService(new ServiceBinderDelegate() {
-
-			@Override
-			public void onIsBound() {
-
-			}
-		});
+		
 
 		findViewById(R.id.player_prev).setOnClickListener(new OnClickListener() {
 

@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 
-public class SplashActivity extends Activity
+public class VizEQ extends Activity
 {
 
 	@Override
@@ -40,7 +40,7 @@ public class SplashActivity extends Activity
 					 finally
 					 {
 						 finish();
-						 Intent nextIntent = new Intent(SplashActivity.this, LoginActivity.class);
+						 Intent nextIntent = new Intent(VizEQ.this, LoginActivity.class);
 						startActivity(nextIntent);	
 					 }
 		        }

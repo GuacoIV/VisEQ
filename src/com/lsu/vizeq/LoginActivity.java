@@ -198,7 +198,7 @@ public class LoginActivity extends Activity {
 					Toast.makeText(LoginActivity.this, "Logged in successfully!", Toast.LENGTH_SHORT);
 					Installation.writeInstallationFile(LoginActivity.this, mEmail);
 					showProgress(false);
-					Intent playerIntent = new Intent(LoginActivity.this, PlayerActivity.class);
+					Intent playerIntent = new Intent(LoginActivity.this, RoleActivity.class);
 					startActivity(playerIntent);
 
 				}

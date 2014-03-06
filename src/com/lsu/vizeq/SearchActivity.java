@@ -14,28 +14,25 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
+import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.TabHost;
+import android.widget.TabHost.TabSpec;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 public class SearchActivity extends Activity
 {
 	LinearLayout searchLayout;
+	public static ArrayList<Track> queue;
 
 	AsyncHttpClient searchClient = new AsyncHttpClient();
-	WebService web = new WebService("");
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -44,7 +41,24 @@ public class SearchActivity extends Activity
 		searchLayout = (LinearLayout) findViewById(R.id.SearchLayout);
 		final EditText searchText = (EditText) findViewById(R.id.SearchField);
 		final OnTouchListener rowTap;
-		final ArrayList<Track> queue = new ArrayList<Track>();
+		queue = new ArrayList<Track>();
+		TabHost tabhost = (TabHost) findViewById(android.R.id.tabhost);
+	    tabhost.setup();
+	    TabSpec ts = tabhost.newTabSpec("tag1"); 
+	    ts.setContent(R.id.tab1);
+	    ts.setIndicator("Search");
+	    tabhost.addTab(ts);
+
+	    ts = tabhost.newTabSpec("tag2"); 
+	    ts.setContent(R.id.tab2);
+	    ts.setIndicator("Queue");  
+	    tabhost.addTab(ts);
+	    ts= tabhost.newTabSpec("tag3");
+	    ts.setContent(R.id.tab3);
+	    ts.setIndicator("Third Tab");
+	    tabhost.addTab(ts);
+	    final LinearLayout queueTab = (LinearLayout) findViewById(R.id.tab2);
+	    //Animation an = new Animation();
 		
 		rowTap = new OnTouchListener()
 		{
@@ -58,7 +72,7 @@ public class SearchActivity extends Activity
 					row.setBackgroundColor(Color.BLUE);
 					return true;
 				}
-				if (arg1.getAction() == MotionEvent.ACTION_UP)
+				else if (arg1.getAction() == MotionEvent.ACTION_UP)
 				{					
 					final TrackRow row = (TrackRow)arg0;
 					row.setBackgroundColor(row.originalColor);
@@ -66,18 +80,63 @@ public class SearchActivity extends Activity
 			        builder.setMessage(R.string.QueueTopOrBottom)
 			               .setPositiveButton("Top", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                       
+			                	   queue.add(0, row.getTrack());
+			                	   TrackRow queueRow = row;
+			                	   queueRow.setOnTouchListener(null);
+			                	   searchLayout.removeView(queueRow);
+			                	   
+			                	   queueTab.addView(queueRow, 0);
+								if (queueTab.getChildCount() > 1)
+								{
+			                		    if (((TrackRow)(queueTab.getChildAt(1))).originalColor == TrackRow.color1)
+			                		    {
+			                		    	queueRow.setBackgroundColor(TrackRow.color2);
+			                		    	queueRow.originalColor = TrackRow.color2;
+			                		    }
+			                		    else 
+			                		    {
+			                		    	queueRow.setBackgroundColor(TrackRow.color1);
+			                		    	queueRow.originalColor = TrackRow.color1;
+			                		    }
+								}
+								else
+								{
+									queueRow.setBackgroundColor(TrackRow.color1);
+			                	    queueRow.originalColor = TrackRow.color1;
+								}
+			                	   
 			                   }
 			               })
 			               .setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
 			                	   queue.add(row.getTrack());
+			                	   TrackRow queueRow = row;
+			                	   queueRow.setOnTouchListener(null);
+			                	   searchLayout.removeView(queueRow);
+			                	   queueTab.addView(queueRow);
+			                	   if (queueTab.getChildCount() > 0)
+									{
+				                		    if (((TrackRow)(queueTab.getChildAt(queueTab.getChildCount() - 1))).originalColor == TrackRow.color1)
+				                		    	queueRow.setBackgroundColor(TrackRow.color2);
+				                		    else 
+				                		    {
+				                		    	queueRow.setBackgroundColor(TrackRow.color1);
+				                		    	queueRow.originalColor = TrackRow.color1;
+				                		    }
+									}
+									else
+									{
+										queueRow.setBackgroundColor(TrackRow.color1);
+				                	    queueRow.originalColor = TrackRow.color1;
+									}
+			                	   
 			                   }
 			               });
-			        builder.create();
+			        //builder.create();
+			        builder.show();
 					return true;
 				}
-				if (arg1.getAction() == MotionEvent.ACTION_CANCEL)
+				else if (arg1.getAction() == MotionEvent.ACTION_CANCEL)
 				{
 					TrackRow row = (TrackRow)arg0;
 					row.setBackgroundColor(row.originalColor);
@@ -98,6 +157,7 @@ public class SearchActivity extends Activity
 				searchLayout.removeAllViews();
 				String strSearch = searchText.getText().toString();
 				strSearch = strSearch.replace(' ', '+');
+				searchText.clearFocus();
 				searchClient.get("http://ws.spotify.com/search/1/track.json?q=" + strSearch, new JsonHttpResponseHandler() {
 
 					public void onSuccess(JSONObject response) {
@@ -109,22 +169,24 @@ public class SearchActivity extends Activity
 								String trackName = tracks.getJSONObject(i).getString("name");
 								String trackArtist = tracks.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
 								String uri = tracks.getJSONObject(i).getString("href");
+								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
 								//Log.d("Search", trackName + ": " + trackArtist);
 								TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
 								TextView textViewToAdd = new TextView(SearchActivity.this);
 								TextView textTwoViewToAdd = new TextView(SearchActivity.this);
 								tableRowToAdd.mTrack = trackName;
 								tableRowToAdd.mArtist = trackArtist;
+								tableRowToAdd.mAlbum = trackAlbum;
 								tableRowToAdd.mUri = uri;
 								if (i % 2 == 0) 
 								{
-									tableRowToAdd.setBackgroundColor(Color.rgb(200, 200, 200));
-									tableRowToAdd.originalColor = Color.rgb(200, 200, 200);
+									tableRowToAdd.setBackgroundColor(TrackRow.color1);
+									tableRowToAdd.originalColor = TrackRow.color1;
 								}
 								else
 								{
-									tableRowToAdd.setBackgroundColor(Color.WHITE);
-									tableRowToAdd.originalColor = Color.WHITE;
+									tableRowToAdd.setBackgroundColor(TrackRow.color2);
+									tableRowToAdd.originalColor = TrackRow.color2;
 								}
 								textViewToAdd.setText(trackName);
 								textTwoViewToAdd.setText(trackArtist);
