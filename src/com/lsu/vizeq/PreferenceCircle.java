@@ -23,6 +23,7 @@ package com.lsu.vizeq;
 		int x;
 		int y;
 		int radius;
+		Color color;
 //		string text;
 		final float scale = getResources().getDisplayMetrics().density;
 		int twentyFiveDP = (int) (25 * scale + 0.5f);
@@ -41,11 +42,11 @@ package com.lsu.vizeq;
 		{
 			super.onDraw(canvas);
 
-			int green = 100;
-			RectF rect;
-			paint.setColor(Color.GRAY);
+//			int green = 100;
+//			RectF rect;
+			paint.setColor(Color.MAGENTA);
 			canvas.drawCircle(x, y, radius, paint);
-			paint.setTextSize(25);
+			paint.setTextSize(50);
 //			if (getPaddingTop() != 0 && getPaddingBottom() != 0)
 //			{
 //				for (int i = 0; i <= 20; i++)
@@ -58,6 +59,7 @@ package com.lsu.vizeq;
 //					canvas.drawBitmap(sub8, width - (25 + 10), (height - 25) / 2, paint);
 //				else if (sub == 16)
 //					canvas.drawBitmap(sub16, width - (25 + 10), (height - 25) / 2, paint);
+			    paint.setColor(color.BLUE);
 				canvas.drawText(text, width/10, height - 5, paint);
 //			}
 //			else 
