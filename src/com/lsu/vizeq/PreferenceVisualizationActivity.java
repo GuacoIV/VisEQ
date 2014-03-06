@@ -3,6 +3,7 @@ package com.lsu.vizeq;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.widget.RelativeLayout;
 
 public class PreferenceVisualizationActivity extends Activity
 {
@@ -12,6 +13,10 @@ public class PreferenceVisualizationActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_preference_visualization);
+		PreferenceCircle pc = new PreferenceCircle(this, 50, 50, 20, "hi");
+		RelativeLayout circleScreen = (RelativeLayout) this.findViewById(R.id.CircleScreen);
+		circleScreen.addView(pc);
+		
 	}
 
 	@Override
