@@ -90,39 +90,22 @@ public class WebService {
 	public void loadAlbum(TracksLoadedDelegate tracksLoadedDelegate) {
 
 		mTracksLoadedDelegate = tracksLoadedDelegate;
-		// Fetch the first album
 
-		//mPsytranceClient.get("http://psytrance.se/rest.php?style=psytrance&page=0&pageSize=1&filter=hide&uid=" + mLoginId, new JsonHttpResponseHandler() {
-
-			//public void onSuccess(JSONObject response) {
-				//try {
-					//JSONArray albums = response.getJSONArray("albums");
-					if (SearchActivity.queue != null)
-					{
-						if (SearchActivity.queue.size() > 0)
-						{
-							//was remove before
-							ArrayList<Track> fakeQueue = new ArrayList<Track>();
-							Track trackToAdd = null;
-							for (int i = 0; i < SearchActivity.queue.size(); i++)
-							{
-								trackToAdd = SearchActivity.queue.get(i);							
-								fakeQueue.add(trackToAdd);
-							}
-							mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), "http://o.scdn.co/300/37019113a43313ef1625fa3b6d437bbb87182820"); //last is image
-						}
-					}
-					//mAlbumUri = album.getString("spotify");
-					//mImageUri = album.getString("image");
-					// Now get track details from the webapi
-					//LSU Team, it looks like .get(http://ws.spotify.com/search/1/track?q=kaizers+orchestra) is the way to do a search
-					//mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
-
-				//} catch (JSONException e) {
-				//	throw new RuntimeException("Could not load album");
-				//}
-			//}
-		//});
+		if (SearchActivity.queue != null)
+		{
+			if (SearchActivity.queue.size() > 0)
+			{
+				//was remove before
+				ArrayList<Track> fakeQueue = new ArrayList<Track>();
+				Track trackToAdd = null;
+				for (int i = 0; i < SearchActivity.queue.size(); i++)
+				{
+					trackToAdd = SearchActivity.queue.get(i);							
+					fakeQueue.add(trackToAdd);
+				}
+				mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), trackToAdd.getThumbnail()); //last is image
+			}
+		}
 
 	}
 

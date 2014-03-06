@@ -33,6 +33,7 @@ public class SearchActivity extends Activity
 	public static ArrayList<Track> queue;
 
 	AsyncHttpClient searchClient = new AsyncHttpClient();
+	AsyncHttpClient artworkClient = new AsyncHttpClient();
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -171,13 +172,29 @@ public class SearchActivity extends Activity
 								String uri = tracks.getJSONObject(i).getString("href");
 								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
 								//Log.d("Search", trackName + ": " + trackArtist);
-								TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
+								final TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
 								TextView textViewToAdd = new TextView(SearchActivity.this);
 								TextView textTwoViewToAdd = new TextView(SearchActivity.this);
 								tableRowToAdd.mTrack = trackName;
 								tableRowToAdd.mArtist = trackArtist;
 								tableRowToAdd.mAlbum = trackAlbum;
 								tableRowToAdd.mUri = uri;
+								artworkClient.get("https://embed.spotify.com/oembed/?url=" + uri, new JsonHttpResponseHandler()
+								{
+									public void onSuccess(JSONObject response)
+									{
+										try
+										{
+											JSONObject array = response.getJSONObject("thumbnail_url");
+											String thumbnail = array.toString();
+											tableRowToAdd.mThumbnail = thumbnail;
+										}
+										catch (JSONException e)
+										{
+											
+										}
+									}
+								});
 								if (i % 2 == 0) 
 								{
 									tableRowToAdd.setBackgroundColor(TrackRow.color1);

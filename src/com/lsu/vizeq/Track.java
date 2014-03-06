@@ -32,8 +32,16 @@ class Track {
 	private String mAlbum;
 	private String mArtist;
 	private String mUri;
+	private String mThumbnail;
 	
 	public Track(String track, String album, String artist,	String uri) {
+		mTrack = track;
+		mAlbum = album;
+		mArtist = artist;
+		mUri = uri;
+	}
+	
+	public Track(String track, String album, String artist,	String uri, String thumbnail) {
 		mTrack = track;
 		mAlbum = album;
 		mArtist = artist;
@@ -55,6 +63,20 @@ class Track {
 	public String getAlbumInfo()
 	{
 		return mAlbum;
+	}
+	
+	public String getArtist()
+	{
+		return mArtist;
+	}
+	
+	public String getThumbnail()
+	{
+		return mThumbnail;
+	}
+	public void setThumbnail(String thumbnail)
+	{
+		mThumbnail = thumbnail;
 	}
 	
 }
