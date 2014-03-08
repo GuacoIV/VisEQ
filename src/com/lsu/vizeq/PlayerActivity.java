@@ -50,6 +50,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.media.AudioManager;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
@@ -66,6 +68,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.content.pm.PackageManager;
 
 import com.lsu.vizeq.ServiceBinder.ServiceBinderDelegate;
 import com.lsu.vizeq.SpotifyService.PlayerUpdateDelegate;
@@ -83,6 +86,7 @@ public class PlayerActivity extends Activity {
 	private String mAlbumUri;
 	private int mIndex = 0;
 	MyApplication myapp;
+	public static Camera cam;
 	
     public InetAddress getBroadcastAddress() throws IOException
     {
@@ -235,13 +239,49 @@ public class PlayerActivity extends Activity {
 			public void run()
 			{
 				try {
+					
 					DatagramSocket sendSocket = new DatagramSocket();
 					int count = 0;
 					while(true)
 					{
 						byte[] sendData = new byte[7];
 						String data = "#FF0000";
-						if (count%2==0) data = "#000000";
+						if (count%2==0) 
+						{
+							data = "#000000";
+							try
+							{
+						        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) 
+						        {
+						            cam = Camera.open();
+						            Parameters p = cam.getParameters();
+						            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+						            cam.setParameters(p);
+						            cam.startPreview();
+						        }
+							}
+							catch (Exception e) {
+						        e.printStackTrace();
+						        Log.d("Flashlight", "Exception flashLightOn");
+						    }
+						}
+						else
+						{
+							try 
+							{
+						        if (getPackageManager().hasSystemFeature(
+						                PackageManager.FEATURE_CAMERA_FLASH)) {
+						            cam.stopPreview();
+						            cam.release();
+						            cam = null;
+						        }
+						    } 
+							catch (Exception e) 
+							{
+						        e.printStackTrace();
+						        Log.d("Flashlight", "Exception flashLightOff");
+						    }
+						}
 						sendData = data.getBytes();
 						Iterator it = myapp.connectedUsers.entrySet().iterator();
 						while (it.hasNext())
