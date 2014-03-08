@@ -30,6 +30,10 @@
  */
 package com.lsu.vizeq;
 
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -37,6 +41,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -47,6 +52,9 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import javax.security.*;
+import javax.crypto.*;
+
 import com.lsu.vizeq.R;
 import com.lsu.vizeq.ServiceBinder.ServiceBinderDelegate;
 import com.lsu.vizeq.SpotifyService.LoginDelegate;
@@ -74,6 +82,7 @@ public class LoginActivity extends Activity {
 	private TextView mLoginStatusMessageView;
 
 	private ServiceBinder binder;
+	private Cipher aes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +105,16 @@ public class LoginActivity extends Activity {
 				return false;
 			}
 		});
+
+		SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
+		mPassword = memory.getString("word", "");
+		mEmail = memory.getString("user", "");
+		if (mEmail.compareTo("") != 0)
+			mEmailView.setText(mEmail);
+		if (mPassword.compareTo("") != 0)
+			mPasswordView.setText(mPassword);
+			//aes.init(Cipher.DECRYPT_MODE, key);
+			//mPassword = aes.doFinal(mPassword);
 
 		mLoginFormView = findViewById(R.id.login_form);
 		mLoginStatusView = findViewById(R.id.login_status);
@@ -154,10 +173,23 @@ public class LoginActivity extends Activity {
 		// Reset errors.
 		mEmailView.setError(null);
 		mPasswordView.setError(null);
-
+		
 		// Store values at the time of the login attempt.
 		mEmail = mEmailView.getText().toString();
 		mPassword = mPasswordView.getText().toString();
+		
+		SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
+		if (mPassword != "")
+		{
+			//aes = Cipher.getInstance("AES/ECB/PKCS5Padding");
+			//aes.init(Cipher.ENCRYPT_MODE, key);
+			SharedPreferences.Editor saver = memory.edit();
+			saver.putString("word", mPassword);
+			saver.putString("user", mEmail);
+			saver.commit();
+		}
+
+		
 
 		boolean cancel = false;
 		View focusView = null;
