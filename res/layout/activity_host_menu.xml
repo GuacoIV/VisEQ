@@ -12,7 +12,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Host Menu:" />
+        android:text="@string/HostMenu:" />
 
     <Button
         android:id="@+id/MusicQueue"
@@ -21,7 +21,7 @@
         android:layout_below="@+id/textView1"
         android:layout_marginTop="68dp"
         android:layout_centerHorizontal="true"
-        android:text="Music Queue" />
+        android:text="@string/MusicQueue" />
 
     <Button
         android:id="@+id/Scope"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/MusicQueue"
         android:layout_centerHorizontal="true"
-        android:text="Scope this Crowd" />
+        android:text="@string/ScopeThisCrowd" />
 
     <Button
         android:id="@+id/NowPlaying"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/Scope"
         android:layout_centerHorizontal="true"
-        android:text="Now Playing" />
+        android:text="@string/NowPlaying" />
 
     <Button
         android:id="@+id/Search"
@@ -46,7 +46,7 @@
         android:layout_below="@+id/textView1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="14dp"
-        android:text="Search" />
+        android:text="@string/HostSearch" />
 
     <EditText
         android:id="@+id/name_field"
@@ -57,11 +57,11 @@
         android:layout_below="@+id/NowPlaying"
         android:layout_marginTop="17dp"
         android:ems="10"
-        android:hint="name" >
+        android:hint="@string/HostName" >
 
-        <requestFocus />
+    <requestFocus/>    
     </EditText>
-
+    
     <EditText
         android:id="@+id/ip_field"
         android:layout_width="wrap_content"
@@ -71,7 +71,7 @@
         android:layout_below="@+id/name_field"
         android:layout_marginTop="13dp"
         android:ems="10"
-        android:hint="ip address" />
+        android:hint="@string/HostIPAddress" />
 
     <Button
         android:id="@+id/button1"
@@ -79,7 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/ip_field"
         android:layout_toRightOf="@+id/Scope"
-        android:text="Add"
+        android:text="@string/AddClient"
         android:onClick="addUserToList" />
 
     <TextView

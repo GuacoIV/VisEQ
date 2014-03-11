@@ -21,5 +21,14 @@
     <string name="title_activity_music_queue">MusicQueueActivity</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="QueueTopOrBottom">Add this track to top or bottom of queue?</string>
-
+        
+    <string name="HostMenu:">Host menu</string>
+    <string name="MusicQueue">Music Queue</string>
+    <string name="ScopeThisCrowd">Scope this Crowd</string>
+    <string name="NowPlaying">Now Playing</string>
+    <string name="HostSearch">Search</string>
+    <string name="HostName">name</string>
+    <string name="HostIPAddress">ip address</string>
+    <string name="AddClient">add</string>
+    
 </resources>
