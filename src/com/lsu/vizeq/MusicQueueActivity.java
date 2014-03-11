@@ -2,7 +2,9 @@ package com.lsu.vizeq;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
+import android.view.MenuItem;
 
 public class MusicQueueActivity extends Activity
 {
@@ -21,5 +23,15 @@ public class MusicQueueActivity extends Activity
 		getMenuInflater().inflate(R.menu.music_queue, menu);
 		return true;
 	}
-
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			Intent nextIntent  = new Intent(MusicQueueActivity.this, SettingsActivity.class);
+			startActivity(nextIntent);
+		}
+		return true;
+	}
 }
