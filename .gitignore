@@ -34,3 +34,4 @@ gen
 obj
 jni/key.h
 res/raw/star.wav
+*.class
