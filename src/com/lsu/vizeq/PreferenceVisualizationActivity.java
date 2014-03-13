@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.Animation;
 import android.widget.RelativeLayout;
 
 public class PreferenceVisualizationActivity extends Activity
@@ -18,7 +19,6 @@ public class PreferenceVisualizationActivity extends Activity
 		PreferenceCircle pc = new PreferenceCircle(this, 200, 200, 100, "hi");
 		RelativeLayout circleScreen = (RelativeLayout) this.findViewById(R.id.CircleScreen);
 		circleScreen.addView(pc);
-		
 	}
 
 	@Override

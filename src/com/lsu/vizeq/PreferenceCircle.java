@@ -2,14 +2,15 @@ package com.lsu.vizeq;
 
 
 	import android.content.Context;
-	import android.graphics.Bitmap;
-	import android.graphics.BitmapFactory;
-	import android.graphics.Canvas;
-	import android.graphics.Color;
-	import android.graphics.Paint;
-	import android.graphics.RectF;
-	import android.util.AttributeSet;
-	import android.view.View;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.View;
 
 	public class PreferenceCircle extends View
 	{
@@ -36,6 +37,15 @@ package com.lsu.vizeq;
 		// Dimensions: 125dp x 30dp
 		int width = (int) (125 * scale + 0.5f);
 		int height = (int) (40 * scale + 0.5f);
+
+		@Override
+		public boolean onTouchEvent(MotionEvent event)
+		{
+			animate().setDuration(500);
+			animate().scaleX(8);
+			animate().scaleY(8);			
+			return super.onTouchEvent(event);
+		}
 
 		@Override
 		protected void onDraw(Canvas canvas)
@@ -87,6 +97,8 @@ package com.lsu.vizeq;
 		public PreferenceCircle(Context context, int x, int y, int radius, String text)
 		{
 			super(context);
+			super.setX(x);
+			super.setY(y);
 			this.text = text;
 			this.x = x;
 			this.y = y;
