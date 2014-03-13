@@ -33,6 +33,7 @@ package com.lsu.vizeq;
 
 
 import android.os.Handler;
+import android.util.Log;
 
 import com.lsu.vizeq.SpotifyService.LoginDelegate;
 import com.lsu.vizeq.SpotifyService.PlayerUpdateDelegate;
@@ -59,6 +60,10 @@ public class LibSpotifyWrapper {
 
 	native public static void unstar();
 
+	public static void myFunc(int i) {
+		Log.d("myFunc", String.valueOf(i));
+	}
+	
 	public static void loginUser(String username, String password, LoginDelegate loginDelegate) {
 		mLoginDelegate = loginDelegate;
 		login(username, password);

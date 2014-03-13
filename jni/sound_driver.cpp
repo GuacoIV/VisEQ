@@ -53,6 +53,7 @@
 #include "tasks.h"
 #include "run_loop.h"
 #include "logger.h"
+#include "jni_glue.h"
 
 static SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
 
@@ -83,18 +84,25 @@ static int *next_buffer_size = &buffer2_size;
 
 static pthread_mutex_t g_buffer_mutex;
 
+static JNIEnv *env;
+static jclass libSpotifyWrapper;
+static jmethodID mid;
+
 // Tell openSL to play the filled buffer and switch to filling the other buffer
 void enqueue(short *buffer, int size) {
 	// Play the buffer and flip to the other buffer
+
+	static int i = 0;
 
 	logPlayback("Consume buffer %d", (buffer == buffer1) ? 1 : 2);
 	SLresult result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, buffer, size);
 	assert(SL_RESULT_SUCCESS != result);
 
-	//Beat tracking here
 	current_buffer_size = (buffer == buffer1) ? &buffer1_size : &buffer2_size;
 	next_buffer = (buffer == buffer1) ? buffer2 : buffer1;
 	next_buffer_size = (buffer == buffer1) ? &buffer2_size : &buffer1_size;
+
+	//env->CallStaticVoidMethod(libSpotifyWrapper, mid, i++);
 }
 
 int music_delivery(sp_session *sess, const sp_audioformat *format, const void *frames, int num_frames) {
@@ -246,6 +254,9 @@ void init_audio_player() {
 	result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, SL_PLAYSTATE_PLAYING );
 
 	log("OpenSL was initiated with 16 bit 44100 samplerate and 2 channels");
+
+	libSpotifyWrapper = find_class_from_native_thread(&env);
+	mid = env->GetStaticMethodID(libSpotifyWrapper, "myFunc", "(I)V");
 
 }
 
