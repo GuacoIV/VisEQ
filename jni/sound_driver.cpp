@@ -91,6 +91,7 @@ void enqueue(short *buffer, int size) {
 	SLresult result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, buffer, size);
 	assert(SL_RESULT_SUCCESS != result);
 
+	//Beat tracking here
 	current_buffer_size = (buffer == buffer1) ? &buffer1_size : &buffer2_size;
 	next_buffer = (buffer == buffer1) ? buffer2 : buffer1;
 	next_buffer_size = (buffer == buffer1) ? &buffer2_size : &buffer1_size;
