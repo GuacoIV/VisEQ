@@ -6,13 +6,16 @@ import java.net.DatagramSocket;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 public class RoleActivity extends Activity
 {
@@ -24,6 +27,12 @@ public class RoleActivity extends Activity
 		setContentView(R.layout.activity_role);
 		findViewById(R.id.DJ).setOnClickListener(new View.OnClickListener() 
 		{
+				public void onPressed(View v)
+				{
+					
+					
+				}
+				
 				@Override
 				public void onClick(View v)
 				{
@@ -42,6 +51,29 @@ public class RoleActivity extends Activity
 				}
 
 		});
+		findViewById(R.id.DJ).setOnTouchListener(new View.OnTouchListener()
+		{
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				ImageView DJButton = (ImageView) v;
+				if (event.getAction() == MotionEvent.ACTION_DOWN) DJButton.setImageResource(R.drawable.hostbuttonover_325x325);
+				else if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP) DJButton.setImageResource(R.drawable.hostbutton_325x325);
+				return false;
+			}
+		});
+		
+		findViewById(R.id.NotADJ).setOnTouchListener(new View.OnTouchListener()
+		{
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				ImageView DJButton = (ImageView) v;
+				if (event.getAction() == MotionEvent.ACTION_DOWN) DJButton.setImageResource(R.drawable.joinbuttonover_325x325);
+				else if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP) DJButton.setImageResource(R.drawable.joinbutton_325x325);
+				return false;
+			}
+		});		
 	}
 
 	@Override

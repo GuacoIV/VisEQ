@@ -5,19 +5,35 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical">
-	    <Button
-	        android:id="@+id/DJ"
-	        android:layout_width="fill_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/DJ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:src="@drawable/hostbutton_325x325" />
+
+	    <TextView
+	        android:id="@+id/DJText"
+	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_weight = "0.5"
+	        android:layout_weight = "0.3"
 	        android:text="@string/DJButton" />
 	
-	    <Button
-	        android:id="@+id/NotADJ"
-	        android:layout_width="fill_parent"
+	    <TextView
+	        android:id="@+id/NotADJText"
+	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:text="@string/NotADJButton" 
-	        android:layout_weight = "0.5"/>
+	        android:layout_weight = "0.3"/>
+
+	    <ImageView
+	        android:id="@+id/NotADJ"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="0.5"
+	        android:src="@drawable/joinbutton_325x325" />
 
 </LinearLayout>
