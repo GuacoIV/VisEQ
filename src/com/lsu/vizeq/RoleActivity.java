@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class RoleActivity extends Activity
 {
@@ -25,14 +27,17 @@ public class RoleActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_role);
+		Typeface font;
+		font = Typeface.createFromAsset(getAssets(), "Mohave.otf");
+		TextView DJText = (TextView) findViewById(R.id.DJText);
+		TextView NotADJText = (TextView) findViewById(R.id.NotADJText);
+		
+		DJText.setTypeface(font);
+		NotADJText.setTypeface(font);
+		DJText.setTextSize(30);
+		NotADJText.setTextSize(30);
 		findViewById(R.id.DJ).setOnClickListener(new View.OnClickListener() 
 		{
-				public void onPressed(View v)
-				{
-					
-					
-				}
-				
 				@Override
 				public void onClick(View v)
 				{
