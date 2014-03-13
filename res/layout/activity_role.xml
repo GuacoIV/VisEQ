@@ -19,15 +19,22 @@
 	        android:id="@+id/DJText"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:layout_weight = "0.3"
+	        android:layout_weight = "0.2"
 	        android:text="@string/DJButton" />
+	    
+	    <TextView
+	        android:id="@+id/Or"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_weight = "0.2"
+	        android:text="@string/OrText" />
 	
 	    <TextView
 	        android:id="@+id/NotADJText"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:text="@string/NotADJButton" 
-	        android:layout_weight = "0.3"/>
+	        android:layout_weight = "0.2"/>
 
 	    <ImageView
 	        android:id="@+id/NotADJ"

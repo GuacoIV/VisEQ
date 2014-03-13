@@ -27,15 +27,17 @@ public class RoleActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_role);
-		Typeface font;
-		font = Typeface.createFromAsset(getAssets(), "Mohave.otf");
+		Typeface font = Typeface.createFromAsset(getAssets(), "Mohave.otf");
+		Typeface orFont = Typeface.createFromAsset(getAssets(), "Mission Gothic Regular.otf");
 		TextView DJText = (TextView) findViewById(R.id.DJText);
-		TextView NotADJText = (TextView) findViewById(R.id.NotADJText);
-		
+		TextView notADJText = (TextView) findViewById(R.id.NotADJText);
+		TextView orText = (TextView) findViewById(R.id.Or);
 		DJText.setTypeface(font);
-		NotADJText.setTypeface(font);
+		notADJText.setTypeface(font);
+		orText.setTypeface(orFont);
 		DJText.setTextSize(30);
-		NotADJText.setTextSize(30);
+		notADJText.setTextSize(30);
+		orText.setTextSize(25);
 		findViewById(R.id.DJ).setOnClickListener(new View.OnClickListener() 
 		{
 				@Override
