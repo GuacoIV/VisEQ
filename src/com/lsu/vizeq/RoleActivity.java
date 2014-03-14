@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -41,36 +42,28 @@ public class RoleActivity extends Activity
 		notADJText.setTextColor(Color.rgb(153, 153, 153));
 		orText.setTextSize(27);//27 gothic bold //51, 51, 51 //diameter is 140
 		orText.setTextColor(Color.rgb(51, 51, 51));
-		findViewById(R.id.DJ).setOnClickListener(new View.OnClickListener() 
-		{
-				@Override
-				public void onClick(View v)
-				{
-					Intent nextIntent = new Intent(RoleActivity.this, HostActivity.class);
-					startActivity(nextIntent);					
-				}
 
-		});
-		findViewById(R.id.NotADJ).setOnClickListener(new View.OnClickListener() 
-		{
-				@Override
-				public void onClick(View v)
-				{
-					Intent nextIntent = new Intent(RoleActivity.this, SoundVisualizationActivity.class);
-					startActivity(nextIntent);					
-				}
-
-		});
 		findViewById(R.id.DJ).setOnTouchListener(new View.OnTouchListener()
 		{
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent event)
 			{
+				Point touchPoint = new Point((int)event.getX(), (int)event.getY());
+				Point center = new Point(v.getWidth()/2, v.getHeight()/2);
 				ImageView DJButton = (ImageView) v;
-				if (event.getAction() == MotionEvent.ACTION_DOWN) DJButton.setImageResource(R.drawable.hostbuttonover_325x325);
-				else if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP) DJButton.setImageResource(R.drawable.hostbutton_325x325);
-				return false;
+				boolean isInCircle = isInCircle(touchPoint, center, v.getWidth()/2);
+				if (event.getAction() == MotionEvent.ACTION_DOWN && isInCircle) DJButton.setImageResource(R.drawable.hostbuttonover_325x325);
+				if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP)
+				{
+					DJButton.setImageResource(R.drawable.hostbutton_325x325);
+					if (event.getAction() == MotionEvent.ACTION_UP && isInCircle)
+					{
+						Intent nextIntent = new Intent(RoleActivity.this, HostActivity.class);
+						startActivity(nextIntent);
+					}
+				}
+				return true;
 			}
 		});
 		
@@ -78,16 +71,32 @@ public class RoleActivity extends Activity
 		{
 			public boolean onTouch(View v, MotionEvent event)
 			{
-				float x = event.getX();
-				float y = event.getY(); 
-				Log.d("Coordinates", ""+x);
-				Log.d("Coordinates", ""+y);
+				Point touchPoint = new Point((int)event.getX(), (int)event.getY());
+				Point center = new Point(v.getWidth()/2, v.getHeight()/2);
 				ImageView DJButton = (ImageView) v;
-				if (event.getAction() == MotionEvent.ACTION_DOWN) DJButton.setImageResource(R.drawable.joinbuttonover_325x325);
-				else if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP) DJButton.setImageResource(R.drawable.joinbutton_325x325);
-				return false;
+				boolean isInCircle = isInCircle(touchPoint, center, v.getWidth()/2);
+				if (event.getAction() == MotionEvent.ACTION_DOWN && isInCircle) DJButton.setImageResource(R.drawable.joinbuttonover_325x325);
+				if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP)
+				{
+					DJButton.setImageResource(R.drawable.joinbutton_325x325);
+					if (event.getAction() == MotionEvent.ACTION_UP && isInCircle)
+					{
+						Intent nextIntent = new Intent(RoleActivity.this, SoundVisualizationActivity.class);
+						startActivity(nextIntent);	
+					}
+				}
+				return true;
 			}
 		});		
+	}
+	
+	public boolean isInCircle(Point tp, Point c, int radius)
+	{
+		int diffX = Math.abs(tp.x - c.x);
+		int diffY = Math.abs(tp.y - c.y);
+		double distFromCenter = Math.sqrt(diffX * diffX + diffY * diffY);
+		if (distFromCenter > radius) return false;
+		else return true;
 	}
 
 	@Override
