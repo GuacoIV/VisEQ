@@ -42,16 +42,7 @@ public class HostMenuActivity extends Activity
 			}
 			
 		});
-		findViewById(R.id.MusicQueue).setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public void onClick(View v)
-			{
-				Intent nextIntent = new Intent(HostMenuActivity.this, MusicQueueActivity.class);
-				startActivity(nextIntent);	
-			}
-			
-		});
+
 		findViewById(R.id.Search).setOnClickListener(new View.OnClickListener()
 		{
 			@Override

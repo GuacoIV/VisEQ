@@ -14,20 +14,12 @@
         android:layout_height="wrap_content"
         android:text="@string/HostMenu:" />
 
-    <Button
-        android:id="@+id/MusicQueue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="68dp"
-        android:layout_centerHorizontal="true"
-        android:text="@string/MusicQueue" />
 
     <Button
         android:id="@+id/Scope"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/MusicQueue"
+        android:layout_below="@+id/Search"
         android:layout_centerHorizontal="true"
         android:text="@string/ScopeThisCrowd" />
 

@@ -28,16 +28,19 @@ public class RoleActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_role);
 		Typeface font = Typeface.createFromAsset(getAssets(), "Mohave.otf");
-		Typeface orFont = Typeface.createFromAsset(getAssets(), "Mission Gothic Regular.otf");
+		Typeface orFont = Typeface.createFromAsset(getAssets(), "Mission Gothic Bold.otf");
 		TextView DJText = (TextView) findViewById(R.id.DJText);
 		TextView notADJText = (TextView) findViewById(R.id.NotADJText);
 		TextView orText = (TextView) findViewById(R.id.Or);
 		DJText.setTypeface(font);
 		notADJText.setTypeface(font);
 		orText.setTypeface(orFont);
-		DJText.setTextSize(30);
-		notADJText.setTextSize(30);
-		orText.setTextSize(25);
+		DJText.setTextSize(40); //40 pt 153, 153, 153
+		DJText.setTextColor(Color.rgb(153, 153, 153));
+		notADJText.setTextSize(40); //40 pt
+		notADJText.setTextColor(Color.rgb(153, 153, 153));
+		orText.setTextSize(27);//27 gothic bold //51, 51, 51 //diameter is 140
+		orText.setTextColor(Color.rgb(51, 51, 51));
 		findViewById(R.id.DJ).setOnClickListener(new View.OnClickListener() 
 		{
 				@Override
@@ -75,6 +78,10 @@ public class RoleActivity extends Activity
 		{
 			public boolean onTouch(View v, MotionEvent event)
 			{
+				float x = event.getX();
+				float y = event.getY(); 
+				Log.d("Coordinates", ""+x);
+				Log.d("Coordinates", ""+y);
 				ImageView DJButton = (ImageView) v;
 				if (event.getAction() == MotionEvent.ACTION_DOWN) DJButton.setImageResource(R.drawable.joinbuttonover_325x325);
 				else if (event.getAction() == MotionEvent.ACTION_CANCEL || event.getAction() == MotionEvent.ACTION_UP) DJButton.setImageResource(R.drawable.joinbutton_325x325);
