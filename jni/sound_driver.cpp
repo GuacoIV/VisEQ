@@ -55,6 +55,7 @@
 #include "logger.h"
 #include "jni_glue.h"
 #include "fft.h"
+#include "complex.h"
 
 static SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
 
@@ -87,6 +88,10 @@ static pthread_mutex_t g_buffer_mutex;
 
 bool buffer_dirty;
 
+CFFT *cfft;
+complex *pSignal;
+complex *output;
+
 // Tell openSL to play the filled buffer and switch to filling the other buffer
 void enqueue(short *buffer, int size) {
 	// Play the buffer and flip to the other buffer
@@ -99,11 +104,12 @@ void enqueue(short *buffer, int size) {
 	next_buffer = (buffer == buffer1) ? buffer2 : buffer1;
 	next_buffer_size = (buffer == buffer1) ? &buffer2_size : &buffer1_size;
 
-	complex *pSignal = new complex[1024];
-	//CFFT::Forward(pSignal, 1024);
-	delete[] pSignal;
-
 	log("buffer dirty");
+	for (int i; i < 1024; i++) {
+		new (&pSignal[i]) complex(buffer[i]);
+	}
+
+	cfft->Forward(pSignal, output, 1024);
 
 	buffer_dirty = true;
 
@@ -259,11 +265,9 @@ void init_audio_player() {
 
 	log("OpenSL was initiated with 16 bit 44100 sample rate and 2 channels");
 
-	//logPlayback("Setting LibSpotifyWrapper1");
-	//libSpotifyWrapper = find_class_from_native_thread(&env);
-	//logPlayback("setting LibSpotifyWrapper2");
-	//mid = env->GetStaticMethodID(libSpotifyWrapper, "myFunc", "(I)V");
-
+	cfft = new CFFT();
+	pSignal = new complex[1024];
+	output = new complex[1024];
 }
 
 void destroy_audio_player() {
