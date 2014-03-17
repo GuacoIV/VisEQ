@@ -60,6 +60,29 @@ public class LibSpotifyWrapper {
 
 	native public static void unstar();
 
+	native public static void poll();
+	
+	public static void BeginPolling() {
+		Thread thread = new Thread() {
+			public void run() {
+				try {
+					while (true) {
+						sleep(1000);
+						Log.d("trying to poll", "...");
+						poll();
+						Log.d("returned from poll", "...");
+					}
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		
+		thread.start();
+		
+	}
+	
 	public static void myFunc(int i) {
 		Log.d("myFunc", String.valueOf(i));
 	}

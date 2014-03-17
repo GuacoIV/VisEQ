@@ -85,15 +85,11 @@ static int *next_buffer_size = &buffer2_size;
 
 static pthread_mutex_t g_buffer_mutex;
 
-static JNIEnv *env;
-static jclass libSpotifyWrapper;
-static jmethodID mid;
+bool buffer_dirty;
 
 // Tell openSL to play the filled buffer and switch to filling the other buffer
 void enqueue(short *buffer, int size) {
 	// Play the buffer and flip to the other buffer
-
-	static int i = 0;
 
 	logPlayback("Consume buffer %d", (buffer == buffer1) ? 1 : 2);
 	SLresult result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, buffer, size);
@@ -107,9 +103,10 @@ void enqueue(short *buffer, int size) {
 	//CFFT::Forward(pSignal, 1024);
 	delete[] pSignal;
 
-	//logPlayback("Calling Java function");
-	//env->CallStaticVoidMethod(libSpotifyWrapper, mid, i++);
-	//logPlayback("Returning to enqueue");
+	log("buffer dirty");
+
+	buffer_dirty = true;
+
 }
 
 int music_delivery(sp_session *sess, const sp_audioformat *format, const void *frames, int num_frames) {

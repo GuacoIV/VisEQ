@@ -124,6 +124,29 @@ JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_destroy(JNIEnv *je, 
 	addTask(destroy, "destroy");
 }
 
+JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_poll(JNIEnv *je, jclass jc) {
+	static int i = 0;
+
+	log("hi from native");
+
+	if (buffer_dirty) {
+		log("calling my func");
+		call_static_void_int_method("myFunc", i);
+		buffer_dirty = false;
+	}
+
+
+}
+
+void call_static_void_int_method(const char *method_name, int arg) {
+	JNIEnv *env;
+		jclass classLibSpotify = find_class_from_native_thread(&env);
+
+		jmethodID methodId = env->GetStaticMethodID(classLibSpotify, method_name, "(I)V");
+		env->CallStaticVoidMethod(classLibSpotify, methodId, arg);
+		env->DeleteLocalRef(classLibSpotify);
+}
+
 // Helper for calling the specified static void/void java-method
 void call_static_void_method(const char *method_name) {
 	JNIEnv *env;

@@ -29,6 +29,7 @@
 
 jclass find_class_from_native_thread(JNIEnv **envSetter);
 void call_static_void_method(const char *method_name);
+void call_static_void_int_method(const char *method_name, int arg);
 
 extern "C" {
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved);
@@ -40,5 +41,7 @@ JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_playnext(JNIEnv *je,
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_seek(JNIEnv *je, jclass jc, jfloat position);
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_star(JNIEnv *je, jclass jc);
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_unstar(JNIEnv *je, jclass jc);
-
+JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_poll(JNIEnv *je, jclass jc);
 }
+
+extern bool buffer_dirty;

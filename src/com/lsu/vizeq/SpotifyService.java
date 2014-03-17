@@ -91,6 +91,8 @@ public class SpotifyService extends Service {
 		System.loadLibrary("spotify");
 		System.loadLibrary("spotifywrapper");
 
+
+		
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
 			throw new RuntimeException("Storage card not available");
 		if (libLoaded == false) 

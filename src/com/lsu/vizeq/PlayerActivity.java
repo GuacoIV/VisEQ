@@ -436,6 +436,9 @@ public class PlayerActivity extends Activity {
 				dialog.show();
 			}
 		});
+		
+		LibSpotifyWrapper.BeginPolling();
+		Log.d("what", "up");
 	}
 
 	@Override
