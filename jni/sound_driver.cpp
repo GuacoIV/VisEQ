@@ -54,6 +54,7 @@
 #include "run_loop.h"
 #include "logger.h"
 #include "jni_glue.h"
+#include "fft.h"
 
 static SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
 
@@ -102,7 +103,13 @@ void enqueue(short *buffer, int size) {
 	next_buffer = (buffer == buffer1) ? buffer2 : buffer1;
 	next_buffer_size = (buffer == buffer1) ? &buffer2_size : &buffer1_size;
 
+	complex *pSignal = new complex[1024];
+	//CFFT::Forward(pSignal, 1024);
+	delete[] pSignal;
+
+	//logPlayback("Calling Java function");
 	//env->CallStaticVoidMethod(libSpotifyWrapper, mid, i++);
+	//logPlayback("Returning to enqueue");
 }
 
 int music_delivery(sp_session *sess, const sp_audioformat *format, const void *frames, int num_frames) {
@@ -253,10 +260,12 @@ void init_audio_player() {
 	// set the player's state to playing
 	result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, SL_PLAYSTATE_PLAYING );
 
-	log("OpenSL was initiated with 16 bit 44100 samplerate and 2 channels");
+	log("OpenSL was initiated with 16 bit 44100 sample rate and 2 channels");
 
-	libSpotifyWrapper = find_class_from_native_thread(&env);
-	mid = env->GetStaticMethodID(libSpotifyWrapper, "myFunc", "(I)V");
+	//logPlayback("Setting LibSpotifyWrapper1");
+	//libSpotifyWrapper = find_class_from_native_thread(&env);
+	//logPlayback("setting LibSpotifyWrapper2");
+	//mid = env->GetStaticMethodID(libSpotifyWrapper, "myFunc", "(I)V");
 
 }
 
