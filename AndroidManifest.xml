@@ -8,17 +8,17 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-	<uses-permission android:name="android.permission.CAMERA" />
-	
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="16" />
 
     <application
+        android:name="com.lsu.vizeq.MyApplication"
         android:icon="@drawable/launch"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name=".MyApplication" >
+        android:theme="@style/AppTheme" >
         <activity
             android:name="com.lsu.vizeq.LoginActivity"
             android:label="@string/app_name"
@@ -110,6 +110,14 @@
         <activity
             android:name="com.lsu.vizeq.SearchActivity"
             android:label="@string/title_activity_search" >
+        </activity>
+        <activity
+            android:name="com.lsu.vizeq.SearchPartyActivity"
+            android:label="@string/title_activity_search_party"
+            android:parentActivityName="com.lsu.vizeq.RoleActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.lsu.vizeq.RoleActivity" />
         </activity>
     </application>
 

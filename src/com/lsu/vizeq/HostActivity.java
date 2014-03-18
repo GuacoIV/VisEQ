@@ -1,11 +1,12 @@
 package com.lsu.vizeq;
 
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 public class HostActivity extends Activity
 {
@@ -21,11 +22,19 @@ public class HostActivity extends Activity
 			@Override
 			public void onClick(View v)
 			{
+				setName();
 				Intent nextIntent = new Intent(HostActivity.this, HostMenuActivity.class);
 				startActivity(nextIntent);	
 			}
 			
 		});
+	}
+	
+	public void setName()
+	{
+		MyApplication myapp = (MyApplication) this.getApplicationContext();
+		EditText et = (EditText) findViewById(R.id.editText1);
+		myapp.myName = et.getText().toString();
 	}
 
 	@Override
