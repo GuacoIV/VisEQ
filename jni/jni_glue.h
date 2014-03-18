@@ -44,4 +44,4 @@ JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_unstar(JNIEnv *je, j
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_poll(JNIEnv *je, jclass jc);
 }
 
-extern bool buffer_dirty;
+extern bool beatOccurrence;

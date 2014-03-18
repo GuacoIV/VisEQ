@@ -10,7 +10,7 @@
 
 class complex
 {
-protected:
+public:
 	//   Internal presentation - real and imaginary parts
 	double m_re;
 	double m_im;
