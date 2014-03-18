@@ -1,11 +1,19 @@
 package com.lsu.vizeq;
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,12 +22,81 @@ import android.widget.TextView;
 
 public class HostMenuActivity extends Activity
 {
+	MyApplication myapp;
+	
+	public String getIpString()
+	{
+		WifiManager wifi = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+    	DhcpInfo dhcp = wifi.getDhcpInfo();
+    	ByteBuffer b = ByteBuffer.allocate(4);
+    	b.putInt(dhcp.ipAddress);
+    	InetAddress myAddress;
+    	String ipString = "fail";
+    	try {
+			 myAddress = InetAddress.getByAddress(b.array());
+			 ipString = myAddress.getHostAddress();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ipString;
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_host_menu);
+		myapp = (MyApplication) this.getApplicationContext();
+		
+		new Thread( new Runnable()
+		{
+			public void run()
+			{
+				
+				try
+				{
+					DatagramSocket listenSocket = new DatagramSocket(7770);
+					DatagramSocket sendSocket = new DatagramSocket();
+					while(true)
+					{
+						//listen for search
+						Log.d("listen thread","listening");
+						byte[] receiveData = new byte[1024];
+						DatagramPacket receivedPacket = new DatagramPacket(receiveData, receiveData.length);
+						listenSocket.receive(receivedPacket);
+						Log.d("listen thread", "packet received");
+						
+						InetAddress ip = receivedPacket.getAddress();
+						int port = receivedPacket.getPort();
+						
+						String data = new String(receivedPacket.getData());
+						if (data.substring(0, 6).equals("search"))
+						{
+							Log.d("listen thread", "search received");
+							//send back information
+							String information = "found ";
+							information += (myapp.myName + " ");
+							String ipString = getIpString();
+							information += ipString;
+							Log.d("listen thread", "sending back"+information);
+							
+							//make a packet
+							byte[] sendData = new byte[1024];
+							sendData = information.getBytes();
+							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 7771);
+							sendSocket.send(sendPacket);
+						}
+						
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}).start();
+		
 		findViewById(R.id.NowPlaying).setOnClickListener(new View.OnClickListener()
 		{
 

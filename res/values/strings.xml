@@ -21,7 +21,6 @@
     <string name="title_activity_music_queue">MusicQueueActivity</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="QueueTopOrBottom">Add this track to top or bottom of queue?</string>
-        
     <string name="HostMenu:">Host menu</string>
     <string name="ScopeThisCrowd">Scope this Crowd</string>
     <string name="NowPlaying">Now Playing</string>
@@ -30,5 +29,6 @@
     <string name="HostIPAddress">ip address</string>
     <string name="AddClient">add</string>
     <string name="OrText">-or-</string>
-    
+    <string name="title_activity_search_party">SearchPartyActivity</string>
+
 </resources>
