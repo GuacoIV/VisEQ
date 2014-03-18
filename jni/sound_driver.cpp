@@ -99,7 +99,35 @@ void enqueue(short *buffer, int size) {
 	next_buffer = (buffer == buffer1) ? buffer2 : buffer1;
 	next_buffer_size = (buffer == buffer1) ? &buffer2_size : &buffer1_size;
 
-	complex *pSignal = new complex[1024];
+	complex *pSignal = new complex[size/8];
+	int sum = 0;
+	double exp = 15;
+	bool negative = false;
+	//Convert to an Int16 and then divide by 32,768 to get between [-1, +1]
+	for (int i = 0; i < size/8; i++)
+	{
+		sum = 0;
+		exp = 14;
+		negative = false;
+		for (int j = i*8; j <= (i*8)+15; j++)
+		{
+			//Is it Little Endian or Big Endian??????
+			//Assuming beginning of buffer is MSB
+			if (j > i*8)
+			{
+				sum += (buffer[j]) * pow((double)2, exp);
+				exp--;
+			}
+			else if (j == i*8)
+				if (buffer[j]==1)
+					negative = true;
+		}
+		if (negative) sum = -sum;
+		pSignal[i] = sum;
+		double sigI = (pSignal->re());
+		//log(sigI);
+	}
+
 	//CFFT::Forward(pSignal, 1024);
 	delete[] pSignal;
 
