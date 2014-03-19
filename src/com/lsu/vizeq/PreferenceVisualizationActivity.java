@@ -16,7 +16,7 @@ public class PreferenceVisualizationActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_preference_visualization);
-		PreferenceCircle pc = new PreferenceCircle(this, 200, 200, 100, "hi");
+		PreferenceCircle pc = new PreferenceCircle(this, 300, 600, 100, "hi");
 		RelativeLayout circleScreen = (RelativeLayout) this.findViewById(R.id.CircleScreen);
 		circleScreen.addView(pc);
 	}

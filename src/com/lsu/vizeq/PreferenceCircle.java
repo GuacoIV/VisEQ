@@ -27,6 +27,8 @@ import android.view.View;
 		Color color;
 //		string text;
 		final float scale = getResources().getDisplayMetrics().density;
+		final float width = getResources().getDisplayMetrics().widthPixels;
+		final float height = getResources().getDisplayMetrics().heightPixels;
 		int twentyFiveDP = (int) (25 * scale + 0.5f);
 //		Bitmap sub4 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.quarter), twentyFiveDP, twentyFiveDP, true);
 //		Bitmap sub8 = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.eighth), twentyFiveDP, twentyFiveDP, true);
@@ -35,15 +37,17 @@ import android.view.View;
 		Paint box = new Paint();
 
 		// Dimensions: 125dp x 30dp
-		int width = (int) (125 * scale + 0.5f);
-		int height = (int) (40 * scale + 0.5f);
+//		int width = (int) (125 * scale + 0.5f);
+//		int height = (int) (40 * scale + 0.5f);
 
 		@Override
 		public boolean onTouchEvent(MotionEvent event)
 		{
-			animate().setDuration(500);
-			animate().scaleX(8);
-			animate().scaleY(8);			
+			animate().setDuration(5000);			
+			animate().scaleX(5);
+			animate().scaleY(5);
+//			animate().translationY(height/2);
+//			animate().translationX(width/2);
 			return super.onTouchEvent(event);
 		}
 
@@ -70,7 +74,9 @@ import android.view.View;
 //				else if (sub == 16)
 //					canvas.drawBitmap(sub16, width - (25 + 10), (height - 25) / 2, paint);
 			    paint.setColor(color.BLUE);
-				canvas.drawText(text, width/10, height - 5, paint);
+			    canvas.drawText(text, x, y, paint);
+			    			    
+//				canvas.drawText(text, width/10, height - 5, paint);
 //			}
 //			else 
 //			{
