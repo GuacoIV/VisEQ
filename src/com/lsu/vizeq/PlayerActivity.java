@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
@@ -50,6 +51,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.media.AudioManager;
@@ -70,6 +72,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.content.pm.PackageManager;
 
+import com.lsu.vizeq.R.color;
 import com.lsu.vizeq.ServiceBinder.ServiceBinderDelegate;
 import com.lsu.vizeq.SpotifyService.PlayerUpdateDelegate;
 
@@ -230,7 +233,10 @@ public class PlayerActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
-		
+		ActionBar actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		//Makes volume buttons control music stream even when nothing playing
+		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
 		myapp = (MyApplication) this.getApplicationContext();
 		
 		//light sending stuff

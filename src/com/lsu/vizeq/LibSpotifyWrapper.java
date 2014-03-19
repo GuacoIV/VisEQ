@@ -84,7 +84,7 @@ public class LibSpotifyWrapper {
 	}
 	
 	public static void myFunc(int i) {
-		Log.d("myFunc", String.valueOf(i));
+		Log.d("Beat occurred", String.valueOf(i));
 	}
 	
 	public static void loginUser(String username, String password, LoginDelegate loginDelegate) {

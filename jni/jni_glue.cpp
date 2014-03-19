@@ -129,10 +129,10 @@ JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_poll(JNIEnv *je, jcl
 
 	log("hi from native");
 
-	if (buffer_dirty) {
+	if (beatOccurrence) {
 		log("calling my func");
 		call_static_void_int_method("myFunc", i);
-		buffer_dirty = false;
+		beatOccurrence = false;
 	}
 
 

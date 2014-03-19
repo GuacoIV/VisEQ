@@ -1,8 +1,12 @@
 package com.lsu.vizeq;
 
+import com.lsu.vizeq.R.color;
+
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
@@ -16,7 +20,13 @@ public class PreferenceVisualizationActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_preference_visualization);
+<<<<<<< HEAD
 		PreferenceCircle pc = new PreferenceCircle(this, 300, 600, 100, "hi");
+=======
+		ActionBar actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		PreferenceCircle pc = new PreferenceCircle(this, 200, 200, 100, "hi");
+>>>>>>> 8c20ef63dc65117be14e0fa9f5246551b85a1fca
 		RelativeLayout circleScreen = (RelativeLayout) this.findViewById(R.id.CircleScreen);
 		circleScreen.addView(pc);
 	}
