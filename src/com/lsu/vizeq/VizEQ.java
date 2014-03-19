@@ -5,8 +5,10 @@ import java.util.TimerTask;
 
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,8 +21,8 @@ public class VizEQ extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
-		
-		
+		ActionBar actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 		//Makes volume buttons control music stream even when nothing playing
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
 		

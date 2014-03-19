@@ -3,11 +3,15 @@ package com.lsu.vizeq;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
+import com.lsu.vizeq.R.color;
+
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,6 +46,8 @@ public class RoleActivity extends Activity
 		notADJText.setTextColor(Color.rgb(153, 153, 153));
 		orText.setTextSize(27);//27 gothic bold //51, 51, 51 //diameter is 140
 		orText.setTextColor(Color.rgb(51, 51, 51));
+		ActionBar actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 
 		findViewById(R.id.DJ).setOnTouchListener(new View.OnTouchListener()
 		{

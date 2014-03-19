@@ -4,9 +4,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.lsu.vizeq.R.color;
 import com.lsu.vizeq.util.SystemUiHider;
 
 /**
@@ -56,6 +59,8 @@ public class SoundVisualizationActivity extends Activity
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_sound_visualization);
+		ActionBar actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);

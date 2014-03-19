@@ -4,5 +4,20 @@
     <color name="pressed">#1F6D89</color>
     <color name="black">#000</color>
     <color name="black_overlay">#66000000</color>
+    <color name="LightBlue">#35B4E3</color>
+    <color name="Blue">#0099CC</color>
+    <color name="LightGreen">#98C93C</color>
+    <color name="LightRed">#EF4748</color>
+    <color name="Red">#CB2026</color>
+    <color name="Grey85">#555555</color>
+    <color name="Grey152">#989898</color>
+    <color name="White238">#EEEEEE</color>
+    <color name="LightOrange">#FDBA32</color>
+    <color name="Orange">#F5881E</color>
+    <color name="LightPurple">#9B69AC</color>
+    <color name="Purple">#9B69AC</color>
+    <color name="Black50">#323232</color>
+    <color name="Grey119">#777777</color>
+    <color name="Grey170">#AAAAAA</color>
 
 </resources>
