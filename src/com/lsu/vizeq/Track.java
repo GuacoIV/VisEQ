@@ -28,10 +28,10 @@
 package com.lsu.vizeq;
 
 class Track {
-	private String mTrack;
-	private String mAlbum;
-	private String mArtist;
-	private String mUri;
+	public String mTrack;
+	public String mAlbum;
+	public String mArtist;
+	public String mUri;
 	public String mRequester;
 	
 	public Track(String track, String album, String artist,	String uri) {

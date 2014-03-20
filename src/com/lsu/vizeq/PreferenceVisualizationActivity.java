@@ -1,6 +1,8 @@
 package com.lsu.vizeq;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import com.lsu.vizeq.R.color;
 
@@ -73,6 +75,62 @@ public class PreferenceVisualizationActivity extends Activity
 		
 		//1 by 1
 		requests.add(new Track("Track V", "", "Artist F", "", "Person O"));
+		
+		Arrays.sort(requests.toArray(), new Comparator<Object>()
+		{
+			@Override
+			public int compare(Object lhs, Object rhs)
+			{
+				int comparison = ((Track)(rhs)).mArtist.compareTo(((Track)(lhs)).mArtist);
+				if (comparison > 0) return 1;
+				else if (comparison < 0) return -1;
+				return 0;
+			}
+		});
+		
+		//Get an artist weight
+		String lastArtist = "";
+		String lastPerson = "";
+		String lastTrack = "";
+		int artistCount = 0;
+		int personCount = 0;
+		int trackCount = 0;
+		if (requests.size() > 0) 
+		{
+			lastArtist = requests.get(0).mArtist;
+			lastPerson = requests.get(0).mRequester;
+			lastTrack = requests.get(0).mTrack;
+			artistCount++;
+			personCount++;
+			trackCount++;
+		}
+		int trackDefaultCount = 5;
+		for (int i = 1; i < requests.size(); i++)
+		{
+			if (lastArtist.compareTo(requests.get(i).mArtist)==0)
+			{
+				artistCount++;
+				if (requests.get(i).mRequester.compareTo(lastPerson)!=0)
+					personCount++;
+				
+				//Trying to do too much at once.  Tracks are not sorted inside the list so this is wrong.
+				//if (requests.get(i).mTrack.compareTo(lastTrack)==0)
+					//trackCount++;
+			}
+			else
+			{
+				//Save artist and person count...somewhere...
+				
+				//Run through list of track requests for that artist
+				//Dummy for now: (5)
+				int artistWeight = trackDefaultCount * personCount;
+				
+			}
+		}
+		
+		
+		
+		//Convert to percentage
 	}
 
 	@Override
