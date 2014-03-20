@@ -91,7 +91,9 @@ static double lastFFT[BUFFER_SIZE];
 
 bool beatOccurrence;
 
-CFFT *cfft;
+static complex *pSignal;
+static complex *output;
+
 using namespace std;
 // Tell openSL to play the filled buffer and switch to filling the other buffer
 void enqueue(short *buffer, int size) {
@@ -105,68 +107,23 @@ void enqueue(short *buffer, int size) {
 	next_buffer = (buffer == buffer1) ? buffer2 : buffer1;
 	next_buffer_size = (buffer == buffer1) ? &buffer2_size : &buffer1_size;
 
-	//string content = "Original buffer" + path::to_string(buffer[0]);
-		//for (int i = 0; i < 25; i++)
-			//content += patch::to_string(buffer[i]);
-		//log((char*)buffer);
-		complex *output = new complex[size];
-		complex *pSignal = new complex[size];
-		int sum = 0;
-		double exp = 15;
-		bool negative = false;
-		//Convert to an Int16 and then divide by 32,768 to get between [-1, +1]
-		for (int i = 0; i < size; i++)
-		{
-			/*sum = 0;
-			exp = 14;
-			negative = false;
-			for (int j = i*8; j <= (i*8)+15; j++)
-			{
-				//Is it Little Endian or Big Endian??????
-				//Assuming beginning of buffer is MSB
-				if (j > i*8)
-				{
-					sum += buffer[j] * pow((double)2, exp);
-					exp--;
-				}
-				else if (j == i*8)
-					if (buffer[j]==1)
-						negative = true;
+	for (int i = 0; i < *current_buffer_size; i++) {
+		pSignal[i].m_re = buffer[i];
+	}
 
-			}*/
-			pSignal[i] = ((double)buffer[i]/32768);
-			//if (negative) sum = -sum;
-			//pSignal[i] = sum;
-		}
-		double diff;
-		double flux = 0;
-		for (int i = 0; i < size; i++)
-		{
-			diff = output[i].m_re - lastFFT[i];
-			if (diff > 0)
-				flux += diff;
-		}
-		flux /= size;
-		cfft->Forward(pSignal, output, size);
-		//Use output here
-		//string content2 = "pSignal is" + patch::to_string(pSignal[0]);
-			//for (int i = 0; i < 25; i++)
-				//content2 += patch::to_string(pSignal[i]);
-			//log(std::to_string(pSignal[0].m_re));
+	// FFT values range from 0 Hz to SAMPLE_RATE/2 = 22050 Hz
+	// frequency interval is SAMPLE_RATE/(2*SAMPLES_PER_BUFFER) = 2 Hz
+	// Take the magnitude of output[i] to get amplitude of corresponding frequency
 
-		//string content3 = "FFT output is" + patch::to_string(output[0]);
-			//for (int i = 0; i < 25; i++)
-				//content3 += patch::to_string(output[i]);
-			//log((char*)&(output[0].m_re));
-		const double THRESHOLD = 0.3;
-		if (flux > THRESHOLD)
-			beatOccurrence = true;
-		for (int i = 0; i < size; i++)
-		{
-			lastFFT[i] = output[i].m_re;
-		}
-		delete [] pSignal;
-		delete [] output;
+	CFFT::Forward(pSignal, output, size);
+
+	for (int i = 0; i < *current_buffer_size; i++) {
+//		snprintf(str, 100, " %f ", pSignal[i].m_re);
+//		snprintf(str2, 100, " %f ", output[i].m_re);
+	}
+	log((char *)pSignal);
+	log((char *)output);
+
 	}
 
 int music_delivery(sp_session *sess, const sp_audioformat *format, const void *frames, int num_frames) {
@@ -319,7 +276,8 @@ void init_audio_player() {
 
 	log("OpenSL was initiated with 16 bit 44100 sample rate and 2 channels");
 
-	cfft = new CFFT();
+	pSignal = new complex[BUFFER_SIZE];
+	output = new complex[BUFFER_SIZE];
 
 	//Set LastFFT to 0
 	for (int i = 0; i < BUFFER_SIZE; i++)
