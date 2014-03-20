@@ -32,12 +32,21 @@ class Track {
 	private String mAlbum;
 	private String mArtist;
 	private String mUri;
+	public String mRequester;
 	
 	public Track(String track, String album, String artist,	String uri) {
 		mTrack = track;
 		mAlbum = album;
 		mArtist = artist;
 		mUri = uri;
+	}
+	
+	public Track(String track, String album, String artist,	String uri, String requester) {
+		mTrack = track;
+		mAlbum = album;
+		mArtist = artist;
+		mUri = uri;
+		mRequester = requester;
 	}
 
 	public String getSpotifyUri() {
