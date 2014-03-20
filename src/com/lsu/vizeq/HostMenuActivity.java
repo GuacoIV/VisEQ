@@ -80,7 +80,7 @@ public class HostMenuActivity extends Activity
 						String data = new String(receivedPacket.getData());
 						if (data.substring(0, 6).equals("search"))
 						{
-							Log.d("listen thread", "search received ");
+							Log.d("listen thread", "search received from "+ip.toString()+" "+ip.getHostAddress());
 							//send back information
 							String information = "found ";
 							information += (myapp.myName);

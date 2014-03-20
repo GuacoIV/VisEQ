@@ -18,6 +18,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class SearchPartyActivity extends Activity {
@@ -29,6 +32,7 @@ public class SearchPartyActivity extends Activity {
 		myapp = (MyApplication) this.getApplicationContext();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_party);
+		
 		// Show the Up button in the action bar.
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
@@ -52,32 +56,54 @@ public class SearchPartyActivity extends Activity {
 	public void searchForParties(View view)
 	{
 		new ListPartiesTask().execute();
+		new Thread(new Runnable()
+		{
+
+			@Override
+			public void run() {
+				DatagramSocket sendSocket;
+				try {
+					sendSocket = new DatagramSocket();
+					//send search signal
+					byte[] sendData = new byte[1024];
+					String searchString = "search";
+					sendData = searchString.getBytes();
+					DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, getBroadcastAddress(), 7770);
+					//send it a bunch of times
+					for(int i=0; i<100; i++)
+					{
+						sendSocket.send(searchPacket);
+						Thread.sleep(10L);
+					}
+					Log.d("search party", "search sent");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 	
 	public void refreshPartyList()
 	{
+		RelativeLayout myRelativeLayout = (RelativeLayout) findViewById(R.id.searchpartylayout);
+		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		Button b = new Button(this);
+		b.setText("Hi");
+		b.setLayoutParams(params);
+		myRelativeLayout.addView(b);
 		
 	}
 	
 	private class ListPartiesTask extends AsyncTask<Void, String, String>
 	{
 		DatagramSocket receiveSocket;
-		DatagramSocket sendSocket;
 		@Override
 		protected String doInBackground(Void... arg0) {
 			//listen for incoming party info
 			String result = "Unable to find parties. Make sure you're connected to Wifi and try again.";
 			try {
 				receiveSocket = new DatagramSocket(7770);
-				sendSocket = new DatagramSocket();
-				
-				//send search signal
-				byte[] sendData = new byte[1024];
-				String searchString = "search";
-				sendData = searchString.getBytes();
-				DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, getBroadcastAddress(), 7770);
-				sendSocket.send(searchPacket);
-				Log.d("search party", "search sent");
 				
 				String partyName = "";
 				String partyIp = "";
@@ -117,7 +143,6 @@ public class SearchPartyActivity extends Activity {
 			TextView resultText = (TextView) findViewById(R.id.resultText);
 			resultText.setText(result);
 			refreshPartyList();
-			sendSocket.close();
 			receiveSocket.close();
 		}
 
