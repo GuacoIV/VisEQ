@@ -12,9 +12,19 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Search for Parties"
-        android:onClick="searchForParties" />
+        android:layout_marginTop="36dp"
+        android:onClick="searchForParties"
+        android:text="Search for Parties" />
+
+    <TextView
+        android:id="@+id/resultText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button1"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

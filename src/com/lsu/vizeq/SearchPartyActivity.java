@@ -5,8 +5,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-import com.lsu.vizeq.R.color;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -20,11 +18,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 public class SearchPartyActivity extends Activity {
+	
+	MyApplication myapp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		myapp = (MyApplication) this.getApplicationContext();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_party);
 		// Show the Up button in the action bar.
@@ -52,6 +54,11 @@ public class SearchPartyActivity extends Activity {
 		new ListPartiesTask().execute();
 	}
 	
+	public void refreshPartyList()
+	{
+		
+	}
+	
 	private class ListPartiesTask extends AsyncTask<Void, String, String>
 	{
 		DatagramSocket receiveSocket;
@@ -59,6 +66,7 @@ public class SearchPartyActivity extends Activity {
 		@Override
 		protected String doInBackground(Void... arg0) {
 			//listen for incoming party info
+			String result = "Unable to find parties. Make sure you're connected to Wifi and try again.";
 			try {
 				receiveSocket = new DatagramSocket(7770);
 				sendSocket = new DatagramSocket();
@@ -71,27 +79,46 @@ public class SearchPartyActivity extends Activity {
 				sendSocket.send(searchPacket);
 				Log.d("search party", "search sent");
 				
+				String partyName = "";
+				String partyIp = "";
+				
 				//listen for response
-				byte[] receiveData = new byte[1024];
-				String receiveString;
-				DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-				receiveSocket.receive(receivePacket);
-				receiveString = new String(receivePacket.getData());
-				Log.d("search thread", "received "+receiveString);
+				boolean found = false;
+				//base on time elapsed to receive more parties (or no parties) - later
+				while (!found)
+				{
+					byte[] receiveData = new byte[1024];
+					String receiveString;
+					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+					receiveSocket.receive(receivePacket);
+					receiveString = new String(receivePacket.getData());
+					if(receiveString.substring(0, 5).equals("found"))
+					{
+						found = true;
+						partyName = receiveString.substring(6, receiveString.length());
+						partyIp = receivePacket.getAddress().getHostAddress();
+						myapp.connectedUsers.put(partyName, InetAddress.getByName(partyIp));
+					}
+				}
+				Log.d("search thread", "received "+partyName+" "+partyIp);
+				result = "Found parties:";
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			return null;
+			return result;
 		}
 
 		@Override
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
+			TextView resultText = (TextView) findViewById(R.id.resultText);
+			resultText.setText(result);
+			refreshPartyList();
 			sendSocket.close();
 			receiveSocket.close();
-			
 		}
 
 		@Override

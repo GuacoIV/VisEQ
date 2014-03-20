@@ -26,7 +26,7 @@ import android.widget.TextView;
 
 public class RoleActivity extends Activity
 {
-
+	MyApplication myapp;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -49,6 +49,8 @@ public class RoleActivity extends Activity
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 
+		myapp = (MyApplication) this.getApplicationContext();
+		
 		findViewById(R.id.DJ).setOnTouchListener(new View.OnTouchListener()
 		{
 			
@@ -87,8 +89,15 @@ public class RoleActivity extends Activity
 					DJButton.setImageResource(R.drawable.joinbutton_325x325);
 					if (event.getAction() == MotionEvent.ACTION_UP && isInCircle)
 					{
-						//Intent nextIntent = new Intent(RoleActivity.this, SoundVisualizationActivity.class);
-						Intent nextIntent = new Intent(RoleActivity.this, SearchPartyActivity.class);
+						Intent nextIntent;
+						if(myapp.joined)
+						{
+							nextIntent = new Intent(RoleActivity.this, SoundVisualizationActivity.class);
+						}
+						else
+						{
+							nextIntent = new Intent(RoleActivity.this, SearchPartyActivity.class);
+						}
 						startActivity(nextIntent);	
 					}
 				}

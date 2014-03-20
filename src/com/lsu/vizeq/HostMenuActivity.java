@@ -3,6 +3,7 @@ package com.lsu.vizeq;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.Map;
@@ -79,18 +80,16 @@ public class HostMenuActivity extends Activity
 						String data = new String(receivedPacket.getData());
 						if (data.substring(0, 6).equals("search"))
 						{
-							Log.d("listen thread", "search received");
+							Log.d("listen thread", "search received ");
 							//send back information
 							String information = "found ";
-							information += (myapp.myName + " ");
-							String ipString = getIpString();
-							information += ipString;
+							information += (myapp.myName);
 							Log.d("listen thread", "sending back"+information);
 							
 							//make a packet
 							byte[] sendData = new byte[1024];
 							sendData = information.getBytes();
-							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 7771);
+							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 7770);
 							sendSocket.send(sendPacket);
 						}
 						
@@ -143,7 +142,12 @@ public class HostMenuActivity extends Activity
 		EditText nameField = (EditText) this.findViewById(R.id.name_field);
 		EditText ipField = (EditText) this.findViewById(R.id.ip_field);
 		MyApplication myapp = (MyApplication) this.getApplicationContext();
-		myapp.connectedUsers.put(nameField.getText().toString(), ipField.getText().toString());
+		try {
+			myapp.connectedUsers.put(nameField.getText().toString(), InetAddress.getByName(ipField.getText().toString()));
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		nameField.setText("");
 		ipField.setText("");
 		refreshLists();
