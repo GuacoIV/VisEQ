@@ -20,10 +20,11 @@ public class PreferenceVisualizationActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_preference_visualization);
-
-		PreferenceCircle pc = new PreferenceCircle(this, 100, 100, 100, "hi");
+		
+		int circleRadius = 100;
+		PreferenceCircle pc = new PreferenceCircle(this, circleRadius, circleRadius, circleRadius, "hi");
 		RelativeLayout circleScreen = (RelativeLayout) this.findViewById(R.id.CircleScreen);
-		circleScreen.addView(pc, 200, 200); 
+		circleScreen.addView(pc, circleRadius*2, circleRadius*2); 
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 	}
