@@ -43,11 +43,11 @@ import android.view.View;
 		@Override
 		public boolean onTouchEvent(MotionEvent event)
 		{
-			animate().setDuration(5000);			
-			animate().scaleX(5);
-			animate().scaleY(5);
-//			animate().translationY(height/2);
-//			animate().translationX(width/2);
+			animate().setDuration(600);			
+			animate().scaleX(9);
+			animate().scaleY(9);
+			animate().translationY(height/2 - y);
+			animate().translationX(width/2 - x);
 			return super.onTouchEvent(event);
 		}
 
@@ -55,29 +55,23 @@ import android.view.View;
 		protected void onDraw(Canvas canvas)
 		{
 			super.onDraw(canvas);
-
-//			int green = 100;
-//			RectF rect;
 			paint.setColor(Color.MAGENTA);
+			float top = this.getTop();
+			float left = this.getLeft();
+			float right = this.getRight();
+			float bottom = this.getBottom();
 			canvas.drawCircle(x, y, radius, paint);
 			paint.setTextSize(50);
-//			if (getPaddingTop() != 0 && getPaddingBottom() != 0)
-//			{
-//				for (int i = 0; i <= 20; i++)
-//				{
-	
-//				}
+
 //				if (sub == 4)
 //					canvas.drawBitmap(sub4, width - (25+10), (height - 25) / 2, paint);
 //				else if (sub == 8)
 //					canvas.drawBitmap(sub8, width - (25 + 10), (height - 25) / 2, paint);
 //				else if (sub == 16)
 //					canvas.drawBitmap(sub16, width - (25 + 10), (height - 25) / 2, paint);
-			    paint.setColor(color.BLUE);
+			    paint.setColor(Color.BLUE);
 			    canvas.drawText(text, x, y, paint);
 			    			    
-//				canvas.drawText(text, width/10, height - 5, paint);
-//			}
 //			else 
 //			{
 //				}
@@ -109,9 +103,8 @@ import android.view.View;
 			this.x = x;
 			this.y = y;
 			this.radius = radius;
-			//this.setTag("" + pattern + tempo + sub);
 			this.setPadding(0, 0, 0, 0);
-			this.setTag("P"+text);
+			this.setTag(text);
 		}
 
 		public PreferenceCircle(Context context, AttributeSet attrs)
