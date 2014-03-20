@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Iterator;
+import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -18,8 +20,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -91,8 +93,53 @@ public class SearchPartyActivity extends Activity {
 		Button b = new Button(this);
 		b.setText("Hi");
 		b.setLayoutParams(params);
+		b.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0) {
+				new Thread(new Runnable()
+				{
+
+					@Override
+					public void run() {		
+						DatagramSocket sendSocket;
+						// TODO Auto-generated method stub
+						//send join request
+						Log.d("join party", "Clicked");
+						try {
+							sendSocket = new DatagramSocket();
+							//send join request
+							byte[] sendData = new byte[1024];
+							String searchString = "join dummy_name";
+							sendData = searchString.getBytes();
+							InetAddress ipaddress = InetAddress.getByName("127.0.0.1");
+							Iterator it = myapp.connectedUsers.entrySet().iterator();
+							while(it.hasNext())
+							{
+								Map.Entry pairs = (Map.Entry)it.next();
+								ipaddress = (InetAddress) pairs.getValue();
+							}
+							Log.d("join party", "Sending to " + ipaddress.getHostName());
+							DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7770);
+							//send it a bunch of times
+							for(int i=0; i<100; i++)
+							{
+								sendSocket.send(searchPacket);
+								Thread.sleep(10L);
+							}
+							Log.d("join party", "join sent to "+ipaddress.getHostName());
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					
+				}).start();
+			}
+			
+		});
 		myRelativeLayout.addView(b);
-		
 	}
 	
 	private class ListPartiesTask extends AsyncTask<Void, String, String>
@@ -154,6 +201,22 @@ public class SearchPartyActivity extends Activity {
 		
 	}
 	
+	private class WaitForAcceptTask extends AsyncTask<Void, Void, Void>
+	{
+
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			//listen for accept
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			//move to dummy content
+			super.onPostExecute(result);
+		}
+		
+	}
 
 	/**
 	 * Set up the {@link android.app.ActionBar}.
