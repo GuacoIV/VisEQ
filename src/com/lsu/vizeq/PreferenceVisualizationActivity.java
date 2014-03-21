@@ -3,6 +3,7 @@ package com.lsu.vizeq;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Random;
 
 import com.lsu.vizeq.R.color;
 
@@ -19,12 +20,12 @@ import android.widget.RelativeLayout;
 public class PreferenceVisualizationActivity extends Activity
 {
 	ArrayList<Track> requests = new ArrayList<Track>();
+	ArrayList<Artist> requestedArtists = new ArrayList<Artist>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_preference_visualization);
-		
 		int circleRadius = 100;
 		PreferenceCircle pc = new PreferenceCircle(this, circleRadius, circleRadius, circleRadius, "hi");
 		RelativeLayout circleScreen = (RelativeLayout) this.findViewById(R.id.CircleScreen);
@@ -104,33 +105,55 @@ public class PreferenceVisualizationActivity extends Activity
 			personCount++;
 			trackCount++;
 		}
-		int trackDefaultCount = 5;
+		int totalWeights = 0;
 		for (int i = 1; i < requests.size(); i++)
 		{
 			if (lastArtist.compareTo(requests.get(i).mArtist)==0)
 			{
 				artistCount++;
+				lastArtist = requests.get(i).mArtist;
 				if (requests.get(i).mRequester.compareTo(lastPerson)!=0)
+				{
 					personCount++;
-				
+					lastPerson = requests.get(i-1).mRequester;
+				}				
 				//Trying to do too much at once.  Tracks are not sorted inside the list so this is wrong.
 				//if (requests.get(i).mTrack.compareTo(lastTrack)==0)
 					//trackCount++;
 			}
 			else
 			{
-				//Save artist and person count...somewhere...
+				//Save artist and person count
+				this.requestedArtists.add(new Artist(requests.get(i-1).mArtist, requests.get(i-1), artistCount, personCount));
 				
 				//Run through list of track requests for that artist
-				//Dummy for now: (5)
-				int artistWeight = trackDefaultCount * personCount;
-				
+				totalWeights += artistCount * personCount;
+				lastArtist = requests.get(i-1).mArtist;
+				lastPerson = requests.get(i-1).mRequester;
+				artistCount = 1;
+				personCount = 1;
 			}
 		}
 		
-		
-		
 		//Convert to percentage
+		int width = getResources().getDisplayMetrics().widthPixels;
+		int height = getResources().getDisplayMetrics().heightPixels;
+		int AA = 0;
+		int pixelRadius = 0; 
+		for (int i = 0; i < requestedArtists.size(); i++)
+		{
+			Artist tempArtist = requestedArtists.get(i);
+			tempArtist.mPercentage = ((float)tempArtist.mArtistWeight)/totalWeights;
+			requestedArtists.set(i, tempArtist);
+			AA = (int) ((width*height) - ((.25)*(width*height)));
+			pixelRadius = (int) Math.sqrt(AA * tempArtist.mPercentage);
+			
+			//Get a random point on the screen
+			Random r = new Random();//r.nextInt(width)
+			PreferenceCircle pc1 = new PreferenceCircle(this, circleRadius, circleRadius, circleRadius, tempArtist.mArtist);
+			circleScreen.addView(pc1, pixelRadius*2, pixelRadius*2);
+		}
+		//Area available
 	}
 
 	@Override

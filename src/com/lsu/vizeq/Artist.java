@@ -6,15 +6,19 @@ public class Artist
 {
 	public String mArtist;
 	public String mUri;
-	public ArrayList<Track> mTrackRequests;
+	public ArrayList<Track> mTrackRequests = new ArrayList<Track>();
 	public int mNumTrackRequests;
-	public int nNumPeopleRequestingArtist;
+	public int mNumPeopleRequestingArtist;
+	public int mArtistWeight;
+	public float mPercentage;
 
-
-	public Artist(String artist, ArrayList<Track> trackRequests, int numTrackRequests)
+	public Artist(String artist, Track trackRequests, int numTrackRequests, int personCount)
 	{
 		mArtist = artist;
-		mTrackRequests = trackRequests;
+		mTrackRequests.add(trackRequests);
 		mNumTrackRequests = numTrackRequests;
+		mNumPeopleRequestingArtist = personCount;
+		mArtistWeight = numTrackRequests * personCount;
 	}
+	
 }
