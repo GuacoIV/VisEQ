@@ -1,21 +1,24 @@
 package com.lsu.vizeq;
 
+import java.util.Random;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
 	public class PreferenceCircle extends View
 	{
-
+		Random r = new Random();
 		public PreferenceCircle(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
 		}
-
+	
 		String text;
 		int x;
 		int y;
@@ -38,18 +41,36 @@ import android.view.View;
 			animate().scaleY(9);
 			animate().translationY(height/2 - y);
 			animate().translationX(width/2 - x);
+			((View) this.getParent()).animate().setDuration(600).scaleX(9);
+			//((View)this.getParent()).animate().setDuration(600).scaleY(5);
 			return super.onTouchEvent(event);
 		}
 
 		@Override
 		protected void onDraw(Canvas canvas)
 		{
+			Color paintColor = new Color();
 			super.onDraw(canvas);
-			paint.setColor(Color.MAGENTA);
-			float top = this.getTop();
-			float left = this.getLeft();
-			float right = this.getRight();
-			float bottom = this.getBottom();
+			switch (r.nextInt(5))
+			{
+				case 0:
+					paint.setColor(getResources().getColor(R.color.Red));
+					break;
+				case 1:
+					paint.setColor(getResources().getColor(R.color.Green));
+					break;
+				case 2:
+					paint.setColor(getResources().getColor(R.color.Blue));
+					break;
+				case 3:
+					paint.setColor(getResources().getColor(R.color.Purple));
+					break;
+				case 4:
+					paint.setColor(getResources().getColor(R.color.Orange));
+					break;
+			}
+			
+			//paint.setColor(Color.MAGENTA);
 			canvas.drawCircle(x, y, radius, paint);
 			paint.setTextSize(50);
 		    paint.setColor(Color.BLUE);
@@ -59,8 +80,8 @@ import android.view.View;
 		public PreferenceCircle(Context context, int x, int y, int radius, String text)
 		{
 			super(context);
-			super.setX(x);
-			super.setY(y);
+			//super.setX(x);
+			//super.setY(y);
 			this.text = text;
 			this.x = x;
 			this.y = y;
