@@ -1,18 +1,39 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/CircleScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingLeft="0dp"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".PreferenceVisualizationActivity" 
-    >
+    android:paddingTop="0dp"
+    tools:context=".PreferenceVisualizationActivity"
+    android:orientation="horizontal" 
+    android:gravity="left"
+    > 
+    <LinearLayout
+        android:id="@+id/CircleColumn1"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"></LinearLayout>
+    <LinearLayout
+        android:id="@+id/CircleColumn2"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"></LinearLayout>
+    <LinearLayout
+        android:id="@+id/CircleColumn3"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"></LinearLayout>
 
-    <TextView
+    <!-- <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Circles or squares here" />
+        android:text="Circles or squares here"
+        android:textColor="@color/LightGreen" />-->
 
-</RelativeLayout>
+</LinearLayout>
