@@ -58,6 +58,7 @@
 #include "fft.h"
 #include "complex.h"
 #include <stdlib.h>
+#include "kiss_fft.h"
 
 static SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
 
@@ -72,7 +73,7 @@ static const int NR_CHANNELS = 2;
 // Make buffers four times as big because we guess that music_delivery never delivers more
 // pcm data. If it does the overflowing data will not be put in the buffer, resulting in
 // temporary audio weirdness
-static const int BUFFER_SIZE = SAMPLES_PER_BUFFER * sizeof(int16_t) * NR_CHANNELS * 4;
+static const int BUFFER_SIZE = SAMPLES_PER_BUFFER * sizeof(int16_t) * NR_CHANNELS * 8;
 
 // The two sound buffers
 static int16_t buffer1[BUFFER_SIZE];
@@ -87,14 +88,31 @@ static int *current_buffer_size = &buffer1_size;
 static int *next_buffer_size = &buffer2_size;
 
 static pthread_mutex_t g_buffer_mutex;
-static double lastFFT[BUFFER_SIZE];
-
 bool beatOccurrence;
 
-static complex *pSignal;
-static complex *output;
+static kiss_fft_cfg cfg;
 
-using namespace std;
+/// Round up to next higher power of 2 (return x if it's already a power
+/// of 2).
+inline int
+pow2roundup (int x)
+{
+    if (x < 0)
+        return 0;
+    --x;
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    return x+1;
+}
+
+// contains the last 20 frames (~1 second)
+static double energy_history[20];
+static int history_pos = 0;
+const float C = 1.3f;
+
 // Tell openSL to play the filled buffer and switch to filling the other buffer
 void enqueue(short *buffer, int size) {
 	// Play the buffer and flip to the other buffer
@@ -107,23 +125,68 @@ void enqueue(short *buffer, int size) {
 	next_buffer = (buffer == buffer1) ? buffer2 : buffer1;
 	next_buffer_size = (buffer == buffer1) ? &buffer2_size : &buffer1_size;
 
-	for (int i = 0; i < *current_buffer_size; i++) {
-		pSignal[i].m_re = buffer[i];
-	}
+//	kiss_fft_cpx fin[pow2roundup(SAMPLES_PER_BUFFER)];
+//	kiss_fft_cpx fout[pow2roundup(SAMPLES_PER_BUFFER)];
+//
+//	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
+//		fin[i].r = buffer[i];
+//		fin[i].i = 0;
+//	}
+//
+//	kiss_fft_stride(cfg, fin, fout, 1000);
 
 	// FFT values range from 0 Hz to SAMPLE_RATE/2 = 22050 Hz
 	// frequency interval is SAMPLE_RATE/(2*SAMPLES_PER_BUFFER) = 2 Hz
 	// Take the magnitude of output[i] to get amplitude of corresponding frequency
 
-	CFFT::Forward(pSignal, output, size);
+	// we can't allocate memory for the next power of 2 (16384) (android keeps segfaulting)
+	// so we'll just use every other data point
 
-	for (int i = 0; i < *current_buffer_size; i++) {
-//		snprintf(str, 100, " %f ", pSignal[i].m_re);
-//		snprintf(str2, 100, " %f ", output[i].m_re);
+	//complex pSignal[2048];
+	//complex output[2048];
+
+	double instant_energy = 0;
+	for (int i = 0; i < 2048; i++) {
+		instant_energy += buffer[i]*buffer[i];
 	}
-	log((char *)pSignal);
-	log((char *)output);
+	energy_history[history_pos] = instant_energy;
 
+	double local_avg_energy = 0;
+	for (int i = 0; i < 20; i++) {
+		local_avg_energy += energy_history[i];
+	}
+	local_avg_energy /= 20.;
+
+	if (instant_energy > C * local_avg_energy) {
+		beatOccurrence = true;
+		log("instant_energy: %f, local_avg_energy: %f", instant_energy, local_avg_energy);
+	}
+
+	if (++history_pos > 19) {
+		history_pos = 0;
+	}
+
+
+
+//	for (int i = 0; i < 2048; i++) {
+//		pSignal[i].m_re = buffer[i];
+//		pSignal[i].m_im = 0;
+//	}
+//
+//	CFFT::Forward(pSignal, output, 2048);
+//
+//	for (int i = 0; i < 2048; i++) {
+//		log("Input: %f", pSignal[i].m_re);
+//		log("Output: %f", output[i].m_re);
+//	}
+
+
+//	int s = size/sizeof(int16_t);
+//	log("%d", s);
+//	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
+//		log("value: %.0f, i: %d", pSignal[i].m_re, i);
+//	}
+//
 	}
 
 int music_delivery(sp_session *sess, const sp_audioformat *format, const void *frames, int num_frames) {
@@ -276,14 +339,11 @@ void init_audio_player() {
 
 	log("OpenSL was initiated with 16 bit 44100 sample rate and 2 channels");
 
-	pSignal = new complex[BUFFER_SIZE];
-	output = new complex[BUFFER_SIZE];
+	log("buffer size is");
+	log("%d", BUFFER_SIZE);
 
-	//Set LastFFT to 0
-	for (int i = 0; i < BUFFER_SIZE; i++)
-	{
-		lastFFT[i] = 0;
-	}
+	cfg = kiss_fft_alloc(pow2roundup(SAMPLES_PER_BUFFER), 0, 0, 0);
+
 }
 
 void destroy_audio_player() {

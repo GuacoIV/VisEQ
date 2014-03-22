@@ -47,6 +47,7 @@ import android.os.Binder;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 import com.lsu.vizeq.R;
 
@@ -97,6 +98,7 @@ public class SpotifyService extends Service {
 			throw new RuntimeException("Storage card not available");
 		if (libLoaded == false) 
 		{
+			Log.d("init", "spotify");
 			LibSpotifyWrapper.init(LibSpotifyWrapper.class.getClassLoader(), Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.lsu.vizeq");
 			libLoaded = true;
 		}
