@@ -127,7 +127,6 @@ JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_destroy(JNIEnv *je, 
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_poll(JNIEnv *je, jclass jc) {
 	static int i = 0;
 
-	log("hi from native");
 
 	if (beatOccurrence) {
 		log("calling my func");

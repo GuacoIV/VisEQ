@@ -90,6 +90,30 @@ public class PlayerActivity extends Activity {
 	private int mIndex = 0;
 	MyApplication myapp;
 	public static Camera cam;
+	private static MyApplication MyApp;
+	
+	public static void SendBeat(String data) {
+		byte[] sendData = new byte[7];
+		try {
+			DatagramSocket sendSocket = new DatagramSocket();
+			sendData = data.getBytes();
+			Iterator it = MyApp.connectedUsers.entrySet().iterator();
+			while (it.hasNext())
+			{
+				Log.d("sendbeat", "hey");
+				Map.Entry pairs= (Map.Entry) it.next();
+				InetAddress IPAddress = (InetAddress) pairs.getValue();
+				String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
+				Log.d("UDP",test);
+				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
+				sendSocket.send(sendPacket);
+			}
+			sendSocket.close();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
     public InetAddress getBroadcastAddress() throws IOException
     {
@@ -238,8 +262,9 @@ public class PlayerActivity extends Activity {
 		//Makes volume buttons control music stream even when nothing playing
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
 		myapp = (MyApplication) this.getApplicationContext();
+		MyApp = myapp;
 		
-		//light sending stuff
+//		//light sending stuff
 		new Thread( new Runnable()
 		{
 			public void run()

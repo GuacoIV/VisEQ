@@ -44,6 +44,9 @@ public class LibSpotifyWrapper {
 	private static LoginDelegate mLoginDelegate;
 	private static PlayerUpdateDelegate mPlayerPositionDelegate;
 
+	private static String[] colors = {"#F00000", "#000000"};
+	private static int num = 0;
+	
 	native public static void init(ClassLoader loader, String storagePath);
 
 	native public static void destroy();
@@ -67,10 +70,8 @@ public class LibSpotifyWrapper {
 			public void run() {
 				try {
 					while (true) {
-						sleep(1000);
-						Log.d("trying to poll", "...");
+						sleep(30);
 						poll();
-						Log.d("returned from poll", "...");
 					}
 				}
 				catch (InterruptedException e) {
@@ -78,13 +79,19 @@ public class LibSpotifyWrapper {
 				}
 			}
 		};
-		
 		thread.start();
 		
 	}
 	
 	public static void myFunc(int i) {
+		if (num == 0) {
+			num = 1;
+		}
+		else {
+			num = 0;
+		}
 		Log.d("Beat occurred", String.valueOf(i));
+		PlayerActivity.SendBeat(colors[num]);
 	}
 	
 	public static void loginUser(String username, String password, LoginDelegate loginDelegate) {

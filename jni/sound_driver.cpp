@@ -64,7 +64,7 @@ static SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
 
 // Size of the buffer is one second divided by SECOND_DEVIDER. Increase the number to make the buffer smaller.
 // Bigger buffers will produce slow feedback for actions like pause and seek.
-static const int SECOND_DEVIDER = 4;
+static const int SECOND_DEVIDER = 7;
 static const int SAMPLE_RATE = 44100;
 static const int SAMPLES_PER_BUFFER = SAMPLE_RATE / SECOND_DEVIDER;
 
@@ -73,7 +73,7 @@ static const int NR_CHANNELS = 2;
 // Make buffers four times as big because we guess that music_delivery never delivers more
 // pcm data. If it does the overflowing data will not be put in the buffer, resulting in
 // temporary audio weirdness
-static const int BUFFER_SIZE = SAMPLES_PER_BUFFER * sizeof(int16_t) * NR_CHANNELS * 8;
+static const int BUFFER_SIZE = SAMPLES_PER_BUFFER * sizeof(int16_t) * NR_CHANNELS * 2;
 
 // The two sound buffers
 static int16_t buffer1[BUFFER_SIZE];
@@ -109,7 +109,8 @@ pow2roundup (int x)
 }
 
 // contains the last 20 frames (~1 second)
-static double energy_history[20];
+const int HISTORY_LENGTH = 7;
+static double energy_history[HISTORY_LENGTH];
 static int history_pos = 0;
 const float C = 1.3f;
 
@@ -145,27 +146,27 @@ void enqueue(short *buffer, int size) {
 	//complex pSignal[2048];
 	//complex output[2048];
 
+
 	double instant_energy = 0;
-	for (int i = 0; i < 2048; i++) {
+	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
 		instant_energy += buffer[i]*buffer[i];
 	}
 	energy_history[history_pos] = instant_energy;
 
 	double local_avg_energy = 0;
-	for (int i = 0; i < 20; i++) {
+	for (int i = 0; i < HISTORY_LENGTH; i++) {
 		local_avg_energy += energy_history[i];
 	}
-	local_avg_energy /= 20.;
+	local_avg_energy /= (double)HISTORY_LENGTH;
 
 	if (instant_energy > C * local_avg_energy) {
 		beatOccurrence = true;
 		log("instant_energy: %f, local_avg_energy: %f", instant_energy, local_avg_energy);
 	}
 
-	if (++history_pos > 19) {
+	if (++history_pos > HISTORY_LENGTH - 1) {
 		history_pos = 0;
 	}
-
 
 
 //	for (int i = 0; i < 2048; i++) {
@@ -202,6 +203,8 @@ int music_delivery(sp_session *sess, const sp_audioformat *format, const void *f
 	static short *current_buffer = buffer1;
 	static int *current_buffer_size = &buffer1_size;
 
+	log("%d", num_frames);
+
 	// Fill the current buffer only if it has been consumed
 	if (*current_buffer_size == 0) {
 
@@ -229,6 +232,7 @@ int music_delivery(sp_session *sess, const sp_audioformat *format, const void *f
 			if (buffer1_size == 0 && buffer2_size == 0) {
 				logPlayback("No sound, play buffer %d", (current_buffer == buffer1) ? 1 : 2);
 				enqueue(current_buffer, total_size);
+
 			} else {
 				// Make it possible for the consumer to use this buffer
 				logPlayback("Produced buffer %d", (current_buffer == buffer1) ? 1 : 2);
@@ -247,6 +251,9 @@ int music_delivery(sp_session *sess, const sp_audioformat *format, const void *f
 		logPlayback("Both buffers are filled");
 		num_frames = 0;
 	}
+
+
+
 	pthread_mutex_unlock(&g_buffer_mutex);
 	return num_frames;
 
@@ -342,7 +349,11 @@ void init_audio_player() {
 	log("buffer size is");
 	log("%d", BUFFER_SIZE);
 
-	cfg = kiss_fft_alloc(pow2roundup(SAMPLES_PER_BUFFER), 0, 0, 0);
+	//cfg = kiss_fft_alloc(pow2roundup(SAMPLES_PER_BUFFER), 0, 0, 0);
+
+	for (int i = 0; i < HISTORY_LENGTH; i++) {
+		energy_history[i] = DBL_MAX;
+	}
 
 }
 
