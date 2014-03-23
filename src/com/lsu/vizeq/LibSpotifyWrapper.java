@@ -92,6 +92,7 @@ public class LibSpotifyWrapper {
 		}
 		Log.d("Beat occurred", String.valueOf(i));
 		PlayerActivity.SendBeat(colors[num]);
+		PlayerActivity.flash = 1;
 	}
 	
 	public static void loginUser(String username, String password, LoginDelegate loginDelegate) {

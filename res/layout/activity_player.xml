@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:orientation="vertical"
-    tools:context=".PlayerActivity" >
+    tools:context=".PlayerActivity" 
+    android:id="@+id/PlayerLayout">"
     
     <LinearLayout
         android:layout_width="300dp"

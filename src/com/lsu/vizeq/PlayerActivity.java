@@ -51,6 +51,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -67,6 +68,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -91,6 +93,8 @@ public class PlayerActivity extends Activity {
 	MyApplication myapp;
 	public static Camera cam;
 	private static MyApplication MyApp;
+	static RelativeLayout playerBackground;
+	static int flash = 0;
 	
 	public static void SendBeat(String data) {
 		byte[] sendData = new byte[7];
@@ -263,6 +267,7 @@ public class PlayerActivity extends Activity {
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
 		myapp = (MyApplication) this.getApplicationContext();
 		MyApp = myapp;
+		playerBackground = (RelativeLayout) findViewById(R.id.PlayerLayout);
 		
 //		//light sending stuff
 		new Thread( new Runnable()
@@ -339,6 +344,25 @@ public class PlayerActivity extends Activity {
 		}).start();
 		//end light sending stuff
 		
+		new Thread( new Runnable()
+		{
+			public void run()
+			{
+				while (true)
+				{
+					flashOwnScreen();
+					try
+					{
+						Thread.sleep(150);
+					} catch (InterruptedException e)
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		}).start();
 		
 		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
 		seekBar.setMax(300);
@@ -503,6 +527,38 @@ public class PlayerActivity extends Activity {
 			return true;
 		}
 		return super.onKeyDown(keyCode, event);
+	}
+	
+	public void flashOwnScreen()
+	{
+		if (flash==1) 
+		{
+			runOnUiThread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					playerBackground.setBackgroundColor(Color.BLUE);					
+				}
+				
+			});
+			
+			flash = 0;
+		}
+		else
+		{
+			runOnUiThread(new Runnable()
+			{
+
+				@Override
+				public void run()
+				{
+					playerBackground.setBackgroundColor(Color.BLACK);					
+				}
+				
+			});			
+		}
 	}
 
 }

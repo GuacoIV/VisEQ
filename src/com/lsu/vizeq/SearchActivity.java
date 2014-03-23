@@ -60,9 +60,9 @@ public class SearchActivity extends Activity
 	    ts.setContent(R.id.tab2);
 	    ts.setIndicator("Queue");  
 	    tabhost.addTab(ts);
-	    ts= tabhost.newTabSpec("tag3");
-	    ts.setContent(R.id.tab3);
-	    ts.setIndicator("Third Tab");
+	   // ts= tabhost.newTabSpec("tag3");
+	   // ts.setContent(R.id.tab3);
+	    //ts.setIndicator("Third Tab");
 	    tabhost.addTab(ts);
 	    final LinearLayout queueTab = (LinearLayout) findViewById(R.id.tab2);
 	    //Animation an = new Animation();
