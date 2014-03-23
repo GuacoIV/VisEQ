@@ -3,12 +3,11 @@ package com.lsu.vizeq;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.Map;
-
-import com.lsu.vizeq.R.color;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -17,6 +16,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -102,6 +102,8 @@ public class HostMenuActivity extends Activity
 			}
 		}).start();
 		
+		new ListenForJoinRequestTask().execute();
+		
 		findViewById(R.id.NowPlaying).setOnClickListener(new View.OnClickListener()
 		{
 
@@ -165,7 +167,7 @@ public class HostMenuActivity extends Activity
 		{
 			Map.Entry pairs= (Map.Entry) it.next();
 			String name = (String) pairs.getKey();
-			String ip = (String) pairs.getValue();
+			String ip = ((InetAddress) pairs.getValue()).getHostAddress();
 			nameString += (name + "\n");
 			ipString += (ip + "\n");
 		}
@@ -173,6 +175,66 @@ public class HostMenuActivity extends Activity
 		
 		nameList.setText(nameString);
 		ipList.setText(ipString);
+	}
+	
+	private class ListenForJoinRequestTask extends AsyncTask <Void, Void, Void>
+	{
+		DatagramSocket listenSocket;
+		DatagramSocket sendSocket;
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			try {
+				listenSocket = new DatagramSocket(7771);
+				sendSocket = new DatagramSocket();
+				while(true)
+				{
+					byte listenData[] = new byte[1024]; 
+					DatagramPacket listenPacket = new DatagramPacket(listenData, listenData.length);
+					listenSocket.receive(listenPacket);
+					String listenString = new String(listenPacket.getData());
+					if(listenString.substring(0, 4).equals("join"))
+					{
+						String clientName = listenString.substring(5);
+						InetAddress clientIp = listenPacket.getAddress();
+						myapp.connectedUsers.put(clientName, clientIp);
+						Log.d("join listener", "added "+clientName+" "+clientIp.getHostName());
+						byte sendData[] = new byte[1024];
+						String sendString = "accept";
+						sendData = sendString.getBytes();
+						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, clientIp, 7771);
+						sendSocket.send(sendPacket);
+						Log.d("accept thread", "accept sent");
+						publishProgress();
+					}
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onCancelled() {
+			// TODO Auto-generated method stub
+			listenSocket.close();
+			sendSocket.close();
+		}
+
+		@Override
+		protected void onCancelled(Void result) {
+			// TODO Auto-generated method stub
+			sendSocket.close();
+			listenSocket.close();
+		}
+
+		@Override
+		protected void onProgressUpdate(Void... values) {
+			// TODO Auto-generated method stub
+			refreshLists();
+		}
+		
 	}
 
 	@Override

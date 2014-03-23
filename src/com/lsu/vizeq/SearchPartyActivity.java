@@ -9,7 +9,10 @@ import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
@@ -28,11 +31,13 @@ import android.widget.TextView;
 public class SearchPartyActivity extends Activity {
 	
 	MyApplication myapp;
+	SearchPartyActivity thisActivity;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		myapp = (MyApplication) this.getApplicationContext();
 		super.onCreate(savedInstanceState);
+		thisActivity = this;
 		setContentView(R.layout.activity_search_party);
 		
 		// Show the Up button in the action bar.
@@ -98,44 +103,7 @@ public class SearchPartyActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				new Thread(new Runnable()
-				{
-
-					@Override
-					public void run() {		
-						DatagramSocket sendSocket;
-						// TODO Auto-generated method stub
-						//send join request
-						Log.d("join party", "Clicked");
-						try {
-							sendSocket = new DatagramSocket();
-							//send join request
-							byte[] sendData = new byte[1024];
-							String searchString = "join dummy_name";
-							sendData = searchString.getBytes();
-							InetAddress ipaddress = InetAddress.getByName("127.0.0.1");
-							Iterator it = myapp.connectedUsers.entrySet().iterator();
-							while(it.hasNext())
-							{
-								Map.Entry pairs = (Map.Entry)it.next();
-								ipaddress = (InetAddress) pairs.getValue();
-							}
-							Log.d("join party", "Sending to " + ipaddress.getHostName());
-							DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7770);
-							//send it a bunch of times
-							for(int i=0; i<100; i++)
-							{
-								sendSocket.send(searchPacket);
-								Thread.sleep(10L);
-							}
-							Log.d("join party", "join sent to "+ipaddress.getHostName());
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					
-				}).start();
+				new JoinTask().execute();
 			}
 			
 		});
@@ -201,19 +169,75 @@ public class SearchPartyActivity extends Activity {
 		
 	}
 	
-	private class WaitForAcceptTask extends AsyncTask<Void, Void, Void>
+	public class JoinTask extends AsyncTask<Void, Void, String>
 	{
 
 		@Override
-		protected Void doInBackground(Void... arg0) {
-			//listen for accept
-			return null;
+		protected String doInBackground(Void... arg0) {	
+				DatagramSocket sendSocket;
+				DatagramSocket listenSocket;
+				// TODO Auto-generated method stub
+				//send join request
+				Log.d("join party", "Clicked");
+				try {
+					sendSocket = new DatagramSocket();
+					listenSocket = new DatagramSocket(7771);
+					//send join request
+					byte[] sendData = new byte[1024];
+					byte[] receiveData = new byte[1024];
+					String searchString = "join dummy_name";
+					sendData = searchString.getBytes();
+					InetAddress ipaddress = InetAddress.getByName("127.0.0.1");
+					Iterator it = myapp.connectedUsers.entrySet().iterator();
+					while(it.hasNext())
+					{
+						Map.Entry pairs = (Map.Entry)it.next();
+						ipaddress = (InetAddress) pairs.getValue();
+					}
+					Log.d("join party", "Sending to " + ipaddress.getHostName());
+					DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7771);
+					sendSocket.send(searchPacket);
+					Log.d("join party", "join sent to "+ipaddress.getHostName());
+					//now wait for response
+					boolean joined = false;
+					while(!joined)
+					{
+						Log.d("listen for join", "listening");
+						DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
+						listenSocket.receive(receivePacket);
+						String message = new String(receivePacket.getData());
+						Log.d("listen for join", message);
+						if(message.substring(0, 6).equals("accept"))
+						{
+							Log.d("listen for join", "we are joined");
+							myapp.joined = true;
+							joined = true;
+						}
+					}
+					return "Joined!";
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			return "Failed!";
 		}
 
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(String result) {
 			//move to dummy content
 			super.onPostExecute(result);
+			AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
+			builder.setMessage(result).setCancelable(false)
+			.setPositiveButton("ok", new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int id)
+				{
+					Intent nextIntent = new Intent(SearchPartyActivity.this, SoundVisualizationActivity.class);
+					startActivity(nextIntent);
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
 		
 	}
