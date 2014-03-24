@@ -233,8 +233,8 @@ public class PlayerActivity extends Activity {
 	protected void onNewIntent(Intent intent) {
 
 		int keycode = intent.getIntExtra("keycode", -1);
-		if (keycode == -1)
-			throw new RuntimeException("Could not identify the keycode");
+		//if (keycode == -1)
+			//throw new RuntimeException("Could not identify the keycode");
 
 		if (keycode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || keycode == KeyEvent.KEYCODE_HEADSETHOOK
 				|| keycode == KeyEvent.KEYCODE_MEDIA_PLAY || keycode == KeyEvent.KEYCODE_MEDIA_PAUSE) {
