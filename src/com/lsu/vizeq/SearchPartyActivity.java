@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -20,14 +21,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class SearchPartyActivity extends Activity {
@@ -143,6 +142,11 @@ public class SearchPartyActivity extends Activity {
 			String result = "Unable to find parties. Make sure you're connected to Wifi and try again.";
 			try {
 				receiveSocket = new DatagramSocket(7770);
+				receiveSocket.setSoTimeout(2000);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 				
 				String partyName = "";
 				String partyIp = "";
@@ -155,23 +159,32 @@ public class SearchPartyActivity extends Activity {
 					byte[] receiveData = new byte[1024];
 					String receiveString;
 					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-					receiveSocket.receive(receivePacket);
-					receiveString = new String(receivePacket.getData());
-					if(receiveString.substring(0, 5).equals("found"))
+					try
 					{
-						found = true;
-						partyName = receiveString.substring(6, receiveString.length());
-						partyIp = receivePacket.getAddress().getHostAddress();
-						myapp.connectedUsers.put(partyName, InetAddress.getByName(partyIp));
+						receiveSocket.receive(receivePacket);
+						receiveString = new String(receivePacket.getData());
+						if(receiveString.substring(0, 5).equals("found"))
+						{
+							found = true;
+							partyName = receiveString.substring(6, receiveString.length());
+							partyIp = receivePacket.getAddress().getHostAddress();
+							myapp.connectedUsers.put(partyName, InetAddress.getByName(partyIp));
+							result = "Found parties:";
+							publishProgress();
+						}
+					}
+					catch(Exception e)
+					{
+						if(e.getClass().equals(SocketTimeoutException.class))
+						{
+							found = true;
+						}
+						else e.printStackTrace();
 					}
 				}
-				Log.d("search thread", "received "+partyName+" "+partyIp);
-				result = "Found parties:";
+
 				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
 			
 			return result;
 		}
@@ -181,14 +194,14 @@ public class SearchPartyActivity extends Activity {
 			// TODO Auto-generated method stub
 			TextView resultText = (TextView) findViewById(R.id.resultText);
 			resultText.setText(result);
-			refreshPartyList();
+
 			receiveSocket.close();
 		}
 
 		@Override
 		protected void onProgressUpdate(String... values) {
 			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
+			refreshPartyList();
 		}
 		
 	}
