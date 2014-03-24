@@ -128,7 +128,7 @@ public class RoleActivity extends Activity
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_settings:
-			Intent nextIntent  = new Intent(RoleActivity.this, SettingsActivity.class);
+			Intent nextIntent  = new Intent(RoleActivity.this, ProfileActivity.class);
 			startActivity(nextIntent);
 		}
 		return true;
