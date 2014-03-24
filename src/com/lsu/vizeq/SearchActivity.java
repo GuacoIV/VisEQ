@@ -52,11 +52,11 @@ public class SearchActivity extends Activity
 		queue = new ArrayList<Track>();
 		TabHost tabhost = (TabHost) findViewById(android.R.id.tabhost);
 	    tabhost.setup();
+	    
 	    TabSpec ts = tabhost.newTabSpec("tag1"); 
 	    ts.setContent(R.id.tab1);
 	    ts.setIndicator("Search");
 	    tabhost.addTab(ts);
-
 	    ts = tabhost.newTabSpec("tag2"); 
 	    ts.setContent(R.id.tab2);
 	    ts.setIndicator("Queue");  
@@ -65,6 +65,10 @@ public class SearchActivity extends Activity
 	    ts.setContent(R.id.tab3);
 	    ts.setIndicator("Third Tab");
 	    tabhost.addTab(ts);
+	    //for (int i = 0; i < tabhost.getTabWidget().getChildCount(); i++)
+		//{
+			//tabhost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.LightGreen));
+		//}
 	    final LinearLayout queueTab = (LinearLayout) findViewById(R.id.tab2);
 		
 		rowTap = new OnTouchListener()

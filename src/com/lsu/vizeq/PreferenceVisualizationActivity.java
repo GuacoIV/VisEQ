@@ -130,7 +130,7 @@ public class PreferenceVisualizationActivity extends Activity
 				//Save artist and person count
 				this.requestedArtists.add(new Artist(requests.get(i-1).mArtist, requests.get(i-1), artistCount, personCount));
 				
-				//Run through list of track requests for that artist
+				//Still need to run through list of track requests for that artist
 				totalWeights += artistCount * personCount;
 				lastArtist = requests.get(i).mArtist;
 				lastPerson = requests.get(i).mRequester;
@@ -149,20 +149,17 @@ public class PreferenceVisualizationActivity extends Activity
 			Artist tempArtist = requestedArtists.get(i);
 			tempArtist.mPercentage = ((float)tempArtist.mArtistWeight)/totalWeights;
 			requestedArtists.set(i, tempArtist);
-			AA = (int) ((width*height) - ((.4)*(width*height)));
+			AA = (int) ((width*height) - ((.4)*(width*height))); //Area available
 			pixelRadius = (int) Math.sqrt((AA * tempArtist.mPercentage)/Math.PI);
 			
 			//Get a random point on the screen
 			Random r = new Random();//r.nextInt(width)
 			PreferenceCircle pc1 = new PreferenceCircle(this, pixelRadius, pixelRadius, pixelRadius, tempArtist.mArtist);
-			//PreferenceCircle pc2 = new PreferenceCircle(this, 100, 100, 100, ""+i);
-			//pc2.layout(0, 0, 300, 300);
 			if (column1.getChildCount() < 3) column1.addView(pc1, pixelRadius*2, pixelRadius*2);
 			else if (column2.getChildCount() < 3) column2.addView(pc1, pixelRadius*2, pixelRadius);
 			else column3.addView(pc1, pixelRadius*2, pixelRadius*2);
-			//circleScreen.addView(pc1, pixelRadius*2, pixelRadius*2);
 		}
-		//Area available
+		
 	}
 
 	@Override
