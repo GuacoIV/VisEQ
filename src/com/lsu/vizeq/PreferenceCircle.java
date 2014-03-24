@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -49,7 +50,7 @@ import android.view.View;
 		@Override
 		protected void onDraw(Canvas canvas)
 		{
-			Color paintColor = new Color();
+			//Color paintColor = new Color();
 			super.onDraw(canvas);
 			switch (r.nextInt(5))
 			{
@@ -74,6 +75,7 @@ import android.view.View;
 			canvas.drawCircle(x, y, radius, paint);
 			paint.setTextSize(50);
 		    paint.setColor(Color.BLUE);
+		    paint.setTextAlign(Align.CENTER);
 		    canvas.drawText(text, x, y, paint);
 		}
 

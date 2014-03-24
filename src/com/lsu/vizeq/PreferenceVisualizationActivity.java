@@ -52,31 +52,31 @@ public class PreferenceVisualizationActivity extends Activity
 		//11 requests by 9 people
 		requests.add(new Track("Track G", "", "Artist C", "", "Person A"));
 		requests.add(new Track("Track G", "", "Artist C", "", "Person B"));
-		requests.add(new Track("Track H", "", "Artist C", "", "Person C"));
-		requests.add(new Track("Track I", "", "Artist C", "", "Person D"));
-		requests.add(new Track("Track J", "", "Artist C", "", "Person E"));
-		requests.add(new Track("Track K", "", "Artist C", "", "Person F"));
-		requests.add(new Track("Track L", "", "Artist C", "", "Person G"));
-		requests.add(new Track("Track L", "", "Artist C", "", "Person H"));
-		requests.add(new Track("Track M", "", "Artist C", "", "Person I"));
-		requests.add(new Track("Track N", "", "Artist C", "", "Person I"));
-		requests.add(new Track("Track O", "", "Artist C", "", "Person I"));
+		//requests.add(new Track("Track H", "", "Artist C", "", "Person C"));
+		//requests.add(new Track("Track I", "", "Artist C", "", "Person D"));
+		//requests.add(new Track("Track J", "", "Artist C", "", "Person E"));
+		//requests.add(new Track("Track K", "", "Artist C", "", "Person F"));
+		//requests.add(new Track("Track L", "", "Artist C", "", "Person G"));
+		//requests.add(new Track("Track L", "", "Artist C", "", "Person H"));
+		//requests.add(new Track("Track M", "", "Artist C", "", "Person I"));
+		//requests.add(new Track("Track N", "", "Artist C", "", "Person I"));
+		//requests.add(new Track("Track O", "", "Artist C", "", "Person I"));
 		
 		//5 requests by 5 people
 		requests.add(new Track("Track P", "", "Artist D", "", "Person A"));
 		requests.add(new Track("Track Q", "", "Artist D", "", "Person B"));
-		requests.add(new Track("Track Q", "", "Artist D", "", "Person C"));
-		requests.add(new Track("Track P", "", "Artist D", "", "Person D"));
-		requests.add(new Track("Track Q", "", "Artist D", "", "Person E"));
+		//requests.add(new Track("Track Q", "", "Artist D", "", "Person C"));
+		//requests.add(new Track("Track P", "", "Artist D", "", "Person D"));
+		//requests.add(new Track("Track Q", "", "Artist D", "", "Person E"));
 		
 		//7 requests by 6 people
 		requests.add(new Track("Track R", "", "Artist E", "", "Person I"));
 		requests.add(new Track("Track R", "", "Artist E", "", "Person J"));
 		requests.add(new Track("Track S", "", "Artist E", "", "Person K"));
-		requests.add(new Track("Track T", "", "Artist E", "", "Person L"));
-		requests.add(new Track("Track T", "", "Artist E", "", "Person M"));
-		requests.add(new Track("Track U", "", "Artist E", "", "Person M"));
-		requests.add(new Track("Track T", "", "Artist E", "", "Person N"));
+		//requests.add(new Track("Track T", "", "Artist E", "", "Person L"));
+		//requests.add(new Track("Track T", "", "Artist E", "", "Person M"));
+		//requests.add(new Track("Track U", "", "Artist E", "", "Person M"));
+		//requests.add(new Track("Track T", "", "Artist E", "", "Person N"));
 		
 		//1 by 1
 		requests.add(new Track("Track V", "", "Artist F", "", "Person O"));
@@ -119,7 +119,7 @@ public class PreferenceVisualizationActivity extends Activity
 				if (requests.get(i).mRequester.compareTo(lastPerson)!=0)
 				{
 					personCount++;
-					lastPerson = requests.get(i-1).mRequester;
+					lastPerson = requests.get(i).mRequester;
 				}				
 				//Trying to do too much at once.  Tracks are not sorted inside the list so this is wrong.
 				//if (requests.get(i).mTrack.compareTo(lastTrack)==0)
@@ -132,8 +132,8 @@ public class PreferenceVisualizationActivity extends Activity
 				
 				//Run through list of track requests for that artist
 				totalWeights += artistCount * personCount;
-				lastArtist = requests.get(i-1).mArtist;
-				lastPerson = requests.get(i-1).mRequester;
+				lastArtist = requests.get(i).mArtist;
+				lastPerson = requests.get(i).mRequester;
 				artistCount = 1;
 				personCount = 1;
 			}
@@ -149,17 +149,17 @@ public class PreferenceVisualizationActivity extends Activity
 			Artist tempArtist = requestedArtists.get(i);
 			tempArtist.mPercentage = ((float)tempArtist.mArtistWeight)/totalWeights;
 			requestedArtists.set(i, tempArtist);
-			AA = (int) ((width*height) - ((.25)*(width*height)));
-			pixelRadius = (int) Math.sqrt(AA * tempArtist.mPercentage);
+			AA = (int) ((width*height) - ((.4)*(width*height)));
+			pixelRadius = (int) Math.sqrt((AA * tempArtist.mPercentage)/Math.PI);
 			
 			//Get a random point on the screen
 			Random r = new Random();//r.nextInt(width)
-			//PreferenceCircle pc1 = new PreferenceCircle(this, pixelRadius, pixelRadius, pixelRadius, tempArtist.mArtist);
-			PreferenceCircle pc2 = new PreferenceCircle(this, 100, 100, 100, ""+i);
+			PreferenceCircle pc1 = new PreferenceCircle(this, pixelRadius, pixelRadius, pixelRadius, tempArtist.mArtist);
+			//PreferenceCircle pc2 = new PreferenceCircle(this, 100, 100, 100, ""+i);
 			//pc2.layout(0, 0, 300, 300);
-			if (column1.getChildCount() < 4) column1.addView(pc2, 200, 200);
-			else if (column2.getChildCount() < 4) column2.addView(pc2, 200, 200);
-			else column3.addView(pc2, 200, 200);
+			if (column1.getChildCount() < 3) column1.addView(pc1, pixelRadius*2, pixelRadius*2);
+			else if (column2.getChildCount() < 3) column2.addView(pc1, pixelRadius*2, pixelRadius);
+			else column3.addView(pc1, pixelRadius*2, pixelRadius*2);
 			//circleScreen.addView(pc1, pixelRadius*2, pixelRadius*2);
 		}
 		//Area available
