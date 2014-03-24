@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -60,9 +61,27 @@ public class SearchPartyActivity extends Activity {
     	}
     	return InetAddress.getByAddress(quads);
     }
+    
+    public boolean checkIfNameEntered()
+    {
+    	boolean nameEntered = false;
+    	
+    	EditText et = (EditText) findViewById(R.id.username_box);
+    	
+    	String username = et.getText().toString();
+    	Log.d("username", username);
+    	
+    	if(!username.isEmpty())
+    	{
+    		nameEntered = true;
+    		myapp.myName = username;
+    	}
+    			
+    	return nameEntered;
+    }
 	
 	public void searchForParties(View view)
-	{
+	{	
 		new ListPartiesTask().execute();
 		new Thread(new Runnable()
 		{
@@ -210,7 +229,11 @@ public class SearchPartyActivity extends Activity {
 	{
 
 		@Override
-		protected String doInBackground(InetAddress... arg0) {	
+		protected String doInBackground(InetAddress... arg0) {
+			
+				//check if not entered username
+				if(!checkIfNameEntered()) return "Must enter name first";
+			
 				DatagramSocket sendSocket;
 				DatagramSocket listenSocket;
 				// TODO Auto-generated method stub
@@ -222,7 +245,7 @@ public class SearchPartyActivity extends Activity {
 					//send join request
 					byte[] sendData = new byte[1024];
 					byte[] receiveData = new byte[1024];
-					String searchString = "join dummy_name";
+					String searchString = "join "+myapp.myName;
 					sendData = searchString.getBytes();
 					InetAddress ipaddress = arg0[0];
 					
@@ -258,15 +281,18 @@ public class SearchPartyActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			//move to dummy content
-			super.onPostExecute(result);
+			final String s = result;
 			AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
 			builder.setMessage(result).setCancelable(false)
 			.setPositiveButton("ok", new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int id)
 				{
-					Intent nextIntent = new Intent(SearchPartyActivity.this, SoundVisualizationActivity.class);
-					startActivity(nextIntent);
+					if(!s.equals("Must enter name first"))
+					{	
+						Intent nextIntent = new Intent(SearchPartyActivity.this, SoundVisualizationActivity.class);
+						startActivity(nextIntent);
+					}
 				}
 			});
 			AlertDialog alert = builder.create();
