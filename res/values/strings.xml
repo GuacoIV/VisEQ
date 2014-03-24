@@ -30,5 +30,6 @@
     <string name="AddClient">add</string>
     <string name="OrText">-or-</string>
     <string name="title_activity_search_party">SearchPartyActivity</string>
+    <string name="ExplainSignIn">To play music, please sign in to Spotify</string>
 
 </resources>

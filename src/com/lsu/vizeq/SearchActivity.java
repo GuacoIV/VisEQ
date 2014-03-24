@@ -27,6 +27,7 @@ import android.view.View.OnTouchListener;
 import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TableRow;
@@ -60,12 +61,11 @@ public class SearchActivity extends Activity
 	    ts.setContent(R.id.tab2);
 	    ts.setIndicator("Queue");  
 	    tabhost.addTab(ts);
-	   // ts= tabhost.newTabSpec("tag3");
-	   // ts.setContent(R.id.tab3);
-	    //ts.setIndicator("Third Tab");
+	    ts= tabhost.newTabSpec("tag3");
+	    ts.setContent(R.id.tab3);
+	    ts.setIndicator("Third Tab");
 	    tabhost.addTab(ts);
 	    final LinearLayout queueTab = (LinearLayout) findViewById(R.id.tab2);
-	    //Animation an = new Animation();
 		
 		rowTap = new OnTouchListener()
 		{
@@ -171,6 +171,24 @@ public class SearchActivity extends Activity
 						try {
 							JSONArray tracks = response.getJSONArray("tracks");
 							//JSONObject track = tracks.getJSONObject(0);
+							
+							//Calculate start and end colors
+							int startColor = getResources().getColor(R.color.Green);
+							int endColor = getResources().getColor(R.color.LightGreen);
+							
+							int redStart = Color.red(startColor);
+							int redEnd = Color.red(endColor);
+							int addRed = (redEnd - redStart)/20;
+							
+							int greenStart = Color.green(startColor);
+							int greenEnd = Color.green(endColor);
+							int addGreen = (greenEnd - greenStart)/20;
+							
+							int blueStart = Color.blue(startColor);
+							int blueEnd = Color.blue(endColor);
+							int addBlue = (blueEnd - blueStart)/20;
+							
+							
 							for (int i = 0; i < tracks.length(); i++)
 							{
 								String trackName = tracks.getJSONObject(i).getString("name");
@@ -185,7 +203,7 @@ public class SearchActivity extends Activity
 								tableRowToAdd.mArtist = trackArtist;
 								tableRowToAdd.mAlbum = trackAlbum;
 								tableRowToAdd.mUri = uri;
-								if (i % 2 == 0) 
+								/*if (i % 2 == 0) 
 								{
 									tableRowToAdd.setBackgroundColor(TrackRow.color1);
 									tableRowToAdd.originalColor = TrackRow.color1;
@@ -194,19 +212,26 @@ public class SearchActivity extends Activity
 								{
 									tableRowToAdd.setBackgroundColor(TrackRow.color2);
 									tableRowToAdd.originalColor = TrackRow.color2;
-								}
+								}*/
+								tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
+								tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+								if (redStart + addRed < 255 && i < 20) redStart += addRed;
+								if (greenStart + addGreen < 255 && i < 20) greenStart += addGreen;
+								if (blueStart + addBlue < 255 && i < 20) blueStart += addBlue;
 								textViewToAdd.setText(trackName);
 								textTwoViewToAdd.setText(trackArtist);
 								textViewToAdd.setTextSize(20);
 								textTwoViewToAdd.setTextColor(Color.DKGRAY);
 								LinearLayout linearLayoutToAdd = new LinearLayout(SearchActivity.this);
 								linearLayoutToAdd.setOrientation(LinearLayout.VERTICAL);
+								//linearLayoutToAdd.setShowDividers(LinearLayout.SHOW_DIVIDER_BEGINNING);
 								linearLayoutToAdd.addView(textViewToAdd);
 								linearLayoutToAdd.addView(textTwoViewToAdd);
 								tableRowToAdd.setOnTouchListener(rowTap);
 								tableRowToAdd.addView(linearLayoutToAdd);
-								searchLayout.addView(tableRowToAdd);
-								
+								LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+								params.setMargins(0, 3, 0, 3);
+								searchLayout.addView(tableRowToAdd, params);
 							}
 							
 							//mAlbumUri = album.getString("spotify");

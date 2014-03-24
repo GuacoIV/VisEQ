@@ -49,7 +49,7 @@ import android.view.View;
 		@Override
 		protected void onDraw(Canvas canvas)
 		{
-			Color paintColor = new Color();
+			//Color paintColor = new Color();
 			super.onDraw(canvas);
 			switch (r.nextInt(5))
 			{
