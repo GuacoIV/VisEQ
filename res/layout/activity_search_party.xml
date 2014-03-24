@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/searchpartylayout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,14 +7,14 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".SearchPartyActivity" >
+    tools:context=".SearchPartyActivity"
+    android:orientation="vertical"
+    android:gravity="center_horizontal" >
 
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="36dp"
         android:onClick="searchForParties"
         android:text="Search for Parties" />
@@ -23,9 +23,30 @@
         android:id="@+id/resultText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button1"
-        android:layout_centerHorizontal="true"
         android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-</RelativeLayout>
+    <LinearLayout
+        android:id="@+id/partyListLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+    	
+    	<LinearLayout
+	        android:id="@+id/nameLayout"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical" >
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	        android:id="@+id/buttonLayout"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:orientation="vertical" >
+	    </LinearLayout>
+	
+
+	</LinearLayout>
+
+</LinearLayout>

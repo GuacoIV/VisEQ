@@ -20,11 +20,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -93,10 +95,12 @@ public class SearchPartyActivity extends Activity {
 	
 	public void refreshPartyList()
 	{
-		RelativeLayout myRelativeLayout = (RelativeLayout) findViewById(R.id.searchpartylayout);
-		RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout myLinearLayout = (LinearLayout) findViewById(R.id.buttonLayout);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		Button b = new Button(this);
-		b.setText("Hi");
+		b.setText("Join");
+		b.setWidth(75);
+		b.setHeight(60);
 		b.setLayoutParams(params);
 		b.setOnClickListener(new OnClickListener()
 		{
@@ -107,7 +111,43 @@ public class SearchPartyActivity extends Activity {
 			}
 			
 		});
-		myRelativeLayout.addView(b);
+		Button b2 = new Button(this);
+		b2.setText("Join");
+		b2.setWidth(75);
+		b2.setHeight(60);
+		b2.setLayoutParams(params);
+		b2.setOnClickListener(new OnClickListener()
+		{
+
+			@Override
+			public void onClick(View arg0) {
+				new JoinTask().execute();
+			}
+			
+		});
+		myLinearLayout.addView(b);
+		myLinearLayout.addView(b2);
+		
+		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
+		//LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		TextView tv = new TextView(this);
+		tv.setText("Hi");
+		tv.setWidth(200);
+		tv.setHeight(60);
+	
+		tv.setTextSize(20.f);
+		tv.setLayoutParams(params);
+
+		TextView tv2 = new TextView(this);
+		tv2.setText("Hello");
+		tv2.setWidth(200);
+		tv2.setHeight(60);
+		tv2.setTextSize(20.f);
+		tv2.setLayoutParams(params);
+
+		nameLayout.addView(tv);
+		nameLayout.addView(tv2);
+		
 	}
 	
 	private class ListPartiesTask extends AsyncTask<Void, String, String>
