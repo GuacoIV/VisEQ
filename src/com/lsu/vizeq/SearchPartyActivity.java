@@ -95,58 +95,42 @@ public class SearchPartyActivity extends Activity {
 	
 	public void refreshPartyList()
 	{
-		LinearLayout myLinearLayout = (LinearLayout) findViewById(R.id.buttonLayout);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		Button b = new Button(this);
-		b.setText("Join");
-		b.setWidth(75);
-		b.setHeight(60);
-		b.setLayoutParams(params);
-		b.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0) {
-				new JoinTask().execute();
-			}
-			
-		});
-		Button b2 = new Button(this);
-		b2.setText("Join");
-		b2.setWidth(75);
-		b2.setHeight(60);
-		b2.setLayoutParams(params);
-		b2.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0) {
-				new JoinTask().execute();
-			}
-			
-		});
-		myLinearLayout.addView(b);
-		myLinearLayout.addView(b2);
 		
 		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
-		//LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		TextView tv = new TextView(this);
-		tv.setText("Hi");
-		tv.setWidth(200);
-		tv.setHeight(60);
-	
-		tv.setTextSize(20.f);
-		tv.setLayoutParams(params);
-
-		TextView tv2 = new TextView(this);
-		tv2.setText("Hello");
-		tv2.setWidth(200);
-		tv2.setHeight(60);
-		tv2.setTextSize(20.f);
-		tv2.setLayoutParams(params);
-
-		nameLayout.addView(tv);
-		nameLayout.addView(tv2);
+		LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
+		
+		Iterator<Map.Entry<String,InetAddress>> it = myapp.connectedUsers.entrySet().iterator();
+		while(it.hasNext())
+		{
+			final Map.Entry<String,InetAddress> pairs = (Map.Entry<String,InetAddress>) it.next();
+			
+			//name of party
+			TextView tv = new TextView(this);
+			tv.setText((String)pairs.getKey());
+			tv.setWidth(200);
+			tv.setHeight(60);
+			tv.setTextSize(20.f);
+			tv.setLayoutParams(params);
+			
+			//join button
+			Button b = new Button(this);
+			b.setText("Join");
+			b.setWidth(75);
+			b.setHeight(60);
+			b.setLayoutParams(params);
+			b.setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public void onClick(View arg0) {
+					new JoinTask().execute((InetAddress) pairs.getValue());
+				}
+			});
+			
+			//add them
+			nameLayout.addView(tv);
+			buttonLayout.addView(b);
+		}
 		
 	}
 	
@@ -209,11 +193,11 @@ public class SearchPartyActivity extends Activity {
 		
 	}
 	
-	public class JoinTask extends AsyncTask<Void, Void, String>
+	public class JoinTask extends AsyncTask<InetAddress, Void, String>
 	{
 
 		@Override
-		protected String doInBackground(Void... arg0) {	
+		protected String doInBackground(InetAddress... arg0) {	
 				DatagramSocket sendSocket;
 				DatagramSocket listenSocket;
 				// TODO Auto-generated method stub
@@ -227,13 +211,8 @@ public class SearchPartyActivity extends Activity {
 					byte[] receiveData = new byte[1024];
 					String searchString = "join dummy_name";
 					sendData = searchString.getBytes();
-					InetAddress ipaddress = InetAddress.getByName("127.0.0.1");
-					Iterator it = myapp.connectedUsers.entrySet().iterator();
-					while(it.hasNext())
-					{
-						Map.Entry pairs = (Map.Entry)it.next();
-						ipaddress = (InetAddress) pairs.getValue();
-					}
+					InetAddress ipaddress = arg0[0];
+					
 					Log.d("join party", "Sending to " + ipaddress.getHostName());
 					DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7771);
 					sendSocket.send(searchPacket);
@@ -251,6 +230,7 @@ public class SearchPartyActivity extends Activity {
 						{
 							Log.d("listen for join", "we are joined");
 							myapp.joined = true;
+							myapp.hostAddress = receivePacket.getAddress();
 							joined = true;
 						}
 					}
