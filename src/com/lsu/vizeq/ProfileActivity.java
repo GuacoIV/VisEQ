@@ -1,6 +1,9 @@
 package com.lsu.vizeq;
 
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -18,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -45,6 +50,7 @@ public class ProfileActivity extends Activity {
 	
 	LinearLayout customSearchLayout;
 	public static ArrayList<Track> customList;
+	OnClickListener submitListener;
 	
 	/*public class colorAdapter extends BaseAdapter implements SpinnerAdapter{
 		//@Override
@@ -126,6 +132,8 @@ public class ProfileActivity extends Activity {
 	    ts.setIndicator("Profile");
 	    tabhost.addTab(ts);
 	    final LinearLayout customListTab = (LinearLayout) findViewById(R.id.tab02);
+	    Button submit = (Button)findViewById(R.id.SubmitCustomList);
+	    submit.setOnClickListener(submitListener);
 	    //Animation an = new Animation();
 	    
 	    /*// Color Spinner
@@ -290,5 +298,79 @@ public class ProfileActivity extends Activity {
 				});
 			}
 		});
+		submitListener = new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				new Runnable()
+				{
+
+					@Override
+					public void run()
+					{
+						try
+						{
+							DatagramSocket listenSocket = new DatagramSocket(7770);
+							DatagramSocket sendSocket = new DatagramSocket();
+							//while(true)
+							//{
+								//listen for search
+								//Log.d("listen thread","listening");
+								//byte[] receiveData = new byte[1024];
+								//DatagramPacket receivedPacket = new DatagramPacket(receiveData, receiveData.length);
+								//listenSocket.receive(receivedPacket);
+								//Log.d("listen thread", "packet received");
+								
+								/*InetAddress ip = receivedPacket.getAddress();
+								int port = receivedPacket.getPort();
+								
+								String data = new String(receivedPacket.getData());
+								if (data.substring(0, 6).equals("search"))
+								{
+									Log.d("listen thread", "search received from "+ip.toString()+" "+ip.getHostAddress());
+									//send back information
+									String information = "found ";
+									information += (myapp.myName);
+									Log.d("listen thread", "sending back"+information);*/
+									
+								//make a packet for each element of each Track
+								for (int j = 0; j < customList.size(); j++)
+								{
+									byte[] albumBytes = customList.get(j).mAlbum.getBytes();
+									byte[] artistBytes = customList.get(j).mArtist.getBytes();
+									byte[] requesterBytes = customList.get(j).mRequester.getBytes();
+									byte[] trackBytes= customList.get(j).mTrack.getBytes();
+									byte[] uriBytes = customList.get(j).mUri.getBytes();
+									//byte[] sendData = new byte[1024];
+									InetAddress ip = null;
+
+									DatagramPacket sendPacket = new DatagramPacket(albumBytes, albumBytes.length, ip, 7770);
+									sendSocket.send(sendPacket);
+									sendPacket = new DatagramPacket(albumBytes, artistBytes.length, ip, 7770);
+									sendSocket.send(sendPacket);
+									sendPacket = new DatagramPacket(albumBytes, requesterBytes.length, ip, 7770);
+									sendSocket.send(sendPacket);
+									sendPacket = new DatagramPacket(albumBytes, trackBytes.length, ip, 7770);
+									sendSocket.send(sendPacket);
+									sendPacket = new DatagramPacket(albumBytes, uriBytes.length, ip, 7770);
+									sendSocket.send(sendPacket);
+									
+								}
+									//}
+								
+							}
+						catch (Exception e)
+						{
+							e.printStackTrace();
+						}							
+						
+					}
+					
+				};//Say run here, once it's correct
+			}
+
+		};
 	}	
+
 }
