@@ -58,8 +58,8 @@
         </activity>
         <activity
             android:name="com.lsu.vizeq.RoleActivity"
-            android:label="@string/title_activity_role" 
-            android:screenOrientation="portrait">
+            android:label="@string/title_activity_role"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.lsu.vizeq.SoundVisualizationActivity"
@@ -77,8 +77,8 @@
         </activity>
         <activity
             android:name="com.lsu.vizeq.VizEQ"
-            android:label="@string/app_name" 
-            android:screenOrientation="portrait">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -122,6 +122,10 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.lsu.vizeq.RoleActivity" />
+        </activity>
+        <activity
+            android:name="com.lsu.vizeq.ProfileActivity"
+            android:label="@string/title_activity_profile" >
         </activity>
     </application>
 

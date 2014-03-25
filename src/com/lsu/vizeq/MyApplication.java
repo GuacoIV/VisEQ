@@ -8,6 +8,7 @@ import android.app.Application;
 
 public class MyApplication extends Application {
 	public Map<String, InetAddress> connectedUsers = new HashMap<String,InetAddress>();
+	public InetAddress hostAddress;
 	public String myName;
 	public boolean joined = false;
 

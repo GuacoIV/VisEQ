@@ -31,5 +31,11 @@
     <string name="OrText">-or-</string>
     <string name="title_activity_search_party">SearchPartyActivity</string>
     <string name="ExplainSignIn">To play music, please sign in to Spotify</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="username">Enter Your Name</string>
+    <string name="usernameTitle">User Name:</string>
+    <string name="host_volunteer">Host Queue</string>
+    <string name="volunteer_description">Do you wish to become host if the current host leaves?</string>
+    <string name="color_pick">Pick your Color</string>
 
 </resources>

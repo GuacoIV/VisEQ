@@ -250,7 +250,7 @@ public class HostMenuActivity extends Activity
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_settings:
-			Intent nextIntent  = new Intent(HostMenuActivity.this, SettingsActivity.class);
+			Intent nextIntent  = new Intent(HostMenuActivity.this, ProfileActivity.class);
 			startActivity(nextIntent);
 		}
 		return true;

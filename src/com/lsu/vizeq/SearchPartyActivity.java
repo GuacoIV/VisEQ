@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -20,14 +21,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class SearchPartyActivity extends Activity {
@@ -61,9 +61,27 @@ public class SearchPartyActivity extends Activity {
     	}
     	return InetAddress.getByAddress(quads);
     }
+    
+    public boolean checkIfNameEntered()
+    {
+    	boolean nameEntered = false;
+    	
+    	EditText et = (EditText) findViewById(R.id.username_box);
+    	
+    	String username = et.getText().toString();
+    	Log.d("username", username);
+    	
+    	if(!username.isEmpty())
+    	{
+    		nameEntered = true;
+    		myapp.myName = username;
+    	}
+    			
+    	return nameEntered;
+    }
 	
 	public void searchForParties(View view)
-	{
+	{	
 		new ListPartiesTask().execute();
 		new Thread(new Runnable()
 		{
@@ -95,58 +113,42 @@ public class SearchPartyActivity extends Activity {
 	
 	public void refreshPartyList()
 	{
-		LinearLayout myLinearLayout = (LinearLayout) findViewById(R.id.buttonLayout);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		Button b = new Button(this);
-		b.setText("Join");
-		b.setWidth(75);
-		b.setHeight(60);
-		b.setLayoutParams(params);
-		b.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0) {
-				new JoinTask().execute();
-			}
-			
-		});
-		Button b2 = new Button(this);
-		b2.setText("Join");
-		b2.setWidth(75);
-		b2.setHeight(60);
-		b2.setLayoutParams(params);
-		b2.setOnClickListener(new OnClickListener()
-		{
-
-			@Override
-			public void onClick(View arg0) {
-				new JoinTask().execute();
-			}
-			
-		});
-		myLinearLayout.addView(b);
-		myLinearLayout.addView(b2);
 		
 		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
-		//LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		TextView tv = new TextView(this);
-		tv.setText("Hi");
-		tv.setWidth(200);
-		tv.setHeight(60);
-	
-		tv.setTextSize(20.f);
-		tv.setLayoutParams(params);
-
-		TextView tv2 = new TextView(this);
-		tv2.setText("Hello");
-		tv2.setWidth(200);
-		tv2.setHeight(60);
-		tv2.setTextSize(20.f);
-		tv2.setLayoutParams(params);
-
-		nameLayout.addView(tv);
-		nameLayout.addView(tv2);
+		LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
+		
+		Iterator<Map.Entry<String,InetAddress>> it = myapp.connectedUsers.entrySet().iterator();
+		while(it.hasNext())
+		{
+			final Map.Entry<String,InetAddress> pairs = (Map.Entry<String,InetAddress>) it.next();
+			
+			//name of party
+			TextView tv = new TextView(this);
+			tv.setText((String)pairs.getKey());
+			tv.setWidth(200);
+			tv.setHeight(60);
+			tv.setTextSize(20.f);
+			tv.setLayoutParams(params);
+			
+			//join button
+			Button b = new Button(this);
+			b.setText("Join");
+			b.setWidth(75);
+			b.setHeight(60);
+			b.setLayoutParams(params);
+			b.setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public void onClick(View arg0) {
+					new JoinTask().execute((InetAddress) pairs.getValue());
+				}
+			});
+			
+			//add them
+			nameLayout.addView(tv);
+			buttonLayout.addView(b);
+		}
 		
 	}
 	
@@ -159,6 +161,11 @@ public class SearchPartyActivity extends Activity {
 			String result = "Unable to find parties. Make sure you're connected to Wifi and try again.";
 			try {
 				receiveSocket = new DatagramSocket(7770);
+				receiveSocket.setSoTimeout(2000);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 				
 				String partyName = "";
 				String partyIp = "";
@@ -171,23 +178,32 @@ public class SearchPartyActivity extends Activity {
 					byte[] receiveData = new byte[1024];
 					String receiveString;
 					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-					receiveSocket.receive(receivePacket);
-					receiveString = new String(receivePacket.getData());
-					if(receiveString.substring(0, 5).equals("found"))
+					try
 					{
-						found = true;
-						partyName = receiveString.substring(6, receiveString.length());
-						partyIp = receivePacket.getAddress().getHostAddress();
-						myapp.connectedUsers.put(partyName, InetAddress.getByName(partyIp));
+						receiveSocket.receive(receivePacket);
+						receiveString = new String(receivePacket.getData());
+						if(receiveString.substring(0, 5).equals("found"))
+						{
+							found = true;
+							partyName = receiveString.substring(6, receiveString.length());
+							partyIp = receivePacket.getAddress().getHostAddress();
+							myapp.connectedUsers.put(partyName, InetAddress.getByName(partyIp));
+							result = "Found parties:";
+							publishProgress();
+						}
+					}
+					catch(Exception e)
+					{
+						if(e.getClass().equals(SocketTimeoutException.class))
+						{
+							found = true;
+						}
+						else e.printStackTrace();
 					}
 				}
-				Log.d("search thread", "received "+partyName+" "+partyIp);
-				result = "Found parties:";
+
 				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
 			
 			return result;
 		}
@@ -197,23 +213,27 @@ public class SearchPartyActivity extends Activity {
 			// TODO Auto-generated method stub
 			TextView resultText = (TextView) findViewById(R.id.resultText);
 			resultText.setText(result);
-			refreshPartyList();
+
 			receiveSocket.close();
 		}
 
 		@Override
 		protected void onProgressUpdate(String... values) {
 			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
+			refreshPartyList();
 		}
 		
 	}
 	
-	public class JoinTask extends AsyncTask<Void, Void, String>
+	public class JoinTask extends AsyncTask<InetAddress, Void, String>
 	{
 
 		@Override
-		protected String doInBackground(Void... arg0) {	
+		protected String doInBackground(InetAddress... arg0) {
+			
+				//check if not entered username
+				if(!checkIfNameEntered()) return "Must enter name first";
+			
 				DatagramSocket sendSocket;
 				DatagramSocket listenSocket;
 				// TODO Auto-generated method stub
@@ -225,15 +245,10 @@ public class SearchPartyActivity extends Activity {
 					//send join request
 					byte[] sendData = new byte[1024];
 					byte[] receiveData = new byte[1024];
-					String searchString = "join dummy_name";
+					String searchString = "join "+myapp.myName;
 					sendData = searchString.getBytes();
-					InetAddress ipaddress = InetAddress.getByName("127.0.0.1");
-					Iterator it = myapp.connectedUsers.entrySet().iterator();
-					while(it.hasNext())
-					{
-						Map.Entry pairs = (Map.Entry)it.next();
-						ipaddress = (InetAddress) pairs.getValue();
-					}
+					InetAddress ipaddress = arg0[0];
+					
 					Log.d("join party", "Sending to " + ipaddress.getHostName());
 					DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7771);
 					sendSocket.send(searchPacket);
@@ -251,6 +266,7 @@ public class SearchPartyActivity extends Activity {
 						{
 							Log.d("listen for join", "we are joined");
 							myapp.joined = true;
+							myapp.hostAddress = receivePacket.getAddress();
 							joined = true;
 						}
 					}
@@ -265,15 +281,18 @@ public class SearchPartyActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			//move to dummy content
-			super.onPostExecute(result);
+			final String s = result;
 			AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
 			builder.setMessage(result).setCancelable(false)
 			.setPositiveButton("ok", new DialogInterface.OnClickListener()
 			{
 				public void onClick(DialogInterface dialog, int id)
 				{
-					Intent nextIntent = new Intent(SearchPartyActivity.this, SoundVisualizationActivity.class);
-					startActivity(nextIntent);
+					if(!s.equals("Must enter name first"))
+					{	
+						Intent nextIntent = new Intent(SearchPartyActivity.this, SoundVisualizationActivity.class);
+						startActivity(nextIntent);
+					}
 				}
 			});
 			AlertDialog alert = builder.create();
@@ -302,18 +321,11 @@ public class SearchPartyActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
-			return true;
+		case R.id.action_settings:
+			Intent nextIntent  = new Intent(SearchPartyActivity.this, ProfileActivity.class);
+			startActivity(nextIntent);
 		}
-		return super.onOptionsItemSelected(item);
+		return true;
 	}
 
 }

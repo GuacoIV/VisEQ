@@ -92,6 +92,8 @@ bool beatOccurrence;
 
 static kiss_fft_cfg cfg;
 
+static const int EVERY_NTH_SAMPLE = 8;
+
 /// Round up to next higher power of 2 (return x if it's already a power
 /// of 2).
 inline int
@@ -112,7 +114,9 @@ pow2roundup (int x)
 const int HISTORY_LENGTH = 7;
 static double energy_history[HISTORY_LENGTH];
 static int history_pos = 0;
-const float C = 1.3f;
+static double C = 1.3f;
+static int fftBufSize;
+
 
 // Tell openSL to play the filled buffer and switch to filling the other buffer
 void enqueue(short *buffer, int size) {
@@ -126,31 +130,33 @@ void enqueue(short *buffer, int size) {
 	next_buffer = (buffer == buffer1) ? buffer2 : buffer1;
 	next_buffer_size = (buffer == buffer1) ? &buffer2_size : &buffer1_size;
 
-//	kiss_fft_cpx fin[pow2roundup(SAMPLES_PER_BUFFER)];
-//	kiss_fft_cpx fout[pow2roundup(SAMPLES_PER_BUFFER)];
-//
-//	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
-//		fin[i].r = buffer[i];
-//		fin[i].i = 0;
+	kiss_fft_cpx fin[fftBufSize];
+	kiss_fft_cpx fout[fftBufSize];
+
+	log("pow2roundup = %d", fftBufSize);
+
+	memset(fin, 0, sizeof(fin));
+
+	for (int i = 0; i < SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE; i++) {
+		fin[i].r = buffer[i*EVERY_NTH_SAMPLE];
+	}
+
+	kiss_fft(cfg, fin, fout);
+
+//	for (int i = 0; i < fftBufSize; i++) {
+//		log("output: %f", fout[i].r);
 //	}
-//
-//	kiss_fft_stride(cfg, fin, fout, 1000);
 
 	// FFT values range from 0 Hz to SAMPLE_RATE/2 = 22050 Hz
 	// frequency interval is SAMPLE_RATE/(2*SAMPLES_PER_BUFFER) = 2 Hz
 	// Take the magnitude of output[i] to get amplitude of corresponding frequency
-
-	// we can't allocate memory for the next power of 2 (16384) (android keeps segfaulting)
-	// so we'll just use every other data point
-
-	//complex pSignal[2048];
-	//complex output[2048];
 
 
 	double instant_energy = 0;
 	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
 		instant_energy += buffer[i]*buffer[i];
 	}
+	instant_energy /= 100000000000.;
 	energy_history[history_pos] = instant_energy;
 
 	double local_avg_energy = 0;
@@ -158,6 +164,17 @@ void enqueue(short *buffer, int size) {
 		local_avg_energy += energy_history[i];
 	}
 	local_avg_energy /= (double)HISTORY_LENGTH;
+
+	double variance = HISTORY_LENGTH;
+	for (int i = 0; i < HISTORY_LENGTH; i++) {
+		double thing = local_avg_energy - energy_history[i];
+		variance += thing*thing;
+	}
+	variance /= (double)HISTORY_LENGTH;
+
+	C = -.0025714*variance + 1.51;
+
+	log("C = %f", C);
 
 	if (instant_energy > C * local_avg_energy) {
 		beatOccurrence = true;
@@ -168,15 +185,18 @@ void enqueue(short *buffer, int size) {
 		history_pos = 0;
 	}
 
-
-//	for (int i = 0; i < 2048; i++) {
+//	complex pSignal[p];
+//	complex output[p];
+//
+//	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
 //		pSignal[i].m_re = buffer[i];
 //		pSignal[i].m_im = 0;
 //	}
 //
-//	CFFT::Forward(pSignal, output, 2048);
 //
-//	for (int i = 0; i < 2048; i++) {
+//	CFFT::Forward(pSignal, output, p);
+
+//	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
 //		log("Input: %f", pSignal[i].m_re);
 //		log("Output: %f", output[i].m_re);
 //	}
@@ -349,10 +369,12 @@ void init_audio_player() {
 	log("buffer size is");
 	log("%d", BUFFER_SIZE);
 
-	//cfg = kiss_fft_alloc(pow2roundup(SAMPLES_PER_BUFFER), 0, 0, 0);
+	fftBufSize = pow2roundup(SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE);
+
+	cfg = kiss_fft_alloc(fftBufSize, 0, 0, 0);
 
 	for (int i = 0; i < HISTORY_LENGTH; i++) {
-		energy_history[i] = DBL_MAX;
+		energy_history[i] = 10000000;
 	}
 
 }

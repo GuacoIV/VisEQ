@@ -175,7 +175,7 @@ public class PreferenceVisualizationActivity extends Activity
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_settings:
-			Intent nextIntent  = new Intent(PreferenceVisualizationActivity.this, SettingsActivity.class);
+			Intent nextIntent  = new Intent(PreferenceVisualizationActivity.this, ProfileActivity.class);
 			startActivity(nextIntent);
 		}
 		return true;
