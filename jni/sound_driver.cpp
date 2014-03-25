@@ -73,7 +73,7 @@ static const int NR_CHANNELS = 2;
 // Make buffers four times as big because we guess that music_delivery never delivers more
 // pcm data. If it does the overflowing data will not be put in the buffer, resulting in
 // temporary audio weirdness
-static const int BUFFER_SIZE = SAMPLES_PER_BUFFER * sizeof(int16_t) * NR_CHANNELS * 2;
+static const int BUFFER_SIZE = SAMPLES_PER_BUFFER * sizeof(int16_t) * NR_CHANNELS * 4;
 
 // The two sound buffers
 static int16_t buffer1[BUFFER_SIZE];
@@ -92,7 +92,7 @@ bool beatOccurrence;
 
 static kiss_fft_cfg cfg;
 
-static const int EVERY_NTH_SAMPLE = 8;
+static const int EVERY_NTH_SAMPLE = 1;
 
 /// Round up to next higher power of 2 (return x if it's already a power
 /// of 2).
@@ -112,11 +112,123 @@ pow2roundup (int x)
 
 // contains the last 20 frames (~1 second)
 const int HISTORY_LENGTH = 7;
-static double energy_history[HISTORY_LENGTH];
 static int history_pos = 0;
-static double C = 1.3f;
+static double C = 6;
 static int fftBufSize;
+const int NUM_BANDS = 128;
+static double band_energy_history_r[HISTORY_LENGTH][NUM_BANDS];
+static double band_energy_history_l[HISTORY_LENGTH][NUM_BANDS];
 
+void analyze_samples(short *buffer, int size) {
+	kiss_fft_cpx fin_l[fftBufSize];
+	kiss_fft_cpx fout_l[fftBufSize];
+	kiss_fft_cpx fin_r[fftBufSize];
+	kiss_fft_cpx fout_r[fftBufSize];
+
+	double freqMagn_l[fftBufSize];
+	double freqMagn_r[fftBufSize];
+
+	int band_width = fftBufSize/NUM_BANDS;
+
+	log("%d", fftBufSize);
+
+	memset(fin_r, 0, sizeof(fin_r));
+	memset(fin_l, 0, sizeof(fin_l));
+
+	for (int i = 0; i < SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE/NR_CHANNELS; i++) {
+		fin_l[i].r = buffer[2*(i*EVERY_NTH_SAMPLE)];
+	}
+	for (int i = 0; i < SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE; i++) {
+		fin_r[i].r = buffer[2*(i*EVERY_NTH_SAMPLE) + 1];
+	}
+
+	kiss_fft(cfg, fin_l, fout_l);
+	kiss_fft(cfg, fin_r, fout_r);
+
+	for (int i = 0; i < fftBufSize; i++) {
+		float im2 = fout_l[i].i*fout_l[i].i;
+		float re2 = fout_l[i].r*fout_l[i].r;
+		freqMagn_l[i] = im2 + re2;
+	}
+	for (int i = 0; i < fftBufSize; i++) {
+		float im2 = fout_r[i].i*fout_r[i].i;
+		float re2 = fout_r[i].r*fout_r[i].r;
+		freqMagn_r[i] = im2 + re2;
+	}
+
+	bool foundBeat = false;
+
+	int startBand = 0;
+	int endBand = NUM_BANDS;
+
+	for (int j = startBand; j < endBand; j++) {
+		double instant_energy = 0;
+
+		for (int i = 0; i < band_width; i++) {
+			instant_energy += freqMagn_l[j*band_width + i];
+		}
+		instant_energy /= 1000.;
+		band_energy_history_l[history_pos][j] = instant_energy;
+		double local_avg_energy = 0;
+		for (int i = 0; i < HISTORY_LENGTH; i++) {
+			local_avg_energy += band_energy_history_l[i][j];
+		}
+		local_avg_energy /= (double)HISTORY_LENGTH;
+
+		//double variance = 0;
+//		for (int i = 0; i < HISTORY_LENGTH; i++) {
+//			double thing = local_avg_energy - band_energy_history_l[i][j];
+//			variance += thing*thing;
+//		}
+		//variance /= (double)HISTORY_LENGTH;
+		//log("variance = %f", variance);
+
+		//C = -.0025714*variance + 3.51;
+
+		if (instant_energy > C * local_avg_energy) {
+			foundBeat = true;
+			log("beat l band %d", j);
+		}
+	}
+
+	for (int j = startBand; j < endBand; j++) {
+		double instant_energy = 0;
+
+		for (int i = 0; i < band_width; i++) {
+			instant_energy += freqMagn_r[j*band_width + i];
+		}
+		instant_energy /= 1000.;
+		band_energy_history_r[history_pos][j] = instant_energy;
+		double local_avg_energy = 0;
+		for (int i = 0; i < HISTORY_LENGTH; i++) {
+			local_avg_energy += band_energy_history_r[i][j];
+		}
+		local_avg_energy /= (double)HISTORY_LENGTH;
+
+		//double variance = 0;
+//		for (int i = 0; i < HISTORY_LENGTH; i++) {
+//			double thing = local_avg_energy - band_energy_history_l[i][j];
+//			variance += thing*thing;
+//		}
+		//variance /= (double)HISTORY_LENGTH;
+		//log("variance = %f", variance);
+
+		//C = -.0025714*variance + 3.51;
+
+		if (instant_energy > C * local_avg_energy) {
+			foundBeat = true;
+			log("beat right band %d", j);
+		}
+	}
+
+	if (foundBeat) {
+		beatOccurrence = true;
+		log("nigga");
+	}
+	if (++history_pos > HISTORY_LENGTH - 1) {
+		history_pos = 0;
+	}
+}
 
 // Tell openSL to play the filled buffer and switch to filling the other buffer
 void enqueue(short *buffer, int size) {
@@ -130,18 +242,7 @@ void enqueue(short *buffer, int size) {
 	next_buffer = (buffer == buffer1) ? buffer2 : buffer1;
 	next_buffer_size = (buffer == buffer1) ? &buffer2_size : &buffer1_size;
 
-	kiss_fft_cpx fin[fftBufSize];
-	kiss_fft_cpx fout[fftBufSize];
 
-	log("pow2roundup = %d", fftBufSize);
-
-	memset(fin, 0, sizeof(fin));
-
-	for (int i = 0; i < SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE; i++) {
-		fin[i].r = buffer[i*EVERY_NTH_SAMPLE];
-	}
-
-	kiss_fft(cfg, fin, fout);
 
 //	for (int i = 0; i < fftBufSize; i++) {
 //		log("output: %f", fout[i].r);
@@ -152,38 +253,36 @@ void enqueue(short *buffer, int size) {
 	// Take the magnitude of output[i] to get amplitude of corresponding frequency
 
 
-	double instant_energy = 0;
-	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
-		instant_energy += buffer[i]*buffer[i];
-	}
-	instant_energy /= 100000000000.;
-	energy_history[history_pos] = instant_energy;
+//	double instant_energy = 0;
+//	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
+//		instant_energy += buffer[i]*buffer[i];
+//	}
+//	instant_energy /= 100000000000.;
+//	energy_history[history_pos] = instant_energy;
+//
+//	double local_avg_energy = 0;
+//	for (int i = 0; i < HISTORY_LENGTH; i++) {
+//		local_avg_energy += energy_history[i];
+//	}
+//	local_avg_energy /= (double)HISTORY_LENGTH;
+//
+//	double variance = HISTORY_LENGTH;
+//	for (int i = 0; i < HISTORY_LENGTH; i++) {
+//		double thing = local_avg_energy - energy_history[i];
+//		variance += thing*thing;
+//	}
+//	variance /= (double)HISTORY_LENGTH;
+//
+//	C = -.0025714*variance + 1.51;
+//
+//	log("C = %f", C);
+//
+//	if (instant_energy > C * local_avg_energy) {
+//		beatOccurrence = true;
+//		log("instant_energy: %f, local_avg_energy: %f", instant_energy, local_avg_energy);
+//	}
 
-	double local_avg_energy = 0;
-	for (int i = 0; i < HISTORY_LENGTH; i++) {
-		local_avg_energy += energy_history[i];
-	}
-	local_avg_energy /= (double)HISTORY_LENGTH;
 
-	double variance = HISTORY_LENGTH;
-	for (int i = 0; i < HISTORY_LENGTH; i++) {
-		double thing = local_avg_energy - energy_history[i];
-		variance += thing*thing;
-	}
-	variance /= (double)HISTORY_LENGTH;
-
-	C = -.0025714*variance + 1.51;
-
-	log("C = %f", C);
-
-	if (instant_energy > C * local_avg_energy) {
-		beatOccurrence = true;
-		log("instant_energy: %f, local_avg_energy: %f", instant_energy, local_avg_energy);
-	}
-
-	if (++history_pos > HISTORY_LENGTH - 1) {
-		history_pos = 0;
-	}
 
 //	complex pSignal[p];
 //	complex output[p];
@@ -223,8 +322,6 @@ int music_delivery(sp_session *sess, const sp_audioformat *format, const void *f
 	static short *current_buffer = buffer1;
 	static int *current_buffer_size = &buffer1_size;
 
-	log("%d", num_frames);
-
 	// Fill the current buffer only if it has been consumed
 	if (*current_buffer_size == 0) {
 
@@ -247,6 +344,8 @@ int music_delivery(sp_session *sess, const sp_audioformat *format, const void *f
 		// If one second of data has been filled that make it available to the consumer and start fill the other buffer
 		if (total_samples > SAMPLES_PER_BUFFER) {
 			int total_size = total_samples * sizeof(int16_t) * format->channels;
+
+			analyze_samples(current_buffer, total_size);
 
 			// play the buffer if both buffers are empty (no sound is playing)
 			if (buffer1_size == 0 && buffer2_size == 0) {
@@ -369,13 +468,9 @@ void init_audio_player() {
 	log("buffer size is");
 	log("%d", BUFFER_SIZE);
 
-	fftBufSize = pow2roundup(SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE);
+	fftBufSize = kiss_fft_next_fast_size(SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE/NR_CHANNELS);
 
 	cfg = kiss_fft_alloc(fftBufSize, 0, 0, 0);
-
-	for (int i = 0; i < HISTORY_LENGTH; i++) {
-		energy_history[i] = 10000000;
-	}
 
 }
 
