@@ -66,7 +66,7 @@ static SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
 // Bigger buffers will produce slow feedback for actions like pause and seek.
 static const int SECOND_DEVIDER = 7;
 static const int SAMPLE_RATE = 44100;
-static const int SAMPLES_PER_BUFFER = SAMPLE_RATE / SECOND_DEVIDER;
+static const int SAMPLES_PER_BUFFER = 6144;
 
 static const int NR_CHANNELS = 2;
 
@@ -138,7 +138,7 @@ void analyze_samples(short *buffer, int size) {
 	for (int i = 0; i < SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE/NR_CHANNELS; i++) {
 		fin_l[i].r = buffer[2*(i*EVERY_NTH_SAMPLE)];
 	}
-	for (int i = 0; i < SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE; i++) {
+	for (int i = 0; i < SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE/NR_CHANNELS; i++) {
 		fin_r[i].r = buffer[2*(i*EVERY_NTH_SAMPLE) + 1];
 	}
 

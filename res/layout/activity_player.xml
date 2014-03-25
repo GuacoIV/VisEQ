@@ -145,7 +145,7 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/previousbutton_88x88" />
+                    android:background="@drawable/fowardbutton2_88x88" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
