@@ -113,7 +113,7 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/player_prev_state" />
+                    android:background="@drawable/previousbutton_88x88" />
             </LinearLayout>
 
             <LinearLayout
@@ -129,7 +129,7 @@
                     android:id="@+id/player_play_pause_image"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
-                    android:background="@drawable/player_play_state"
+                    android:background="@drawable/playbutton_140x140"
                     android:duplicateParentState="true" />
             </LinearLayout>
 
@@ -145,7 +145,7 @@
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:background="@drawable/player_next_state" />
+                    android:background="@drawable/forwardbutton2_88x88" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
