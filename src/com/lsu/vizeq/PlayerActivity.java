@@ -151,13 +151,13 @@ public class PlayerActivity extends Activity {
 		@Override
 		public void onPlayerPause() {
 			ImageView image = (ImageView) findViewById(R.id.player_play_pause_image);
-			image.setBackgroundResource(R.drawable.player_play_state);
+			image.setBackgroundResource(R.drawable.playbutton_140x140);
 		}
 
 		@Override
 		public void onPlayerPlay() {
 			ImageView image = (ImageView) findViewById(R.id.player_play_pause_image);
-			image.setBackgroundResource(R.drawable.player_pause_state);
+			image.setBackgroundResource(R.drawable.pausebutton_140x140);
 		}
 
 		@Override
