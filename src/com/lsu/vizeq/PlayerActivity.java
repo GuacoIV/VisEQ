@@ -270,78 +270,78 @@ public class PlayerActivity extends Activity {
 		playerBackground = (RelativeLayout) findViewById(R.id.PlayerLayout);
 		
 //		//light sending stuff
-		new Thread( new Runnable()
-		{
-			public void run()
-			{
-				try {
-					
-					DatagramSocket sendSocket = new DatagramSocket();
-					int count = 0;
-					while(true)
-					{
-						byte[] sendData = new byte[7];
-						String data = "#FF0000";
-						if (count%2==0) 
-						{
-							data = "#000000";
-							try
-							{
-						        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) 
-						        {
-						            cam = Camera.open();
-						            Parameters p = cam.getParameters();
-						            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-						            cam.setParameters(p);
-						            cam.startPreview();
-						        }
-							}
-							catch (Exception e) {
-						        e.printStackTrace();
-						        Log.d("Flashlight", "Exception flashLightOn");
-						    }
-						}
-						else
-						{
-							try 
-							{
-						        if (getPackageManager().hasSystemFeature(
-						                PackageManager.FEATURE_CAMERA_FLASH)) {
-						            cam.stopPreview();
-						            cam.release();
-						            cam = null;
-						        }
-						    } 
-							catch (Exception e) 
-							{
-						        e.printStackTrace();
-						        Log.d("Flashlight", "Exception flashLightOff");
-						    }
-						}
-						sendData = data.getBytes();
-						Iterator it = myapp.connectedUsers.entrySet().iterator();
-						while (it.hasNext())
-						{
-							Map.Entry pairs= (Map.Entry) it.next();
-							InetAddress IPAddress = InetAddress.getByName((String) pairs.getValue());
-							String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
-							Log.d("UDP",test);
-							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
-							sendSocket.send(sendPacket);
-							//Log.d("UDP","Sent! "+ (String) pairs.getValue());
-						}
-						Log.d("UDP","Sent!");
-						Thread.sleep(500);
-						count++;
-						if(count == 2000) break;
-					}
-					sendSocket.close();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-			}
-		}).start();
+//		new Thread( new Runnable()
+//		{
+//			public void run()
+//			{
+//				try {
+//					
+//					DatagramSocket sendSocket = new DatagramSocket();
+//					int count = 0;
+//					while(true)
+//					{
+//						byte[] sendData = new byte[7];
+//						String data = "#FF0000";
+//						if (count%2==0) 
+//						{
+//							data = "#000000";
+//							try
+//							{
+//						        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) 
+//						        {
+//						            cam = Camera.open();
+//						            Parameters p = cam.getParameters();
+//						            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+//						            cam.setParameters(p);
+//						            cam.startPreview();
+//						        }
+//							}
+//							catch (Exception e) {
+//						        e.printStackTrace();
+//						        Log.d("Flashlight", "Exception flashLightOn");
+//						    }
+//						}
+//						else
+//						{
+//							try 
+//							{
+//						        if (getPackageManager().hasSystemFeature(
+//						                PackageManager.FEATURE_CAMERA_FLASH)) {
+//						            cam.stopPreview();
+//						            cam.release();
+//						            cam = null;
+//						        }
+//						    } 
+//							catch (Exception e) 
+//							{
+//						        e.printStackTrace();
+//						        Log.d("Flashlight", "Exception flashLightOff");
+//						    }
+//						}
+//						sendData = data.getBytes();
+//						Iterator it = myapp.connectedUsers.entrySet().iterator();
+//						while (it.hasNext())
+//						{
+//							Map.Entry pairs= (Map.Entry) it.next();
+//							InetAddress IPAddress = InetAddress.getByName((String) pairs.getValue());
+//							String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
+//							Log.d("UDP",test);
+//							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
+//							sendSocket.send(sendPacket);
+//							//Log.d("UDP","Sent! "+ (String) pairs.getValue());
+//						}
+//						Log.d("UDP","Sent!");
+//						Thread.sleep(500);
+//						count++;
+//						if(count == 2000) break;
+//					}
+//					sendSocket.close();
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}	
+//			}
+//		}).start();
 		//end light sending stuff
 		
 		new Thread( new Runnable()
