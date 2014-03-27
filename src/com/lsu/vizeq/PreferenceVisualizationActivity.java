@@ -124,6 +124,17 @@ public class PreferenceVisualizationActivity extends Activity
 				//Trying to do too much at once.  Tracks are not sorted inside the list so this is wrong.
 				//if (requests.get(i).mTrack.compareTo(lastTrack)==0)
 					//trackCount++;
+				
+				if (i==requests.size()-1)
+				{
+					this.requestedArtists.add(new Artist(requests.get(i-1).mArtist, requests.get(i-1), artistCount, personCount));
+					
+					totalWeights += artistCount * personCount;
+					lastArtist = requests.get(i).mArtist;
+					lastPerson = requests.get(i).mRequester;
+					artistCount = 1;
+					personCount = 1;
+				}
 			}
 			else
 			{
@@ -136,6 +147,12 @@ public class PreferenceVisualizationActivity extends Activity
 				lastPerson = requests.get(i).mRequester;
 				artistCount = 1;
 				personCount = 1;
+				
+				//For the final one, if it's different
+				if (i==requests.size()-1)
+				{
+					this.requestedArtists.add(new Artist(requests.get(i).mArtist, requests.get(i), artistCount, personCount));
+				}
 			}
 		}
 		

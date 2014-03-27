@@ -21,4 +21,17 @@ public class Artist
 		mArtistWeight = numTrackRequests * personCount;
 	}
 	
+	public void requestTrack(Track trackRequests)
+	{
+		mTrackRequests.add(trackRequests);
+	}
+	
+	public Artist(String artist, int numTrackRequests, int personCount)
+	{
+		mArtist = artist;
+		mNumTrackRequests = numTrackRequests;
+		mNumPeopleRequestingArtist = personCount;
+		mArtistWeight = numTrackRequests * personCount;
+	}
+
 }
