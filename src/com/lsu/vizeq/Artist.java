@@ -26,12 +26,17 @@ public class Artist
 		mTrackRequests.add(trackRequests);
 	}
 	
-	public Artist(String artist, int numTrackRequests, int personCount)
+	public void saveNameAndStats(String artist, int numTrackRequests, int personCount)
 	{
 		mArtist = artist;
 		mNumTrackRequests = numTrackRequests;
 		mNumPeopleRequestingArtist = personCount;
 		mArtistWeight = numTrackRequests * personCount;
+	}
+	
+	public Artist()
+	{
+		
 	}
 
 }

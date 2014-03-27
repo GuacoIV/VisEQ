@@ -110,38 +110,41 @@ public class PreferenceVisualizationActivity extends Activity
 			trackCount++;
 		}
 		int totalWeights = 0;
+		Artist artist = new Artist();
+		artist.requestTrack(requests.get(0));
 		for (int i = 1; i < requests.size(); i++)
 		{
 			if (lastArtist.compareTo(requests.get(i).mArtist)==0)
 			{
 				artistCount++;
 				lastArtist = requests.get(i).mArtist;
+				artist.requestTrack(requests.get(i));
 				if (requests.get(i).mRequester.compareTo(lastPerson)!=0)
 				{
 					personCount++;
 					lastPerson = requests.get(i).mRequester;
 				}				
-				//Trying to do too much at once.  Tracks are not sorted inside the list so this is wrong.
-				//if (requests.get(i).mTrack.compareTo(lastTrack)==0)
-					//trackCount++;
 				
 				if (i==requests.size()-1)
 				{
-					this.requestedArtists.add(new Artist(requests.get(i-1).mArtist, requests.get(i-1), artistCount, personCount));
+					artist.saveNameAndStats(requests.get(i-1).mArtist, artistCount, personCount);
+					this.requestedArtists.add(artist);
 					
 					totalWeights += artistCount * personCount;
-					lastArtist = requests.get(i).mArtist;
-					lastPerson = requests.get(i).mRequester;
-					artistCount = 1;
-					personCount = 1;
+					//lastPerson = requests.get(i).mRequester;
+					//artistCount = 1;
+					//personCount = 1;
 				}
 			}
 			else
 			{
 				//Save artist and person count
-				this.requestedArtists.add(new Artist(requests.get(i-1).mArtist, requests.get(i-1), artistCount, personCount));
+				artist.saveNameAndStats(requests.get(i-1).mArtist, artistCount, personCount);
+				this.requestedArtists.add(artist);
 				
-				//Still need to run through list of track requests for that artist
+				artist = new Artist();
+				artist.requestTrack(requests.get(i));
+
 				totalWeights += artistCount * personCount;
 				lastArtist = requests.get(i).mArtist;
 				lastPerson = requests.get(i).mRequester;
@@ -151,7 +154,9 @@ public class PreferenceVisualizationActivity extends Activity
 				//For the final one, if it's different
 				if (i==requests.size()-1)
 				{
-					this.requestedArtists.add(new Artist(requests.get(i).mArtist, requests.get(i), artistCount, personCount));
+					artist.saveNameAndStats(requests.get(i).mArtist, artistCount, personCount);
+					this.requestedArtists.add(artist);
+					//this.requestedArtists.add(new Artist(requests.get(i).mArtist, requests.get(i), artistCount, personCount));
 				}
 			}
 		}
