@@ -93,6 +93,8 @@ bool beatOccurrence;
 static kiss_fft_cfg cfg;
 
 static const int EVERY_NTH_SAMPLE = 1;
+static int64_t timeHistory[15];
+static int timeHistoryIndex = 0;
 
 /// Round up to next higher power of 2 (return x if it's already a power
 /// of 2).
@@ -118,6 +120,13 @@ static int fftBufSize;
 const int NUM_BANDS = 128;
 static double band_energy_history_r[HISTORY_LENGTH][NUM_BANDS];
 static double band_energy_history_l[HISTORY_LENGTH][NUM_BANDS];
+
+//Time function
+int64_t getTimeNsec() {
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+    return (int64_t) now.tv_sec*1000000000LL + now.tv_nsec;
+}
 
 void analyze_samples(short *buffer, int size) {
 	kiss_fft_cpx fin_l[fftBufSize];
@@ -223,7 +232,9 @@ void analyze_samples(short *buffer, int size) {
 
 	if (foundBeat) {
 		beatOccurrence = true;
-		log("nigga");
+		log("beat");
+		timeHistory[timeHistoryIndex] = getTimeNsec();
+		timeHistoryIndex = (++timeHistoryIndex % 14);
 	}
 	if (++history_pos > HISTORY_LENGTH - 1) {
 		history_pos = 0;
@@ -471,6 +482,8 @@ void init_audio_player() {
 	fftBufSize = kiss_fft_next_fast_size(SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE/NR_CHANNELS);
 
 	cfg = kiss_fft_alloc(fftBufSize, 0, 0, 0);
+	for (int i = 0; i < 15; i++)
+		timeHistory[i] = 0;
 
 }
 
