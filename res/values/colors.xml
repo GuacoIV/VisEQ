@@ -20,5 +20,15 @@
     <color name="Grey119">#777777</color>
     <color name="Grey170">#AAAAAA</color>
     <color name="Green">#649940</color>
+    
+    <array name="color_spinner">
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Green</item>
+        <item>Red</item>
+        <item>Grey</item>
+        <item>Orange</item>
+        <item>Purple</item>
+    </array>
 
 </resources>

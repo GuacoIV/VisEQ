@@ -52,59 +52,6 @@ public class ProfileActivity extends Activity {
 	public static ArrayList<Track> customList;
 	OnClickListener submitListener;
 	
-	/*public class colorAdapter extends BaseAdapter implements SpinnerAdapter{
-		//@Override
-		public View getDropDownView(int position, View convertView, ViewGroup parent){
-
-		    View v = convertView;
-
-		    if (v == null) {
-		        Activity mContext;
-				LayoutInflater vi = (LayoutInflater) mContext
-		        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		        v = vi.inflate(R.layout.customSearchLayout, null);
-		    }
-		    TextView tv=(TextView) v.findViewById(R.id.colorspinner);
-		    tv.setText(R.array.color_spinner.getItem(position));
-		    switch (position) {
-		    	case 0:
-		    		//set tv's color here...
-		    		break;
-		    	case 1:
-		    		//set tv's color here...
-		    		break;
-		    	default:
-		    		//set default color or whatever...
-		    }       
-	        return v;
-	    }
-
-		@Override
-		public int getCount() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public Object getItem(int arg0) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public long getItemId(int arg0) {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-
-		@Override
-		public View getView(int arg0, View arg1, ViewGroup arg2) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
-*/	
-	
 	AsyncHttpClient searchClient = new AsyncHttpClient();
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -136,11 +83,11 @@ public class ProfileActivity extends Activity {
 	    submit.setOnClickListener(submitListener);
 	    //Animation an = new Animation();
 	    
-	    /*// Color Spinner
+	    // Color Spinner
 	    Spinner spinner = (Spinner) findViewById(R.id.colorspinner);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.color_spinner, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);		
-		spinner.setAdapter(adapter);*/	    	    	    
+		spinner.setAdapter(adapter);	    	    	    
 		
 		rowTap = new OnTouchListener()
 		{
