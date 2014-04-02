@@ -230,14 +230,27 @@ void analyze_samples(short *buffer, int size) {
 		}
 	}
 
+	bool consistent = false;
 	if (foundBeat) {
 		beatOccurrence = true;
 		log("beat");
 		timeHistory[timeHistoryIndex] = getTimeNsec();
 		timeHistoryIndex = (++timeHistoryIndex % 14);
+		if (timeHistoryIndex > 4)
+		{
+			//See if the timings are fairly equally spaced
+			for (int i = 1; i < timeHistoryIndex; i++)
+			{
+				if (abs(timeHistory[i] - timeHistory[i-1] < 10000)) consistent = true; //Less than 10ms
+				else consistent = false;
+			}
+		}
 	}
-	if (++history_pos > HISTORY_LENGTH - 1) {
-		history_pos = 0;
+	if (consistent)
+	{
+		//Predict the next beat
+		//Instead of averaging history, let's just take last interval since we know its within 10ms, to save computing time
+		//milliSpace = abs(timeHistory[timeHistoryIndex-1] - timeHistory[timeHistoryIndex-2])/1000;
 	}
 }
 
