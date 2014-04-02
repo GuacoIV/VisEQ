@@ -16,7 +16,7 @@
 
     <application
         android:name="com.lsu.vizeq.MyApplication"
-        android:icon="@drawable/launch"
+        android:icon="@drawable/actionbaricon_47x47"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -24,7 +24,8 @@
             android:label="@string/app_name"
             android:noHistory="true"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:windowSoftInputMode="adjustResize|stateVisible" 
+            android:icon="@drawable/actionbaricon_47x47">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,7 +41,8 @@
         <activity
             android:name="com.lsu.vizeq.PlayerActivity"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:icon="@drawable/actionbaricon_47x47" >
         </activity>
 
         <receiver android:name="com.lsu.vizeq.RemoteControlReceiver" >
@@ -51,7 +53,8 @@
 
         <activity
             android:name="com.lsu.vizeq.MainActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main"
+            android:icon="@drawable/actionbaricon_47x47" >
             <action android:name="com.lsu.vizeq.MAIN" />
 
             <category android:name="android.intent.category.DEFAULT" />
@@ -59,26 +62,31 @@
         <activity
             android:name="com.lsu.vizeq.RoleActivity"
             android:label="@string/title_activity_role"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+            android:icon="@drawable/actionbaricon_47x47">
         </activity>
         <activity
             android:name="com.lsu.vizeq.SoundVisualizationActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_sound_visualization"
-            android:theme="@style/FullscreenTheme" >
+            android:theme="@style/FullscreenTheme"
+            android:icon="@drawable/actionbaricon_47x47" >
         </activity>
         <activity
             android:name="com.lsu.vizeq.SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings"
+            android:icon="@drawable/actionbaricon_47x47" >
         </activity>
         <activity
             android:name="com.lsu.vizeq.HostActivity"
-            android:label="@string/title_activity_host" >
+            android:label="@string/title_activity_host"
+            android:icon="@drawable/actionbaricon_47x47" >
         </activity>
         <activity
             android:name="com.lsu.vizeq.VizEQ"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+            android:icon="@drawable/launch">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -88,44 +96,52 @@
         <activity
             android:name="com.lsu.vizeq.HostMenuActivity"
             android:label="@string/title_activity_host_menu"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait" 
+            android:icon="@drawable/actionbaricon_47x47">
         </activity>
         <activity
             android:name="com.lsu.vizeq.PreferenceVisualizationActivity"
-            android:label="@string/title_activity_preference_visualization" >
+            android:label="@string/title_activity_preference_visualization"
+            android:icon="@drawable/actionbaricon_47x47" >
         </activity>
         <activity
             android:name="com.lsu.vizeq.MusicQueueListActivity"
-            android:label="@string/title_musicqueue_list" >
+            android:label="@string/title_musicqueue_list"
+            android:icon="@drawable/actionbaricon_47x47" >
         </activity>
         <activity
             android:name="com.lsu.vizeq.MusicQueueDetailActivity"
             android:label="@string/title_musicqueue_detail"
-            android:parentActivityName=".MusicQueueListActivity" >
+            android:parentActivityName=".MusicQueueListActivity"
+            android:icon="@drawable/actionbaricon_47x47" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MusicQueueListActivity" />
         </activity>
         <activity
             android:name="com.lsu.vizeq.MusicQueueActivity"
-            android:label="@string/title_activity_music_queue" >
+            android:label="@string/title_activity_music_queue"
+            android:icon="@drawable/actionbaricon_47x47" >
         </activity>
         <activity
             android:name="com.lsu.vizeq.SearchActivity"
             android:label="@string/title_activity_search"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+			android:icon="@drawable/actionbaricon_47x47">
         </activity>
         <activity
             android:name="com.lsu.vizeq.SearchPartyActivity"
             android:label="@string/title_activity_search_party"
-            android:parentActivityName="com.lsu.vizeq.RoleActivity" >
+            android:parentActivityName="com.lsu.vizeq.RoleActivity"
+            android:icon="@drawable/actionbaricon_47x47" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.lsu.vizeq.RoleActivity" />
         </activity>
         <activity
             android:name="com.lsu.vizeq.ProfileActivity"
-            android:label="@string/title_activity_profile" >
+            android:label="@string/title_activity_profile"
+            android:icon="@drawable/actionbaricon_47x47" >
         </activity>
     </application>
 
