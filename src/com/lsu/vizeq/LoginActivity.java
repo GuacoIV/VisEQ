@@ -40,18 +40,25 @@ import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import javax.security.*;
@@ -94,6 +101,26 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		
+		//Typeface font = Typeface.createFromAsset(getAssets(), "Mohave.otf");
+		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Regular.otf");
+		TextView loginExplain = (TextView) findViewById(R.id.ExplainSignIn);
+		loginExplain.setTypeface(font);
+		loginExplain.setTextSize(20); //40 pt 153, 153, 153
+		loginExplain.setTextColor(getResources().getColor(R.color.Grey85));
+		
+		LinearLayout loginFormContainer = (LinearLayout) findViewById(R.id.LoginFormContainer);
+		loginFormContainer.setOnTouchListener(new OnTouchListener(){
+
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1) {
+				InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(arg0.getWindowToken(), 0);
+				return false;
+			}
+			
+		});
+
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);

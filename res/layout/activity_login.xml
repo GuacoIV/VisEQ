@@ -34,11 +34,14 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
+        android:layout_height="match_parent"
+        android:background="@drawable/backgroundtexture_640x960">
         <LinearLayout
             style="@style/LoginFormContainer"
-            android:orientation="vertical" >
+            android:id="@+id/LoginFormContainer"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp" >
             
             <TextView
                 android:id="@+id/ExplainSignIn"
@@ -46,7 +49,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/ExplainSignIn"
                 android:gravity="center"
-                android:paddingBottom="15dp">
+                android:paddingBottom="15dp"
+                android:textSize="20sp">
             </TextView>
 
             <EditText
@@ -72,22 +76,26 @@
             <Button
                 android:id="@+id/sign_in_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_gravity="right"
                 android:layout_marginTop="16dp"
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
-                android:text="@string/action_sign_in_register" />
+                android:text="@string/action_sign_in_short"
+                android:background="@color/LightGreen"
+                android:textColor= "#FFFFFF"/>
 
             <Button
                 android:id="@+id/Skip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
                 android:layout_gravity="right"
                 android:layout_marginTop="24dp"
                 android:paddingLeft="32dp"
                 android:paddingRight="32dp"
-                android:text="Skip this step" />
+                android:text="Skip this step"
+                android:background="@color/LightGreen"
+                android:textColor= "#FFFFFF" />
         </LinearLayout>
     </ScrollView>
 
