@@ -89,12 +89,18 @@ static int *next_buffer_size = &buffer2_size;
 
 static pthread_mutex_t g_buffer_mutex;
 bool beatOccurrence;
+static bool foundBeat = false;
 
 static kiss_fft_cfg cfg;
 
 static const int EVERY_NTH_SAMPLE = 1;
+
+//Beat confidence
 static int64_t timeHistory[15];
+static int64_t bufferStartTime;
 static int timeHistoryIndex = 0;
+static bool consistent = false;
+static int64_t nextPredictedBeat;
 
 /// Round up to next higher power of 2 (return x if it's already a power
 /// of 2).
@@ -165,7 +171,7 @@ void analyze_samples(short *buffer, int size) {
 		freqMagn_r[i] = im2 + re2;
 	}
 
-	bool foundBeat = false;
+	foundBeat = false;
 
 	int startBand = 0;
 	int endBand = NUM_BANDS;
@@ -194,7 +200,7 @@ void analyze_samples(short *buffer, int size) {
 
 		//C = -.0025714*variance + 3.51;
 
-		if (instant_energy > C * local_avg_energy) {
+		if (instant_energy > C * local_avg_energy && j < (startBand-endBand)/3) {
 			foundBeat = true;
 			log("beat l band %d", j);
 		}
@@ -230,11 +236,14 @@ void analyze_samples(short *buffer, int size) {
 		}
 	}
 
-	bool consistent = false;
+	//int64_t currentTime = getTimeNsec();
+	//if (consistent && nextPredictedBeat - currentTime < 10000)
+		//beatOccurrence = true;
+
 	if (foundBeat) {
 		beatOccurrence = true;
 		log("beat");
-		timeHistory[timeHistoryIndex] = getTimeNsec();
+		/*timeHistory[timeHistoryIndex] = currentTime;
 		timeHistoryIndex = (++timeHistoryIndex % 14);
 		if (timeHistoryIndex > 4)
 		{
@@ -244,14 +253,15 @@ void analyze_samples(short *buffer, int size) {
 				if (abs(timeHistory[i] - timeHistory[i-1] < 10000)) consistent = true; //Less than 10ms
 				else consistent = false;
 			}
-		}
+		}*/
 	}
-	if (consistent)
+	/*if (consistent && timeHistoryIndex > 1)
 	{
 		//Predict the next beat
 		//Instead of averaging history, let's just take last interval since we know its within 10ms, to save computing time
-		//milliSpace = abs(timeHistory[timeHistoryIndex-1] - timeHistory[timeHistoryIndex-2])/1000;
-	}
+		int64_t nanoSpace = timeHistory[timeHistoryIndex-1] - timeHistory[timeHistoryIndex-2]/1000;
+		nextPredictedBeat = currentTime + nanoSpace;
+	}*/
 }
 
 // Tell openSL to play the filled buffer and switch to filling the other buffer
@@ -493,6 +503,7 @@ void init_audio_player() {
 	log("%d", BUFFER_SIZE);
 
 	fftBufSize = kiss_fft_next_fast_size(SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE/NR_CHANNELS);
+	bufferStartTime = getTimeNsec();
 
 	cfg = kiss_fft_alloc(fftBufSize, 0, 0, 0);
 	for (int i = 0; i < 15; i++)

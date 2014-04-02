@@ -353,7 +353,7 @@ public class PlayerActivity extends Activity {
 					flashOwnScreen();
 					try
 					{
-						Thread.sleep(150);
+						Thread.sleep(140);
 					} catch (InterruptedException e)
 					{
 						// TODO Auto-generated catch block
