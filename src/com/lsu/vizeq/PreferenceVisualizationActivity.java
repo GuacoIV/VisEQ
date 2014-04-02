@@ -36,6 +36,24 @@ public class PreferenceVisualizationActivity extends Activity
 		//circleScreen.addView(pc, circleRadius*2, circleRadius*2); 
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		switch (VizEQ.numRand)
+		{
+			case 0:;
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+				break;
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;
+		}
 		
 		//Make some fake request data
 		//3 requests (for 1 artist) by 2 people

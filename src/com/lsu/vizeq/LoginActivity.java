@@ -57,6 +57,7 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -105,9 +106,39 @@ public class LoginActivity extends Activity {
 		//Typeface font = Typeface.createFromAsset(getAssets(), "Mohave.otf");
 		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Regular.otf");
 		TextView loginExplain = (TextView) findViewById(R.id.ExplainSignIn);
+		Button signInButton = (Button) findViewById(R.id.sign_in_button);
+		Button skipButton = (Button) findViewById(R.id.Skip);
 		loginExplain.setTypeface(font);
 		loginExplain.setTextSize(20); //40 pt 153, 153, 153
 		loginExplain.setTextColor(getResources().getColor(R.color.Grey85));
+		switch (VizEQ.numRand)
+		{
+			case 0:;
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+				signInButton.setBackgroundColor(getResources().getColor(R.color.Red));
+				skipButton.setBackgroundColor(getResources().getColor(R.color.Red));
+				break;
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				signInButton.setBackgroundColor(getResources().getColor(R.color.Green));
+				skipButton.setBackgroundColor(getResources().getColor(R.color.Green));
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				signInButton.setBackgroundColor(getResources().getColor(R.color.Blue));
+				skipButton.setBackgroundColor(getResources().getColor(R.color.Blue));
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				signInButton.setBackgroundColor(getResources().getColor(R.color.Purple));
+				skipButton.setBackgroundColor(getResources().getColor(R.color.Purple));
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				signInButton.setBackgroundColor(getResources().getColor(R.color.Orange));
+				skipButton.setBackgroundColor(getResources().getColor(R.color.Orange));
+				break;
+		}
 		
 		LinearLayout loginFormContainer = (LinearLayout) findViewById(R.id.LoginFormContainer);
 		loginFormContainer.setOnTouchListener(new OnTouchListener(){

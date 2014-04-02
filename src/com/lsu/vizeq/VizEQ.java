@@ -16,7 +16,7 @@ import android.view.MenuItem;
 
 public class VizEQ extends Activity
 {
-
+	static int numRand;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -27,8 +27,8 @@ public class VizEQ extends Activity
 		//Makes volume buttons control music stream even when nothing playing
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
 		Random r = new Random();
-		
-		switch (r.nextInt(5))
+		numRand = r.nextInt(5);
+		switch (numRand)
 		{
 			case 0:;
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
