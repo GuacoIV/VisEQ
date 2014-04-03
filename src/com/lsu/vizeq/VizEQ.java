@@ -9,10 +9,13 @@ import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 public class VizEQ extends Activity
 {
@@ -23,6 +26,7 @@ public class VizEQ extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
 		ActionBar actionBar = getActionBar();
+		actionBar.hide();
 		
 		//Makes volume buttons control music stream even when nothing playing
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 

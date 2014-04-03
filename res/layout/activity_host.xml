@@ -12,7 +12,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name your session:" />
+        android:text="NAME YOUR SESSION:" />
 
     <EditText
         android:id="@+id/editText1"
@@ -20,18 +20,20 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/textView1"
-        android:ems="10" >
-
+        android:ems="20" 
+        android:gravity="center"
+        android:textSize="25sp">
         <requestFocus />
     </EditText>
 
     <Button
         android:id="@+id/OK"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignLeft="@+id/editText1"
         android:layout_below="@+id/editText1"
         android:layout_marginTop="15dp"
-        android:text="OK" />
+        android:text="OK" 
+        android:gravity="center"/>
 
 </RelativeLayout>

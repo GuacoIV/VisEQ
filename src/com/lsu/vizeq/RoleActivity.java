@@ -47,6 +47,12 @@ public class RoleActivity extends Activity
 		orText.setTextSize(27);//27 gothic bold //51, 51, 51 //diameter is 140
 		orText.setTextColor(Color.rgb(51, 51, 51));
 		ActionBar actionBar = getActionBar();
+		int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
+	    TextView yourTextView = (TextView) findViewById(titleId);
+	    yourTextView.setTextColor(Color.WHITE);
+	    Typeface titleFont = Typeface.createFromAsset(getAssets(), "Mohave-SemiBold.otf");
+	    yourTextView.setTypeface(titleFont);
+	    yourTextView.setTextSize(22);
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 		switch (VizEQ.numRand)
 		{

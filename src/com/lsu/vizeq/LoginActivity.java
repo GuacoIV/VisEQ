@@ -102,8 +102,13 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-		
-		//Typeface font = Typeface.createFromAsset(getAssets(), "Mohave.otf");
+		int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
+	    TextView yourTextView = (TextView) findViewById(titleId);
+	    yourTextView.setTextColor(Color.WHITE);
+	    Typeface titleFont = Typeface.createFromAsset(getAssets(), "Mohave-SemiBold.otf");
+	    yourTextView.setTypeface(titleFont);
+	    yourTextView.setTextSize(22);
+
 		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Regular.otf");
 		TextView loginExplain = (TextView) findViewById(R.id.ExplainSignIn);
 		Button signInButton = (Button) findViewById(R.id.sign_in_button);
