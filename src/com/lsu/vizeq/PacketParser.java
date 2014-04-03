@@ -10,6 +10,8 @@ public class PacketParser {
 		
 		String data = new String(packet.getData());
 		int nlindx = data.indexOf('\n');
+		if(nlindx < 0)
+			nlindx = data.indexOf(0);
 		header = data.substring(0,nlindx);
 		
 		return header;
@@ -40,13 +42,10 @@ public class PacketParser {
 			nlindx = data.indexOf('\n');
 			if(nlindx < 0)
 			{
-				arg = data;
+				nlindx = data.indexOf(0);
 				end = true;
 			}
-			else
-			{
-				arg = data.substring(0, nlindx);
-			}
+			arg = data.substring(0, nlindx);
 			args[count++] = arg;
 		}
 		return args;

@@ -96,10 +96,11 @@ public class PlayerActivity extends Activity {
 	static RelativeLayout playerBackground;
 	static int flash = 0;
 	
-	public static void SendBeat(String data) {
-		byte[] sendData = new byte[7];
+	public static void SendBeat(String color) {
+		byte[] sendData = new byte[1024];
 		try {
 			DatagramSocket sendSocket = new DatagramSocket();
+			String data = "color\n"+color;
 			sendData = data.getBytes();
 			Iterator it = MyApp.connectedUsers.entrySet().iterator();
 			while (it.hasNext())

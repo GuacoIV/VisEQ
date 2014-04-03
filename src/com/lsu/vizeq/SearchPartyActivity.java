@@ -195,16 +195,16 @@ public class SearchPartyActivity extends Activity {
 				while (!found)
 				{
 					byte[] receiveData = new byte[1024];
-					String receiveString;
+					
 					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 					try
 					{
 						receiveSocket.receive(receivePacket);
-						receiveString = new String(receivePacket.getData());
-						if(receiveString.substring(0, 5).equals("found"))
+						String message = PacketParser.getHeader(receivePacket);
+						if(message.equals("found"))
 						{
 							found = true;
-							partyName = receiveString.substring(6, receiveString.length());
+							partyName = PacketParser.getArgs(receivePacket)[0];
 							partyIp = receivePacket.getAddress().getHostAddress();
 							myapp.connectedUsers.put(partyName, InetAddress.getByName(partyIp));
 							result = "Found parties:";
@@ -264,7 +264,7 @@ public class SearchPartyActivity extends Activity {
 					//send join request
 					byte[] sendData = new byte[1024];
 					byte[] receiveData = new byte[1024];
-					String searchString = "join "+myapp.myName;
+					String searchString = "join\n"+myapp.myName;
 					sendData = searchString.getBytes();
 					InetAddress ipaddress = arg0[0];
 					
@@ -279,9 +279,9 @@ public class SearchPartyActivity extends Activity {
 						Log.d("listen for join", "listening");
 						DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
 						listenSocket.receive(receivePacket);
-						String message = new String(receivePacket.getData());
+						String message = PacketParser.getHeader(receivePacket);
 						Log.d("listen for join", message);
-						if(message.substring(0, 6).equals("accept"))
+						if(message.equals("accept"))
 						{
 							Log.d("listen for join", "we are joined");
 							myapp.joined = true;
