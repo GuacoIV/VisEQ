@@ -199,16 +199,17 @@ public class SoundVisualizationActivity extends Activity
 			String color = "#000000";
 			try {
 				receiveSocket = new DatagramSocket(7770);
-				byte[] receiveData = new byte[7];
+				byte[] receiveData = new byte[1024];
 				while (!isCancelled())
 				{
 					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 					receiveSocket.receive(receivePacket);
-					String data = new String(receivePacket.getData());
-					data = data.substring(0,7);
-					color = data;
-					publishProgress(color);
-					Log.d("UDP","Received!"+data);
+					if(PacketParser.getHeader(receivePacket).equals("color"))
+					{
+						color = PacketParser.getArgs(receivePacket)[0];
+						publishProgress(color);
+						Log.d("UDP","Received!"+color);
+					}
 				}
 			} 
 			catch (Exception e) 

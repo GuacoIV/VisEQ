@@ -97,14 +97,13 @@ public class HostMenuActivity extends Activity
 						InetAddress ip = receivedPacket.getAddress();
 						int port = receivedPacket.getPort();
 						
-						String data = new String(receivedPacket.getData());
-						if (data.substring(0, 6).equals("search"))
+						String message = PacketParser.getHeader(receivedPacket);
+						if (message.equals("search"))
 						{
 							Log.d("listen thread", "search received from "+ip.toString()+" "+ip.getHostAddress());
 							//send back information
-							String information = "found ";
-							information += (myapp.myName);
-							Log.d("listen thread", "sending back"+information);
+							String information = "found\n"+myapp.myName;
+							Log.d("listen thread", "sending back "+information+ " to "+ip.getHostAddress());
 							
 							//make a packet
 							byte[] sendData = new byte[1024];
@@ -212,10 +211,10 @@ public class HostMenuActivity extends Activity
 					byte listenData[] = new byte[1024]; 
 					DatagramPacket listenPacket = new DatagramPacket(listenData, listenData.length);
 					listenSocket.receive(listenPacket);
-					String listenString = new String(listenPacket.getData());
-					if(listenString.substring(0, 4).equals("join"))
+					String message = PacketParser.getHeader(listenPacket);
+					if(message.equals("join"))
 					{
-						String clientName = listenString.substring(5);
+						String clientName = PacketParser.getArgs(listenPacket)[0];
 						InetAddress clientIp = listenPacket.getAddress();
 						myapp.connectedUsers.put(clientName, clientIp);
 						Log.d("join listener", "added "+clientName+" "+clientIp.getHostName());
