@@ -34,8 +34,8 @@
 
         <ImageView
             android:id="@+id/cover_image"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="300px"
+            android:layout_height="300px"
             android:layout_marginTop="10dp"
             android:scaleType="fitXY"
             android:src="@drawable/cover_mock" />
@@ -64,7 +64,7 @@
                     android:background="@drawable/star_disabled_state" />
             </LinearLayout>
 
-            <LinearLayout
+            <!-- <LinearLayout
                 android:id="@+id/player_next_album"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
@@ -77,7 +77,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:background="@drawable/player_next_album_state" />
-            </LinearLayout>
+            </LinearLayout>-->
         </LinearLayout>
     </LinearLayout>
 

@@ -75,7 +75,6 @@ public class WebService {
 				for (int i = 0; i < tracks.length(); i++) {
 					String track = tracks.getJSONObject(i).getString("name");
 					String uri = tracks.getJSONObject(i).getString("href");
-					//If I set uri = "spotify:track:6F5c58TMEs1byxUstkzVeM" then it plays Roar by Katy Perry every time
 					result.add(new Track(track, album, artist, uri));
 				}
 
@@ -90,7 +89,6 @@ public class WebService {
 	public void loadAlbum(TracksLoadedDelegate tracksLoadedDelegate) {
 
 		mTracksLoadedDelegate = tracksLoadedDelegate;
-		// Fetch the first album
 
 		//mPsytranceClient.get("http://psytrance.se/rest.php?style=psytrance&page=0&pageSize=1&filter=hide&uid=" + mLoginId, new JsonHttpResponseHandler() {
 
@@ -109,7 +107,7 @@ public class WebService {
 								trackToAdd = SearchActivity.queue.get(i);							
 								fakeQueue.add(trackToAdd);
 							}
-							mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), trackToAdd.mThumbnail); //last is image
+							mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), SearchActivity.queue.get(0).mThumbnail); //last is image
 						}
 					}
 					//mAlbumUri = album.getString("spotify");
@@ -126,7 +124,7 @@ public class WebService {
 
 	}
 
-	public void loadNextAlbum(String username, String currentAlbum) {
+	/*public void loadNextAlbum(String username, String currentAlbum) {
 		mRemoveAlbumClient.get("http://psytrance.se/albumClicked.php?uid=" + username + "&url=" + currentAlbum,
 				new AsyncHttpResponseHandler() {
 					@Override
@@ -136,7 +134,7 @@ public class WebService {
 					}
 				});
 
-	}
+	}*/
 
 
 }

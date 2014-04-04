@@ -205,6 +205,35 @@ public class PlayerActivity extends Activity {
 			mIndex = 0;
 		mBinder.getService().playNext(mTracks.get(mIndex).getSpotifyUri(), playerPositionDelegate);
 		updateTrackState();
+		Thread nextCoverThread = new Thread(new Runnable()
+		{
+			public void run()
+			{
+				try {
+					URL url = new URL(mTracks.get(mIndex).mThumbnail);
+					final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+					runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							((ImageView) findViewById(R.id.cover_image)).setImageBitmap(bmp);
+							
+						}
+						
+					});
+				} catch (MalformedURLException e) {
+					throw new RuntimeException("Cannot load cover image", e);
+				} catch (IOException e) {
+					throw new RuntimeException("Cannot load cover image", e);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+		nextCoverThread.start();
 	}
 
 	public void playPrev() {
@@ -218,7 +247,35 @@ public class PlayerActivity extends Activity {
 			mIndex = mTracks.size() - 1;
 			mBinder.getService().playNext(mTracks.get(mIndex).getSpotifyUri(), playerPositionDelegate);
 		updateTrackState();
-
+		Thread prevCoverThread = new Thread(new Runnable()
+		{
+			public void run()
+			{
+				try {
+					URL url = new URL(mTracks.get(mIndex).mThumbnail);
+					final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+					runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run()
+						{
+							((ImageView) findViewById(R.id.cover_image)).setImageBitmap(bmp);
+							
+						}
+						
+					});
+				} catch (MalformedURLException e) {
+					throw new RuntimeException("Cannot load cover image", e);
+				} catch (IOException e) {
+					throw new RuntimeException("Cannot load cover image", e);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+		prevCoverThread.start();
 	}
 
 	public void updateTrackState() {
@@ -507,7 +564,7 @@ public class PlayerActivity extends Activity {
 			}
 		});
 
-		findViewById(R.id.player_next_album).setOnClickListener(new OnClickListener() {
+		/*findViewById(R.id.player_next_album).setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -530,7 +587,7 @@ public class PlayerActivity extends Activity {
 				AlertDialog dialog = builder.create();
 				dialog.show();
 			}
-		});
+		});*/
 		
 		LibSpotifyWrapper.BeginPolling();
 		Log.d("what", "up");
