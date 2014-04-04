@@ -210,20 +210,43 @@ public class SearchActivity extends Activity
 							//JSONObject track = tracks.getJSONObject(0);
 							
 							//Calculate start and end colors
-							int startColor = getResources().getColor(R.color.Green);
-							int endColor = getResources().getColor(R.color.LightGreen);
+							int startColor = 0;
+							int endColor = 0;
+							switch (VizEQ.numRand)
+							{
+								case 0:;
+									startColor = getResources().getColor(R.color.Red); //203, 32, 38
+									endColor = Color.rgb(203+50, 32+90, 38+90);
+									break;
+								case 1:
+									startColor = getResources().getColor(R.color.Green);//100, 153, 64
+									endColor = Color.rgb(100+90, 153+90, 64+90);
+									break;
+								case 2:
+									startColor = getResources().getColor(R.color.Blue); //0, 153, 204
+									endColor = Color.rgb(0+90, 153+90, 204+50);
+									break;
+								case 3:
+									startColor = getResources().getColor(R.color.Purple); //155, 105, 172
+									endColor = Color.rgb(155+70, 105+70, 172+70);
+									break;
+								case 4:
+									startColor = getResources().getColor(R.color.Orange); //245, 146, 30
+									endColor = Color.rgb(245, 146+90, 30+90);
+									break;
+							}
 							
 							int redStart = Color.red(startColor);
 							int redEnd = Color.red(endColor);
-							int addRed = (redEnd - redStart)/20;
+							int addRed = (redEnd - redStart)/15;
 							
 							int greenStart = Color.green(startColor);
 							int greenEnd = Color.green(endColor);
-							int addGreen = (greenEnd - greenStart)/20;
+							int addGreen = (greenEnd - greenStart)/15;
 							
 							int blueStart = Color.blue(startColor);
 							int blueEnd = Color.blue(endColor);
-							int addBlue = (blueEnd - blueStart)/20;
+							int addBlue = (blueEnd - blueStart)/15;
 							
 							
 							for (int i = 0; i < tracks.length(); i++)
@@ -304,9 +327,9 @@ public class SearchActivity extends Activity
 								}*/
 								tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
 								tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
-								if (redStart + addRed < 255 && i < 20) redStart += addRed;
-								if (greenStart + addGreen < 255 && i < 20) greenStart += addGreen;
-								if (blueStart + addBlue < 255 && i < 20) blueStart += addBlue;
+								if (redStart + addRed < 255 && i < 16) redStart += addRed;
+								if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
+								if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
 								textViewToAdd.setText(trackName);
 								textTwoViewToAdd.setText(trackArtist);
 								textViewToAdd.setTextSize(20);
