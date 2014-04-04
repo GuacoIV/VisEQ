@@ -396,33 +396,54 @@ public class PlayerActivity extends Activity {
 		Log.e("", "Your login id is " + Installation.id(this));
 		mWebservice = new WebService(Installation.id(this));
 		mWebservice.loadAlbum(new WebService.TracksLoadedDelegate() {
-			public void onTracksLoaded(ArrayList<Track> tracks, String albumUri, String imageUri) {
+			public void onTracksLoaded(ArrayList<Track> tracks, String albumUri, final String imageUri) {
 				mTracks = tracks;
 				mAlbumUri = albumUri;
 				// Set the data of the first track
 				mIndex = 0;
 				updateTrackState();
 
-				AsyncTask<String, Integer, Bitmap> coverLoader = new AsyncTask<String, Integer, Bitmap>() {
+				//AsyncTask<String, Integer, Bitmap> coverLoader = new AsyncTask<String, Integer, Bitmap>() {
 
-					@Override
-					protected Bitmap doInBackground(String... uris) {
-						try {
-							URL url = new URL(uris[0]);
-							Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-							return bmp;
-						} catch (MalformedURLException e) {
-							throw new RuntimeException("Cannot load cover image", e);
-						} catch (IOException e) {
-							throw new RuntimeException("Cannot load cover image", e);
+					//@Override
+					//protected Bitmap doInBackground(String... uris) {
+					Thread coverThread = new Thread(new Runnable()
+					{
+						public void run()
+						{
+							try {
+								URL url = new URL(imageUri);
+								final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+								runOnUiThread(new Runnable()
+								{
+									@Override
+									public void run()
+									{
+										((ImageView) findViewById(R.id.cover_image)).setImageBitmap(bmp);
+										
+									}
+									
+								});
+								//return bmp;
+							} catch (MalformedURLException e) {
+								throw new RuntimeException("Cannot load cover image", e);
+							} catch (IOException e) {
+								throw new RuntimeException("Cannot load cover image", e);
+							}
+							catch (Exception e)
+							{
+								e.printStackTrace();
+							}
 						}
-					}
+					});
+					coverThread.start();
+					//}
 
-					protected void onPostExecute(Bitmap bmp) {
-						((ImageView) findViewById(R.id.cover_image)).setImageBitmap(bmp);
-					}
-				};
-				coverLoader.execute(new String[] { imageUri });
+					//protected void onPostExecute(Bitmap bmp) {
+						
+					//}
+				//};
+				//coverLoader.execute(new String[] { imageUri });
 				
 				// load the track
 				//mBinder.getService().playNext(mTracks.get(mIndex).getSpotifyUri(), playerPositionDelegate); //had getSpotifyUri
