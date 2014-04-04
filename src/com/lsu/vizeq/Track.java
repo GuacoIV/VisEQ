@@ -32,13 +32,15 @@ class Track {
 	public String mAlbum;
 	public String mArtist;
 	public String mUri;
+	public String mThumbnail;
 	public String mRequester;
 	
-	public Track(String track, String album, String artist,	String uri) {
+	public Track(String track, String album, String artist,	String uri, String thumbnail, int dummy) {
 		mTrack = track;
 		mAlbum = album;
 		mArtist = artist;
 		mUri = uri;
+		mThumbnail = thumbnail;
 	}
 	
 	public Track(String track, String album, String artist,	String uri, String requester) {
@@ -47,6 +49,14 @@ class Track {
 		mArtist = artist;
 		mUri = uri;
 		mRequester = requester;
+	}
+	
+	public Track(String track, String album, String artist, String uri)
+	{
+		mTrack = track;
+		mAlbum = album;
+		mArtist = artist;
+		mUri = uri;
 	}
 
 	public String getSpotifyUri() {

@@ -1,7 +1,21 @@
 package com.lsu.vizeq;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +53,7 @@ public class SearchActivity extends Activity
 	public static ArrayList<Track> queue;
 
 	AsyncHttpClient searchClient = new AsyncHttpClient();
+	AsyncHttpClient artworkClient = new AsyncHttpClient();
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -109,7 +124,7 @@ public class SearchActivity extends Activity
 			        builder.setMessage(R.string.QueueTopOrBottom)
 			               .setPositiveButton("Top", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                	   queue.add(0, row.getTrack());
+			                	   queue.add(0, row.getTrack());//URLConnection con = url.openConnection();
 			                	   TrackRow queueRow = row;
 			                	   queueRow.setOnTouchListener(null);
 			                	   searchLayout.removeView(queueRow);
@@ -215,16 +230,68 @@ public class SearchActivity extends Activity
 							{
 								String trackName = tracks.getJSONObject(i).getString("name");
 								String trackArtist = tracks.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
-								String uri = tracks.getJSONObject(i).getString("href");
+								final String uri = tracks.getJSONObject(i).getString("href");
 								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
 								//Log.d("Search", trackName + ": " + trackArtist);
-								TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
+								final TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
 								TextView textViewToAdd = new TextView(SearchActivity.this);
 								TextView textTwoViewToAdd = new TextView(SearchActivity.this);
 								tableRowToAdd.mTrack = trackName;
 								tableRowToAdd.mArtist = trackArtist;
 								tableRowToAdd.mAlbum = trackAlbum;
 								tableRowToAdd.mUri = uri;
+
+
+									//JSONObject array = response.getJSONObject("thumbnail_url");
+									//String thumbnail = array.toString();
+									
+									Thread coverThread = new Thread(new Runnable()
+									{
+										public void run()
+										{
+											URI url;
+											try
+											{
+												url = new URI("https://embed.spotify.com/oembed/?url=" + uri);
+												HttpClient httpClient = new DefaultHttpClient();
+												HttpResponse response2 = httpClient.execute(new HttpGet(url));
+												HttpEntity entity = response2.getEntity();
+												String s = EntityUtils.toString(entity, "UTF-8");
+												
+												//URLConnection con = url.openConnection();
+												//InputStream is = con.getInputStream();
+												//String encoding = con.getContentEncoding();
+												//encoding = encoding == null ? "UTF-8" : encoding;
+												//String s = .toString(is, encoding);
+												int numThumb = s.indexOf("thumbnail_url");
+												String thumbnail = s.substring(numThumb + 16);
+												thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
+												thumbnail = thumbnail.replace("\\", "");
+												tableRowToAdd.mThumbnail = thumbnail;
+												//System.out.println(s);
+											} catch (URISyntaxException e)
+											{
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											} catch (ClientProtocolException e)
+											{
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											} catch (IOException e)
+											{
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}
+											
+											
+											
+											
+										}
+									
+									});
+									coverThread.start();
+															
+
 								/*if (i % 2 == 0) 
 								{
 									tableRowToAdd.setBackgroundColor(TrackRow.color1);

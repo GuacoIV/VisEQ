@@ -109,7 +109,7 @@ public class WebService {
 								trackToAdd = SearchActivity.queue.get(i);							
 								fakeQueue.add(trackToAdd);
 							}
-							mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), "https://dl.dropboxusercontent.com/u/31055468/albumart_640x640.png"); //last is image
+							mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), trackToAdd.mThumbnail); //last is image
 						}
 					}
 					//mAlbumUri = album.getString("spotify");

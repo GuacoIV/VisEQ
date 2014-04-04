@@ -11,6 +11,7 @@ public class TrackRow extends TableRow
 	public String mAlbum;
 	public String mArtist;
 	public String mUri;
+	public String mThumbnail;
 	public int originalColor;
 	public static int color1 = Color.rgb(200, 200, 200);
 	public static int color2 = Color.WHITE;
@@ -42,7 +43,7 @@ public class TrackRow extends TableRow
 	
 	public Track getTrack()
 	{
-		Track tempTrack = new Track(mTrack, mAlbum, mArtist, mUri);
+		Track tempTrack = new Track(mTrack, mAlbum, mArtist, mUri, mThumbnail, 0);
 		return tempTrack;
 	}
 
