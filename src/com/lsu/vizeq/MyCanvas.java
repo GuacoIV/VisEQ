@@ -73,16 +73,39 @@ import android.view.View;
 			{
 				//Get a random point on the screen
 				pickColor();
-				circlesToDraw[i].x = r.nextInt((int) width);
-				circlesToDraw[i].y = r.nextInt((int) height);
+
+				boolean success = false;
+				while (success == false)
+				{
+					circlesToDraw[i].x = r.nextInt((int) width);
+					circlesToDraw[i].y = r.nextInt((int) height);
+					success = isNotColliding(i);
+				}
 				canvas.drawCircle(circlesToDraw[i].x, circlesToDraw[i].y, circlesToDraw[i].radius, paint);
-				
 			}
 			
 			paint.setTextSize(50);
 		    paint.setColor(Color.BLUE);
 		    paint.setTextAlign(Align.CENTER);
 		    //canvas.drawText(text, x, y, paint);
+		}
+		
+		public boolean isNotColliding(int whichCircle)
+		{
+			boolean soFarSoGood = true;
+			for (int j = 0; j < whichCircle; j++)
+			{
+				//are the distances between circle i and circle j centers > circle[i].radius + circle[j].radius?
+				int diffX = Math.abs(circlesToDraw[whichCircle].x - circlesToDraw[j].x);
+				int diffY = Math.abs(circlesToDraw[whichCircle].y - circlesToDraw[j].y);
+				double distFromEachOther = Math.sqrt(diffX * diffX + diffY * diffY);
+				if (distFromEachOther < circlesToDraw[whichCircle].radius + circlesToDraw[j].radius) 
+				{
+					soFarSoGood = false;
+					return soFarSoGood;
+				}
+			}
+			return soFarSoGood;
 		}
 		public void pickColor()
 		{
