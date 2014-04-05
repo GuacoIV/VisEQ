@@ -71,17 +71,20 @@ import android.view.View;
 			super.onDraw(canvas);
 
 			paint.setTextSize(45);
+			int safety = 0;
 			for (int i = 0; i < numCirclesToDraw; i++)
 			{
+				safety = 0;
 				//Get a random point on the screen
 				pickColor();
 
 				boolean success = false;
-				while (success == false)
+				while (success == false  && safety < 200)
 				{
 					circlesToDraw[i].x = r.nextInt((int) width);
 					circlesToDraw[i].y = r.nextInt((int) height);
 					success = isNotColliding(i);
+					safety++;
 				}
 				canvas.drawCircle(circlesToDraw[i].x, circlesToDraw[i].y, circlesToDraw[i].radius, paint);
 				paint.setColor(Color.BLUE);
@@ -94,11 +97,13 @@ import android.view.View;
 		public boolean isNotColliding(int whichCircle)
 		{
 			boolean soFarSoGood = true;
+			int diffX = 0;
+			int diffY = 0;
 			for (int j = 0; j < whichCircle; j++)
 			{
 				//are the distances between circle i and circle j centers > circle[i].radius + circle[j].radius?
-				int diffX = Math.abs(circlesToDraw[whichCircle].x - circlesToDraw[j].x);
-				int diffY = Math.abs(circlesToDraw[whichCircle].y - circlesToDraw[j].y);
+				diffX = Math.abs(circlesToDraw[whichCircle].x - circlesToDraw[j].x);
+				diffY = Math.abs(circlesToDraw[whichCircle].y - circlesToDraw[j].y);
 				double distFromEachOther = Math.sqrt(diffX * diffX + diffY * diffY);
 				if (distFromEachOther < circlesToDraw[whichCircle].radius + circlesToDraw[j].radius) 
 				{
@@ -106,6 +111,41 @@ import android.view.View;
 					return soFarSoGood;
 				}
 			}
+				int quadrant = 0;
+				if (circlesToDraw[whichCircle].x >= width/2 && circlesToDraw[whichCircle].y <= height/2) quadrant = 1;
+				else if (circlesToDraw[whichCircle].x <= width/2 && circlesToDraw[whichCircle].y <= height/2) quadrant = 2;
+				else if (circlesToDraw[whichCircle].x <= width/2 && circlesToDraw[whichCircle].y >= height/2) quadrant = 3;
+				else quadrant = 4;
+					
+				//Edge detection
+				switch (quadrant)
+				{
+					case 1:
+						diffX = (int) Math.abs(circlesToDraw[whichCircle].x - width);
+						diffY = (int) Math.abs(circlesToDraw[whichCircle].y);
+						if (diffX < circlesToDraw[whichCircle].radius || diffY < circlesToDraw[whichCircle].radius)
+							return false;
+						break;
+					case 2:
+						diffX = (int) Math.abs(circlesToDraw[whichCircle].x);
+						diffY = (int) Math.abs(circlesToDraw[whichCircle].y);
+						if (diffX < circlesToDraw[whichCircle].radius || diffY < circlesToDraw[whichCircle].radius)
+							return false;
+						break;
+					case 3:
+						diffX = (int) Math.abs(circlesToDraw[whichCircle].x);
+						diffY = (int) Math.abs(circlesToDraw[whichCircle].y - height);
+						if (diffX < circlesToDraw[whichCircle].radius || diffY < circlesToDraw[whichCircle].radius)
+							return false;
+						break;
+					case 4:
+						diffX = (int) Math.abs(circlesToDraw[whichCircle].x - width);
+						diffY = (int) Math.abs(circlesToDraw[whichCircle].y - height);
+						if (diffX < circlesToDraw[whichCircle].radius || diffY < circlesToDraw[whichCircle].radius)
+							return false;
+						break;
+				}
+			
 			return soFarSoGood;
 		}
 		public void pickColor()

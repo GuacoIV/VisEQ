@@ -188,7 +188,7 @@ public class PreferenceVisualizationActivity extends Activity
 			Artist tempArtist = requestedArtists.get(i);
 			tempArtist.mPercentage = ((float)tempArtist.mArtistWeight)/totalWeights;
 			requestedArtists.set(i, tempArtist);
-			AA = (int) ((width*height) - ((.4)*(width*height))); //Area available
+			AA = (int) ((width*height) - ((.65)*(width*height))); //Area available
 			pixelRadius = (int) Math.sqrt((AA * tempArtist.mPercentage)/Math.PI);
 			
 			circles[i] = new PreferenceCircle(this, pixelRadius, pixelRadius, pixelRadius, tempArtist.mArtist);
