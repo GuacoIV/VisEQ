@@ -30,9 +30,6 @@ public class PreferenceVisualizationActivity extends Activity
 		int circleRadius = 100;
 		//PreferenceCircle pc = new PreferenceCircle(this, circleRadius, circleRadius, circleRadius, "hi");
 		LinearLayout circleScreen = (LinearLayout) this.findViewById(R.id.CircleScreen);
-		LinearLayout column1 = (LinearLayout)this.findViewById(R.id.CircleColumn1);
-		LinearLayout column2 = (LinearLayout)this.findViewById(R.id.CircleColumn2);
-		LinearLayout column3 = (LinearLayout)this.findViewById(R.id.CircleColumn3);
 		//circleScreen.addView(pc, circleRadius*2, circleRadius*2); 
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
@@ -184,6 +181,7 @@ public class PreferenceVisualizationActivity extends Activity
 		int height = getResources().getDisplayMetrics().heightPixels;
 		int AA = 0;
 		int pixelRadius = 0; 
+		PreferenceCircle circles[] = new PreferenceCircle[15];
 		for (int i = 0; i < requestedArtists.size(); i++)
 		{
 			Artist tempArtist = requestedArtists.get(i);
@@ -192,13 +190,12 @@ public class PreferenceVisualizationActivity extends Activity
 			AA = (int) ((width*height) - ((.4)*(width*height))); //Area available
 			pixelRadius = (int) Math.sqrt((AA * tempArtist.mPercentage)/Math.PI);
 			
-			//Get a random point on the screen
-			Random r = new Random();//r.nextInt(width)
-			PreferenceCircle pc1 = new PreferenceCircle(this, pixelRadius, pixelRadius, pixelRadius, tempArtist.mArtist);
-			if (column1.getChildCount() < 3) column1.addView(pc1, pixelRadius*2, pixelRadius*2);
-			else if (column2.getChildCount() < 3) column2.addView(pc1, pixelRadius*2, pixelRadius);
-			else column3.addView(pc1, pixelRadius*2, pixelRadius*2);
+			circles[i] = new PreferenceCircle(this, pixelRadius, pixelRadius, pixelRadius, tempArtist.mArtist);
+			
+			//circleScreen.addView(myCanvas, width, height);
 		}
+		MyCanvas myCanvas = new MyCanvas(this, circles);
+		circleScreen.addView(myCanvas, width, height);
 		
 	}
 
