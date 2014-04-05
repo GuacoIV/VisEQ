@@ -15,15 +15,17 @@ import android.view.View;
 	public class MyCanvas extends View
 	{
 		Random r = new Random();
+		int numCirclesToDraw;
 		public MyCanvas(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
 		}
 		
-		public MyCanvas(Context context, PreferenceCircle[] circles)
+		public MyCanvas(Context context, PreferenceCircle[] circles, int num)
 		{
 			super(context);
 			this.circlesToDraw = new PreferenceCircle[15];
+			this.numCirclesToDraw = num; 
 			for (int i = 0; i < 15; i++)
 				this.circlesToDraw[i] = circles[i];
 		}
@@ -68,8 +70,8 @@ import android.view.View;
 		{
 			super.onDraw(canvas);
 
-
-			for (int i = 0; i < 6; i++)
+			paint.setTextSize(45);
+			for (int i = 0; i < numCirclesToDraw; i++)
 			{
 				//Get a random point on the screen
 				pickColor();
@@ -82,12 +84,11 @@ import android.view.View;
 					success = isNotColliding(i);
 				}
 				canvas.drawCircle(circlesToDraw[i].x, circlesToDraw[i].y, circlesToDraw[i].radius, paint);
+				paint.setColor(Color.BLUE);
+				int halfOfText =  0;
+				//if (circlesToDraw[i].text != null) halfOfText = (int) (paint.measureText(circlesToDraw[i].text)/2);
+				canvas.drawText(circlesToDraw[i].text, circlesToDraw[i].x-halfOfText, circlesToDraw[i].y, paint);
 			}
-			
-			paint.setTextSize(50);
-		    paint.setColor(Color.BLUE);
-		    paint.setTextAlign(Align.CENTER);
-		    //canvas.drawText(text, x, y, paint);
 		}
 		
 		public boolean isNotColliding(int whichCircle)

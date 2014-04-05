@@ -80,18 +80,18 @@ public class PreferenceVisualizationActivity extends Activity
 		//5 requests by 5 people
 		requests.add(new Track("Track P", "", "Artist D", "", "Person A"));
 		requests.add(new Track("Track Q", "", "Artist D", "", "Person B"));
-		//requests.add(new Track("Track Q", "", "Artist D", "", "Person C"));
-		//requests.add(new Track("Track P", "", "Artist D", "", "Person D"));
-		//requests.add(new Track("Track Q", "", "Artist D", "", "Person E"));
+		requests.add(new Track("Track Q", "", "Artist D", "", "Person C"));
+		requests.add(new Track("Track P", "", "Artist D", "", "Person D"));
+		requests.add(new Track("Track Q", "", "Artist D", "", "Person E"));
 		
 		//7 requests by 6 people
 		requests.add(new Track("Track R", "", "Artist E", "", "Person I"));
 		requests.add(new Track("Track R", "", "Artist E", "", "Person J"));
 		requests.add(new Track("Track S", "", "Artist E", "", "Person K"));
-		//requests.add(new Track("Track T", "", "Artist E", "", "Person L"));
-		//requests.add(new Track("Track T", "", "Artist E", "", "Person M"));
-		//requests.add(new Track("Track U", "", "Artist E", "", "Person M"));
-		//requests.add(new Track("Track T", "", "Artist E", "", "Person N"));
+		requests.add(new Track("Track T", "", "Artist E", "", "Person L"));
+		requests.add(new Track("Track T", "", "Artist E", "", "Person M"));
+		requests.add(new Track("Track U", "", "Artist E", "", "Person M"));
+		requests.add(new Track("Track T", "", "Artist E", "", "Person N"));
 		
 		//1 by 1
 		requests.add(new Track("Track V", "", "Artist F", "", "Person O"));
@@ -181,6 +181,7 @@ public class PreferenceVisualizationActivity extends Activity
 		int height = getResources().getDisplayMetrics().heightPixels;
 		int AA = 0;
 		int pixelRadius = 0; 
+		int numCirclesToDraw = 0;
 		PreferenceCircle circles[] = new PreferenceCircle[15];
 		for (int i = 0; i < requestedArtists.size(); i++)
 		{
@@ -191,10 +192,11 @@ public class PreferenceVisualizationActivity extends Activity
 			pixelRadius = (int) Math.sqrt((AA * tempArtist.mPercentage)/Math.PI);
 			
 			circles[i] = new PreferenceCircle(this, pixelRadius, pixelRadius, pixelRadius, tempArtist.mArtist);
-			
+			numCirclesToDraw++;
 			//circleScreen.addView(myCanvas, width, height);
 		}
-		MyCanvas myCanvas = new MyCanvas(this, circles);
+		
+		MyCanvas myCanvas = new MyCanvas(this, circles, numCirclesToDraw);
 		circleScreen.addView(myCanvas, width, height);
 		
 	}
