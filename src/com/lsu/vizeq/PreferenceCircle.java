@@ -24,7 +24,7 @@ import android.view.View;
 		int x;
 		int y;
 		int radius;
-		Color color;
+		int color;
 		final float scale = getResources().getDisplayMetrics().density;
 		final float width = getResources().getDisplayMetrics().widthPixels;
 		final float height = getResources().getDisplayMetrics().heightPixels;

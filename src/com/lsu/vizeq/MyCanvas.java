@@ -21,6 +21,8 @@ import android.view.View;
 	{
 		Random r = new Random();
 		int numCirclesToDraw;
+		boolean drawText = true;
+		int onlyCircle = 0;
 		public MyCanvas(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
@@ -43,6 +45,23 @@ import android.view.View;
 			        }
 			    }
 			  }
+			int safety = 0;
+			for (int i = 0; i < numCirclesToDraw; i++)
+			{
+				safety = 0;
+				//Get a random point on the screen
+				pickColor();
+				circlesToDraw[i].color = paint.getColor();
+
+				boolean success = false;
+				while (success == false  && safety < 200)
+				{
+					circlesToDraw[i].x = r.nextInt((int) width);
+					circlesToDraw[i].y = r.nextInt((int) height);
+					success = isNotColliding(i);
+					safety++;
+				}
+			}
 
 		}
 		public boolean isInCircle(Point tp, Point c, int radius)
@@ -85,6 +104,7 @@ import android.view.View;
 		{
 			if (event.getAction()==MotionEvent.ACTION_DOWN)
 			{
+				int thisOne = -1;
 				for (int i = 0; i < numCirclesToDraw; i++)
 				{
 					Point touch = new Point();
@@ -94,7 +114,37 @@ import android.view.View;
 					center.x = circlesToDraw[i].x;
 					center.y = circlesToDraw[i].y;
 					if (isInCircle(touch, center, circlesToDraw[i].radius))
+					{
 						Log.d("Circles", "Touched circle " + i);
+						thisOne = i;
+					}
+				}
+				if (thisOne != -1)
+				{
+					final int thisOneForSure = thisOne;
+					onlyCircle = thisOne;
+					Thread expandCircle = new Thread(new Runnable()
+					{
+						public void run()
+						{
+							drawText = false;
+							while (circlesToDraw[thisOneForSure].radius < 1000)
+							{
+								circlesToDraw[thisOneForSure].radius += 15;
+								postInvalidate();
+
+								try
+								{
+									Thread.sleep(20);
+								} 
+								catch (InterruptedException e)
+								{
+									e.printStackTrace();
+								}
+							}
+						}
+					});
+					expandCircle.start();
 				}
 			}
 			return super.onTouchEvent(event);
@@ -106,26 +156,19 @@ import android.view.View;
 			super.onDraw(canvas);
 
 			paint.setTextSize(45);
-			int safety = 0;
 			for (int i = 0; i < numCirclesToDraw; i++)
 			{
-				safety = 0;
-				//Get a random point on the screen
-				pickColor();
-
-				boolean success = false;
-				while (success == false  && safety < 200)
+				paint.setColor(circlesToDraw[i].color);
+				if (drawText == false)
 				{
-					circlesToDraw[i].x = r.nextInt((int) width);
-					circlesToDraw[i].y = r.nextInt((int) height);
-					success = isNotColliding(i);
-					safety++;
+					if (i == onlyCircle) canvas.drawCircle(circlesToDraw[i].x, circlesToDraw[i].y, circlesToDraw[i].radius, paint);
 				}
-				canvas.drawCircle(circlesToDraw[i].x, circlesToDraw[i].y, circlesToDraw[i].radius, paint);
+				else 
+					canvas.drawCircle(circlesToDraw[i].x, circlesToDraw[i].y, circlesToDraw[i].radius, paint);
 				paint.setColor(Color.BLUE);
 				int halfOfText =  0;
 				//if (circlesToDraw[i].text != null) halfOfText = (int) (paint.measureText(circlesToDraw[i].text)/2);
-				canvas.drawText(circlesToDraw[i].text, circlesToDraw[i].x-halfOfText, circlesToDraw[i].y, paint);
+				if (drawText) canvas.drawText(circlesToDraw[i].text, circlesToDraw[i].x-halfOfText, circlesToDraw[i].y, paint);
 			}
 		}
 		

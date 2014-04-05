@@ -22,6 +22,7 @@ public class PreferenceVisualizationActivity extends Activity
 {
 	ArrayList<Track> requests = new ArrayList<Track>();
 	ArrayList<Artist> requestedArtists = new ArrayList<Artist>();
+	static final float PERCENT_WHITESPACE = 0.65f;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -188,7 +189,7 @@ public class PreferenceVisualizationActivity extends Activity
 			Artist tempArtist = requestedArtists.get(i);
 			tempArtist.mPercentage = ((float)tempArtist.mArtistWeight)/totalWeights;
 			requestedArtists.set(i, tempArtist);
-			AA = (int) ((width*height) - ((.65)*(width*height))); //Area available
+			AA = (int) ((width*height) - ((PERCENT_WHITESPACE)*(width*height))); //Area available
 			pixelRadius = (int) Math.sqrt((AA * tempArtist.mPercentage)/Math.PI);
 			
 			circles[i] = new PreferenceCircle(this, pixelRadius, pixelRadius, pixelRadius, tempArtist.mArtist);
