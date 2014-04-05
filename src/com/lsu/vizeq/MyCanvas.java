@@ -9,9 +9,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Paint.Align;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -19,7 +21,6 @@ import android.view.View;
 	{
 		Random r = new Random();
 		int numCirclesToDraw;
-		ArrayList<PreferenceCircle> arrayList = new ArrayList<PreferenceCircle>();
 		public MyCanvas(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
@@ -42,7 +43,17 @@ import android.view.View;
 			        }
 			    }
 			  }
-			
+
+		}
+		public boolean isInCircle(Point tp, Point c, int radius)
+		{
+			boolean result = false;
+			int diffX = Math.abs(tp.x - c.x);
+			int diffY = Math.abs(tp.y - c.y);
+			double distFromCenter = Math.sqrt(diffX * diffX + diffY * diffY);
+			if ((int)distFromCenter > radius) result = false;
+			else result = true;
+			return result;
 		}
 
 		public MyCanvas(Context context, AttributeSet attrs)
@@ -72,11 +83,20 @@ import android.view.View;
 		@Override
 		public boolean onTouchEvent(MotionEvent event)
 		{
-			/*animate().setDuration(600);			
-			animate().scaleX(9);
-			animate().scaleY(9);
-			animate().translationY(height/2 - y);
-			animate().translationX(width/2 - x);*/
+			if (event.getAction()==MotionEvent.ACTION_DOWN)
+			{
+				for (int i = 0; i < numCirclesToDraw; i++)
+				{
+					Point touch = new Point();
+					touch.x = (int) event.getX();
+					touch.y = (int) event.getY();
+					Point center = new Point();
+					center.x = circlesToDraw[i].x;
+					center.y = circlesToDraw[i].y;
+					if (isInCircle(touch, center, circlesToDraw[i].radius))
+						Log.d("Circles", "Touched circle " + i);
+				}
+			}
 			return super.onTouchEvent(event);
 		}
 
