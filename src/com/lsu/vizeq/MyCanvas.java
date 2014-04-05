@@ -1,5 +1,8 @@
 package com.lsu.vizeq;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 
 import android.content.Context;
@@ -16,6 +19,7 @@ import android.view.View;
 	{
 		Random r = new Random();
 		int numCirclesToDraw;
+		ArrayList<PreferenceCircle> arrayList = new ArrayList<PreferenceCircle>();
 		public MyCanvas(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
@@ -26,8 +30,19 @@ import android.view.View;
 			super(context);
 			this.circlesToDraw = new PreferenceCircle[15];
 			this.numCirclesToDraw = num; 
-			for (int i = 0; i < 15; i++)
-				this.circlesToDraw[i] = circles[i];
+			for (int i = 0; i < num; i++)
+				circlesToDraw[i] = circles[i];
+			for (int i = 0; i < num; i++) {
+			    for (int x = 1; x < num - i; x++) {
+			        if (circlesToDraw[x - 1].radius < circlesToDraw[x].radius) {
+			            PreferenceCircle temp = circlesToDraw[x - 1];
+			            circlesToDraw[x - 1] = circlesToDraw[x];
+			            circlesToDraw[x] = temp;
+
+			        }
+			    }
+			  }
+			
 		}
 
 		public MyCanvas(Context context, AttributeSet attrs)
