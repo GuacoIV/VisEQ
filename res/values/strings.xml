@@ -38,5 +38,6 @@
     <string name="volunteer_description">Do you wish to become host if the current host leaves?</string>
     <string name="color_pick">Pick your Color</string>
     <string name="uppercaseVIZEQ">VIZEQ</string>
+    <string name="title_activity_request_details">RequestDetailsActivity</string>
 
 </resources>

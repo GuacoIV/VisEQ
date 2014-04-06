@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Random;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,6 +24,7 @@ import android.view.View;
 		int numCirclesToDraw;
 		boolean drawText = true;
 		int onlyCircle = 0;
+		Context appContext;
 		public MyCanvas(Context context) {
 			super(context);
 			// TODO Auto-generated constructor stub
@@ -31,6 +33,7 @@ import android.view.View;
 		public MyCanvas(Context context, PreferenceCircle[] circles, int num)
 		{
 			super(context);
+			appContext = context;
 			this.circlesToDraw = new PreferenceCircle[15];
 			this.numCirclesToDraw = num; 
 			for (int i = 0; i < num; i++)
@@ -142,9 +145,40 @@ import android.view.View;
 									e.printStackTrace();
 								}
 							}
+							//synchronized(this)
+							//{
+							//	this.notify();
+							//}
 						}
 					});
 					expandCircle.start();
+					//synchronized (expandCircle)
+					//{
+						//try
+						//{
+						//	expandCircle.wait();
+
+						//} catch (InterruptedException e)
+						//{
+						//	e.printStackTrace();
+						//}
+					//}
+					Thread startDetails = new Thread(new Runnable()
+					{
+						public void run()
+						{
+							try
+							{
+								Thread.sleep(700);
+							} catch (InterruptedException e)
+							{
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							PreferenceVisualizationActivity.getDetails(appContext, thisOneForSure);
+						}
+					});
+					startDetails.start();
 				}
 			}
 			return super.onTouchEvent(event);

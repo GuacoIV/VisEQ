@@ -25,6 +25,7 @@ import android.view.View;
 		int y;
 		int radius;
 		int color;
+		Artist artist;
 		final float scale = getResources().getDisplayMetrics().density;
 		final float width = getResources().getDisplayMetrics().widthPixels;
 		final float height = getResources().getDisplayMetrics().heightPixels;
@@ -79,12 +80,13 @@ import android.view.View;
 		    canvas.drawText(text, x, y, paint);
 		}
 
-		public PreferenceCircle(Context context, int x, int y, int radius, String text)
+		public PreferenceCircle(Context context, int x, int y, int radius, Artist a)
 		{
 			super(context);
 			//super.setX(x);
 			//super.setY(y);
-			this.text = text;
+			this.artist = a;
+			this.text = a.mArtist;
 			this.x = x;
 			this.y = y;
 			this.radius = radius;

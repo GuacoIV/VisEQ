@@ -10,6 +10,7 @@ import com.lsu.vizeq.R.color;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Menu;
@@ -23,6 +24,7 @@ public class PreferenceVisualizationActivity extends Activity
 	ArrayList<Track> requests = new ArrayList<Track>();
 	ArrayList<Artist> requestedArtists = new ArrayList<Artist>();
 	static final float PERCENT_WHITESPACE = 0.65f;
+	public static PreferenceCircle circles[];
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -183,7 +185,7 @@ public class PreferenceVisualizationActivity extends Activity
 		int AA = 0;
 		int pixelRadius = 0; 
 		int numCirclesToDraw = 0;
-		PreferenceCircle circles[] = new PreferenceCircle[15];
+		circles = new PreferenceCircle[15];
 		for (int i = 0; i < requestedArtists.size(); i++)
 		{
 			Artist tempArtist = requestedArtists.get(i);
@@ -192,7 +194,7 @@ public class PreferenceVisualizationActivity extends Activity
 			AA = (int) ((width*height) - ((PERCENT_WHITESPACE)*(width*height))); //Area available
 			pixelRadius = (int) Math.sqrt((AA * tempArtist.mPercentage)/Math.PI);
 			
-			circles[i] = new PreferenceCircle(this, pixelRadius, pixelRadius, pixelRadius, tempArtist.mArtist);
+			circles[i] = new PreferenceCircle(this, pixelRadius, pixelRadius, pixelRadius, tempArtist);
 			numCirclesToDraw++;
 			//circleScreen.addView(myCanvas, width, height);
 		}
@@ -219,5 +221,12 @@ public class PreferenceVisualizationActivity extends Activity
 			startActivity(nextIntent);
 		}
 		return true;
+	}
+	
+	public static void getDetails(Context context, int thisOneForSure)
+	{
+		Intent i = new Intent(context, RequestDetailsActivity.class);
+		i.putExtra("whichArtist",""+thisOneForSure);
+		context.startActivity(i);
 	}
 }
