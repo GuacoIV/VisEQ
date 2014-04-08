@@ -21,7 +21,7 @@
     <color name="Grey170">#AAAAAA</color>
     <color name="Green">#649940</color>
     
-    <array name="color_spinner">
+    <string-array name="color_spinner">
         <item>Black</item>
         <item>Blue</item>
         <item>Green</item>
@@ -29,6 +29,6 @@
         <item>Grey</item>
         <item>Orange</item>
         <item>Purple</item>
-    </array>
+    </string-array>
 
 </resources>

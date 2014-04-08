@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -32,6 +33,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -46,13 +49,31 @@ import android.widget.TextView;
 
 
 
-public class ProfileActivity extends Activity {
+public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	
+	public String mColor;
 	LinearLayout customSearchLayout;
 	public static ArrayList<Track> customList;
 	OnClickListener submitListener;
 	
+	
 	AsyncHttpClient searchClient = new AsyncHttpClient();
+	
+	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        // An item was selected. You can retrieve the selected item using parent.getItemAtPosition(pos)
+		SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
+		mColor = (String) parent.getItemAtPosition(pos);
+		SharedPreferences.Editor saver = memory.edit();
+		saver.putString("color", mColor);
+		saver.putInt("colorPos", pos);
+		saver.commit();		
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    }
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -81,12 +102,13 @@ public class ProfileActivity extends Activity {
 	    final LinearLayout customListTab = (LinearLayout) findViewById(R.id.tab02);
 	    Button submit = (Button)findViewById(R.id.SubmitCustomList);
 	    submit.setOnClickListener(submitListener);
-	    //Animation an = new Animation();
+	    //Animation an = new Animation();	   
 	    
 	    // Color Spinner
 	    Spinner spinner = (Spinner) findViewById(R.id.colorspinner);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.color_spinner, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);		
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);	
+		spinner.setOnItemSelectedListener(this);
 		spinner.setAdapter(adapter);	    	    	    
 		
 		rowTap = new OnTouchListener()

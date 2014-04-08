@@ -1,5 +1,7 @@
 package com.lsu.vizeq;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -31,25 +34,40 @@ public class VizEQ extends Activity
 		//Makes volume buttons control music stream even when nothing playing
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
 		Random r = new Random();
-		numRand = r.nextInt(5);
+		numRand = r.nextInt(7);
+		
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		
+		// SET COLORS FROM PREFERENCE HERE 
+		// Code is really jank, sorry guys! Basically posi gets the savedPreference value of the index of the color from the string-array color_spinner in colors.xml and uses the old numRand method to assigning those colors
+		// BUG#1 Changing colors only effects screens during onCreate
+		if (posi != -1) numRand = posi;		
+
 		switch (numRand)
 		{
-			case 0:;
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+			case 0:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
 				break;
 			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
 				break;
 			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
 				break;
 			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
 				break;
 			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				break;
+			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				break;
-		}
+			case 6:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				break;			
+		}						
 		
 		//load anything if necessary
 		
