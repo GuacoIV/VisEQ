@@ -57,6 +57,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -80,7 +81,41 @@ import com.lsu.vizeq.ServiceBinder.ServiceBinderDelegate;
 import com.lsu.vizeq.SpotifyService.PlayerUpdateDelegate;
 
 public class PlayerActivity extends Activity {
+	boolean isPlaying = false;
+	boolean AudioFocus = false;
+	String LOGTAG = "Audio focus";
+	OnAudioFocusChangeListener mAudioFocusListener = new OnAudioFocusChangeListener() {
+		public void onAudioFocusChange(int focusChange) {
+		    switch (focusChange) {
+		        case AudioManager.AUDIOFOCUS_LOSS:
+		            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS");
+		            AudioFocus = false;
+		            break;
 
+		        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+		            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+		            break;
+
+		        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+		            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT");
+
+		            
+		            break;
+		        case AudioManager.AUDIOFOCUS_GAIN:
+		            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_GAIN");
+
+		            AudioFocus = true;
+		            break;
+		        default:
+		            Log.e(LOGTAG, "Unknown audio focus change code " + focusChange);
+		    }
+		}
+		};
+	
+		AudioManager am = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+		AudioManager.OnAudioFocusChangeListener afChangeListener;
+
+		
 	private ServiceBinder mBinder;
 	private WebService mWebservice;
 	private boolean mIsStarred;
@@ -233,9 +268,18 @@ public class PlayerActivity extends Activity {
 			return;
 
 		Track track = mTracks.get(mIndex);
+		if (isPlaying)
+			isPlaying = false;
+		else
+			isPlaying = true;
+		int result = am.requestAudioFocus(afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
-		mBinder.getService().togglePlay(track.getSpotifyUri(), playerPositionDelegate);
-
+		if (result == am.AUDIOFOCUS_REQUEST_FAILED)
+			isPlaying = false;
+		else {
+			isPlaying = true;
+			mBinder.getService().togglePlay(track.getSpotifyUri(), playerPositionDelegate);
+		}
 	}
 
 	public void playNext() {
@@ -570,6 +614,7 @@ public class PlayerActivity extends Activity {
 			}
 		});
 
+		
 		findViewById(R.id.player_play_pause).setOnClickListener(
 
 		new OnClickListener() {
