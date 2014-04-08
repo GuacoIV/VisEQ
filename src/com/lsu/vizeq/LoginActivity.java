@@ -116,34 +116,34 @@ public class LoginActivity extends Activity {
 		loginExplain.setTypeface(font);
 		loginExplain.setTextSize(20); //40 pt 153, 153, 153
 		loginExplain.setTextColor(getResources().getColor(R.color.Grey85));
+		
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		/*int posi = memory.getInt("colorPos", -1);
+		if (posi != -1) VizEQ.numRand = posi;		
 		switch (VizEQ.numRand)
 		{
-			case 0:;
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
-				signInButton.setBackgroundColor(getResources().getColor(R.color.Red));
-				skipButton.setBackgroundColor(getResources().getColor(R.color.Red));
+			case 0:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
 				break;
 			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
-				signInButton.setBackgroundColor(getResources().getColor(R.color.Green));
-				skipButton.setBackgroundColor(getResources().getColor(R.color.Green));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
 				break;
 			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
-				signInButton.setBackgroundColor(getResources().getColor(R.color.Blue));
-				skipButton.setBackgroundColor(getResources().getColor(R.color.Blue));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
 				break;
 			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
-				signInButton.setBackgroundColor(getResources().getColor(R.color.Purple));
-				skipButton.setBackgroundColor(getResources().getColor(R.color.Purple));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
 				break;
 			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
-				signInButton.setBackgroundColor(getResources().getColor(R.color.Orange));
-				skipButton.setBackgroundColor(getResources().getColor(R.color.Orange));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
 				break;
-		}
+			case 5:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;
+			case 6:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				break;			
+		}*/
 		
 		LinearLayout loginFormContainer = (LinearLayout) findViewById(R.id.LoginFormContainer);
 		loginFormContainer.setOnTouchListener(new OnTouchListener(){
@@ -173,7 +173,6 @@ public class LoginActivity extends Activity {
 			}
 		});
 
-		SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
 		mPassword = memory.getString("word", "");
 		mEmail = memory.getString("user", "");
 		if (mEmail.compareTo("") != 0)
