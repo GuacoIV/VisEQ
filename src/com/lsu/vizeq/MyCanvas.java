@@ -206,8 +206,15 @@ import android.view.View;
 					canvas.drawCircle(circlesToDraw[i].x, circlesToDraw[i].y, circlesToDraw[i].radius, paint);
 				paint.setColor(Color.BLUE);
 				int halfOfText =  0;
+				//int fittedTextSize = 45;
+				for (int j = 45; j > 5; j-=2)
+				{
+					if (paint.measureText(circlesToDraw[i].text) > circlesToDraw[i].radius * 2) paint.setTextSize(j);
+					else break;
+				}
+				//paint.setTextSize(fittedTextSize);
 				if (circlesToDraw[i].text != null) halfOfText = (int) (paint.measureText(circlesToDraw[i].text)/2);
-				if (drawText) canvas.drawText(circlesToDraw[i].text, circlesToDraw[i].x-halfOfText, circlesToDraw[i].y, paint);
+				if (drawText) canvas.drawText(circlesToDraw[i].text, circlesToDraw[i].x-halfOfText, circlesToDraw[i].y - paint.ascent()/3, paint);
 			}
 		}
 		
