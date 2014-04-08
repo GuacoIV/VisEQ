@@ -342,7 +342,7 @@ public class SearchActivity extends Activity
 								tableRowToAdd.setOnTouchListener(rowTap);
 								tableRowToAdd.addView(linearLayoutToAdd);
 								LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-								params.setMargins(0, 3, 0, 3);
+								params.setMargins(0, 2, 0, 2);
 								searchLayout.addView(tableRowToAdd, params);
 							}
 							

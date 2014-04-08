@@ -23,7 +23,7 @@ public class PreferenceVisualizationActivity extends Activity
 {
 	ArrayList<Track> requests = new ArrayList<Track>();
 	ArrayList<Artist> requestedArtists = new ArrayList<Artist>();
-	static final float PERCENT_WHITESPACE = 0.65f;
+	static final float PERCENT_WHITESPACE = 0.60f;
 	public static PreferenceCircle circles[];
 	@Override
 	protected void onCreate(Bundle savedInstanceState)

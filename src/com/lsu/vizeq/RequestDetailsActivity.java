@@ -1,10 +1,18 @@
 package com.lsu.vizeq;
 
+import java.util.ArrayList;
+
 import android.os.Bundle;
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
@@ -18,16 +26,74 @@ public class RequestDetailsActivity extends Activity
 		setContentView(R.layout.activity_request_details);
 			
 		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
+		if (extras != null) 
+		{
 		    String value = extras.getString("whichArtist");
-	    PreferenceCircle thisCircle = PreferenceVisualizationActivity.circles[Integer.parseInt(value)];
-	    artist = thisCircle.artist;
-	    // Show the Up button in the action bar.
-	    setupActionBar();
-	    TextView info = ((TextView) findViewById(R.id.requestInfo));
-	    info.setText(artist.mNumTrackRequests + " track requests by " + artist.mNumPeopleRequestingArtist + " different people.");
-	    ScrollView list = (ScrollView) findViewById(R.id.trackRequests);
-	    list.setBackgroundColor(thisCircle.color);
+		    PreferenceCircle thisCircle = PreferenceVisualizationActivity.circles[Integer.parseInt(value)];
+		    artist = thisCircle.artist;
+		    // Show the Up button in the action bar.
+		    setupActionBar();
+		    TextView info = ((TextView) findViewById(R.id.requestInfo));
+		    info.setText(artist.mNumTrackRequests + " track requests by " + artist.mNumPeopleRequestingArtist + " different people.");
+		    LinearLayout list = (LinearLayout) findViewById(R.id.trackRequests);
+		    //list.setBackgroundColor(thisCircle.color);
+		    
+		    OnTouchListener rowTap = new OnTouchListener()
+			{
+
+				@Override
+				public boolean onTouch(View arg0, MotionEvent arg1)
+				{
+					if (arg1.getAction() == MotionEvent.ACTION_DOWN)
+					{
+						TableRow row = (TableRow)arg0;
+						row.setBackgroundColor(Color.BLUE);
+						return true;
+					}
+					else if (arg1.getAction() == MotionEvent.ACTION_UP)
+					{		
+					}
+					return true;
+				}
+			};
+			int startColor = thisCircle.color;
+			int redStart = Color.red(startColor);
+			int greenStart = Color.green(startColor);
+			int blueStart = Color.blue(startColor);
+			
+			int redEnd = Color.red(startColor);
+			int addRed = (redEnd - redStart)/15;
+			
+			int greenEnd = Color.green(startColor);
+			int addGreen = (greenEnd - greenStart)/15;
+			
+			int blueEnd = Color.blue(startColor);
+			int addBlue = (blueEnd - blueStart)/15;
+		    for (int i = 0; i < artist.mTrackRequests.size(); i++)
+		    {
+		    	TrackRow tableRowToAdd = new TrackRow(this);
+				TextView textViewToAdd = new TextView(this);
+				TextView textTwoViewToAdd = new TextView(this);
+		    	tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
+				tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+				if (redStart + addRed < 255 && i < 16) redStart += addRed;
+				if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
+				if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
+				textViewToAdd.setText(artist.mTrackRequests.get(i).mTrack);
+				textTwoViewToAdd.setText(artist.mTrackRequests.get(i).mArtist);
+				textViewToAdd.setTextSize(20);
+				textTwoViewToAdd.setTextColor(Color.DKGRAY);
+				LinearLayout linearLayoutToAdd = new LinearLayout(this);
+				linearLayoutToAdd.setOrientation(LinearLayout.VERTICAL);
+				linearLayoutToAdd.addView(textViewToAdd);
+				linearLayoutToAdd.addView(textTwoViewToAdd);
+				tableRowToAdd.setOnTouchListener(rowTap);
+				tableRowToAdd.addView(linearLayoutToAdd);
+				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+				params.setMargins(0, 2, 0, 2);
+				list.addView(tableRowToAdd, params);
+		    }
+	    
 		}
 	}
 

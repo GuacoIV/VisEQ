@@ -97,7 +97,7 @@ import android.view.View;
 		Color color;
 		final float scale = getResources().getDisplayMetrics().density;
 		final float width = getResources().getDisplayMetrics().widthPixels;
-		final float height = getResources().getDisplayMetrics().heightPixels;
+		final float height = getResources().getDisplayMetrics().heightPixels - 50;
 		
 		Paint paint = new Paint();
 		PreferenceCircle circlesToDraw[];
@@ -206,7 +206,7 @@ import android.view.View;
 					canvas.drawCircle(circlesToDraw[i].x, circlesToDraw[i].y, circlesToDraw[i].radius, paint);
 				paint.setColor(Color.BLUE);
 				int halfOfText =  0;
-				//if (circlesToDraw[i].text != null) halfOfText = (int) (paint.measureText(circlesToDraw[i].text)/2);
+				if (circlesToDraw[i].text != null) halfOfText = (int) (paint.measureText(circlesToDraw[i].text)/2);
 				if (drawText) canvas.drawText(circlesToDraw[i].text, circlesToDraw[i].x-halfOfText, circlesToDraw[i].y, paint);
 			}
 		}

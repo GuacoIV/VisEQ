@@ -14,10 +14,17 @@
         android:layout_height="wrap_content"/>
     
     <ScrollView
-        android:id="@+id/trackRequests"
+        android:id="@+id/scrollTrackRequests"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/requestInfo">
+        <LinearLayout
+            android:id="@+id/trackRequests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            
+        </LinearLayout>
         
     </ScrollView>
 

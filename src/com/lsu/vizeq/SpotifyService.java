@@ -128,7 +128,7 @@ public class SpotifyService extends Service {
 		mWifiLock.release();
 
 		// Tell the user we stopped.
-		Toast.makeText(this, "The local service has stopped", Toast.LENGTH_SHORT).show();
+		Log.d("Spotify", "The local service has stopped");
 		super.onDestroy();
 	}
 
