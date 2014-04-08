@@ -175,6 +175,11 @@ import android.view.View;
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+							//PVA is sorted by Artist name.  My Canvas is sorted by size.  Necessary, so, switch it right here.
+							for (int i = 0; i < numCirclesToDraw; i++)
+							{
+								PreferenceVisualizationActivity.circles[i] = circlesToDraw[i];
+							}
 							PreferenceVisualizationActivity.getDetails(appContext, thisOneForSure);
 						}
 					});

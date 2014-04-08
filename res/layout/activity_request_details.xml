@@ -9,8 +9,16 @@
     tools:context=".RequestDetailsActivity" >
 
     <TextView
+        android:id="@+id/requestInfo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:layout_height="wrap_content"/>
+    
+    <ScrollView
+        android:id="@+id/trackRequests"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/requestInfo">
+        
+    </ScrollView>
 
 </RelativeLayout>

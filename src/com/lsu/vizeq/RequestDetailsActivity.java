@@ -4,23 +4,30 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 
 public class RequestDetailsActivity extends Activity
 {
-
+	Artist artist;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_request_details);
-		// Show the Up button in the action bar.
-		setupActionBar();
-		
+			
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 		    String value = extras.getString("whichArtist");
 	    PreferenceCircle thisCircle = PreferenceVisualizationActivity.circles[Integer.parseInt(value)];
+	    artist = thisCircle.artist;
+	    // Show the Up button in the action bar.
+	    setupActionBar();
+	    TextView info = ((TextView) findViewById(R.id.requestInfo));
+	    info.setText(artist.mNumTrackRequests + " track requests by " + artist.mNumPeopleRequestingArtist + " different people.");
+	    ScrollView list = (ScrollView) findViewById(R.id.trackRequests);
+	    list.setBackgroundColor(thisCircle.color);
 		}
 	}
 
@@ -31,6 +38,7 @@ public class RequestDetailsActivity extends Activity
 	{
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setTitle("Requests for " + artist.mArtist);
 
 	}
 
