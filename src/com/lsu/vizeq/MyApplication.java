@@ -10,6 +10,9 @@ public class MyApplication extends Application {
 	public Map<String, InetAddress> connectedUsers = new HashMap<String,InetAddress>();
 	public InetAddress hostAddress;
 	public String myName;
+	public String zipcode;
+	public String myIp;
 	public boolean joined = false;
+	public boolean hosting = false;
 
 }

@@ -9,6 +9,8 @@ import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -46,6 +48,32 @@ public class HostMenuActivity extends Activity
 		}
 		return ipString;
 	}
+	
+	public void heartbeat()
+	{
+		final MyApplication myapp = (MyApplication) this.getApplicationContext();
+		new Thread(new Runnable()
+		{
+
+			@Override
+			public void run() 
+			{
+				Jedis jedis = new Jedis(Redis.host, Redis.port);
+				jedis.auth(Redis.auth);
+				while(myapp.hosting)
+				{
+					jedis.expire(myapp.zipcode + ":" + myapp.myName, 2);
+					try {
+						Thread.sleep(1800L);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			
+		});
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -75,6 +103,8 @@ public class HostMenuActivity extends Activity
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				break;
 		}
+		
+		heartbeat();
 		
 		new Thread( new Runnable()
 		{

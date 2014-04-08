@@ -5,9 +5,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
+import redis.clients.jedis.Jedis;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,7 +22,6 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -98,6 +100,13 @@ public class SearchPartyActivity extends Activity {
     			
     	return nameEntered;
     }
+    
+    public void searchForPartiesServer(View view)
+    {
+    	String name = "Dummy";
+    	String zipcode = "70820";
+    	new ContactServerTask().execute(name, zipcode);
+    }
 	
 	public void searchForParties(View view)
 	{	
@@ -128,6 +137,47 @@ public class SearchPartyActivity extends Activity {
 				}
 			}
 		}).start();
+	}
+	
+	public void refreshPartyList(Set<String> partyNames)
+	{
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		
+		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
+		LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
+		
+		Iterator<String> it = partyNames.iterator();
+		while(it.hasNext())
+		{
+			final String name = it.next();
+			
+			//name of party
+			TextView tv = new TextView(this);
+			tv.setText(name);
+			tv.setWidth(200);
+			tv.setHeight(60);
+			tv.setTextSize(20.f);
+			tv.setLayoutParams(params);
+			
+			//join button
+			Button b = new Button(this);
+			b.setText("Join");
+			b.setWidth(75);
+			b.setHeight(60);
+			b.setLayoutParams(params);
+			b.setOnClickListener(new OnClickListener()
+			{
+				@Override
+				public void onClick(View arg0) {
+					Log.d("Join", "Joining party");
+					//new JoinTask().execute((InetAddress) pairs.getValue());
+				}
+			});
+			
+			//add them
+			nameLayout.addView(tv);
+			buttonLayout.addView(b);
+		}
 	}
 	
 	public void refreshPartyList()
@@ -167,6 +217,78 @@ public class SearchPartyActivity extends Activity {
 			//add them
 			nameLayout.addView(tv);
 			buttonLayout.addView(b);
+		}
+		
+	}
+	
+	public void noPartiesNotification()
+	{
+		Log.d("Contact Server", "No parties found");
+	}
+	
+	public void connectionErrorNotification()
+	{
+		Log.d("Contact Server", "Error Connecting");
+	}
+	
+	private class ContactServerTask extends AsyncTask<String, Set<String>, Integer>
+	{
+
+		@Override
+		//params[0] = party name
+		//params[1] = zipcode
+		protected Integer doInBackground(String... params) {
+			String partyName = params[0];
+			String zipcode = params[1];
+			Integer result = 2;
+			
+			Jedis jedis = new Jedis(Redis.host, Redis.port);
+			jedis.auth(Redis.auth);
+			Set<String> partyNames = jedis.smembers(zipcode);
+			
+			//Check if they all have valid ips
+			Iterator<String> it = partyNames.iterator();
+			
+			while(it.hasNext())
+			{
+				String name = it.next();
+				boolean check = jedis.exists(zipcode + ":" + name);
+				if(!check)
+				{
+					jedis.srem(zipcode, name);
+					partyNames.remove(name);
+				}
+			}
+			
+			if (partyNames.size() <= 0) result = 1;
+			else result = 0;
+			publishProgress(partyNames);
+			jedis.close();
+			
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			// TODO Auto-generated method stub
+			if(result == 0)
+			{
+				//good to go
+			}
+			else if(result == 1)
+			{
+				noPartiesNotification();
+			}
+			else if(result == 2)
+			{
+				connectionErrorNotification();
+			}
+		}
+
+		@Override
+		protected void onProgressUpdate(Set<String>... values) {
+			// TODO Auto-generated method stub
+			refreshPartyList(values[0]);
 		}
 		
 	}
