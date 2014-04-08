@@ -29,34 +29,12 @@ import android.widget.TextView;
 public class HostMenuActivity extends Activity
 {
 	MyApplication myapp;
+	ActionBar actionBar;
 	
-	public String getIpString()
-	{
-		WifiManager wifi = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
-    	DhcpInfo dhcp = wifi.getDhcpInfo();
-    	ByteBuffer b = ByteBuffer.allocate(4);
-    	b.putInt(dhcp.ipAddress);
-    	InetAddress myAddress;
-    	String ipString = "fail";
-    	try {
-			 myAddress = InetAddress.getByAddress(b.array());
-			 ipString = myAddress.getHostAddress();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ipString;
-	}
-
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_host_menu);
-		ActionBar actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-		myapp = (MyApplication) this.getApplicationContext();
-		
+	protected void onStart(){
+		super.onStart();
+		actionBar = getActionBar();
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -85,6 +63,35 @@ public class HostMenuActivity extends Activity
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
 				break;			
 		}
+	}
+	
+	
+	public String getIpString()
+	{
+		WifiManager wifi = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+    	DhcpInfo dhcp = wifi.getDhcpInfo();
+    	ByteBuffer b = ByteBuffer.allocate(4);
+    	b.putInt(dhcp.ipAddress);
+    	InetAddress myAddress;
+    	String ipString = "fail";
+    	try {
+			 myAddress = InetAddress.getByAddress(b.array());
+			 ipString = myAddress.getHostAddress();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ipString;
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_host_menu);
+		ActionBar actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		myapp = (MyApplication) this.getApplicationContext();		
 		
 		new Thread( new Runnable()
 		{

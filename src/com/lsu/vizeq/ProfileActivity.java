@@ -15,6 +15,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import android.os.Bundle;
 import android.os.Process;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -55,7 +57,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	LinearLayout customSearchLayout;
 	public static ArrayList<Track> customList;
 	OnClickListener submitListener;
-	
+	ActionBar actionBar;
 	
 	AsyncHttpClient searchClient = new AsyncHttpClient();
 	
@@ -66,19 +68,104 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 		SharedPreferences.Editor saver = memory.edit();
 		saver.putString("color", mColor);
 		saver.putInt("colorPos", pos);
-		saver.commit();		
+		saver.commit();
+				
+		actionBar = getActionBar();
+		int posi = memory.getInt("colorPos", -1);
+		if (posi != -1) VizEQ.numRand = posi;	
+		switch (VizEQ.numRand)
+		{
+			case 0:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
+				break;
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				break;
+			case 5:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;
+			case 6:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				break;			
+		}
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
-    }
-
+    	actionBar = getActionBar();
+    	SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		if (posi != -1) VizEQ.numRand = posi;	
+		switch (VizEQ.numRand)
+		{
+			case 0:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
+				break;
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				break;
+			case 5:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;
+			case 6:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				break;			
+		}
+    }    
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
-	{
+	{				
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_profile);
+		setContentView(R.layout.activity_profile);		
+		actionBar = getActionBar();
+		
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		if (posi != -1) VizEQ.numRand = posi;		
+		switch (VizEQ.numRand)
+		{
+			case 0:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
+				break;
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				break;
+			case 5:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;
+			case 6:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				break;			
+		}		
+		
 		customSearchLayout = (LinearLayout) findViewById(R.id.customSearchLayout);
 		final EditText searchText = (EditText) findViewById(R.id.CustomSearchField);
 		final OnTouchListener rowTap;

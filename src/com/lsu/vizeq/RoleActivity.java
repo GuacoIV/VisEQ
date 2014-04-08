@@ -28,33 +28,12 @@ import android.widget.TextView;
 public class RoleActivity extends Activity
 {
 	MyApplication myapp;
+	ActionBar actionBar;
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_role);
-		Typeface font = Typeface.createFromAsset(getAssets(), "Mohave.otf");
-		Typeface orFont = Typeface.createFromAsset(getAssets(), "Mission Gothic Bold.otf");
-		TextView DJText = (TextView) findViewById(R.id.DJText);
-		TextView notADJText = (TextView) findViewById(R.id.NotADJText);
-		TextView orText = (TextView) findViewById(R.id.Or);
-		DJText.setTypeface(font);
-		notADJText.setTypeface(font);
-		orText.setTypeface(orFont);
-		DJText.setTextSize(40); //40 pt 153, 153, 153
-		DJText.setTextColor(Color.rgb(153, 153, 153));
-		notADJText.setTextSize(40); //40 pt
-		notADJText.setTextColor(Color.rgb(153, 153, 153));
-		orText.setTextSize(27);//27 gothic bold //51, 51, 51 //diameter is 140
-		orText.setTextColor(Color.rgb(51, 51, 51));
-		ActionBar actionBar = getActionBar();
-		int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
-	    TextView yourTextView = (TextView) findViewById(titleId);
-	    yourTextView.setTextColor(Color.WHITE);
-	    Typeface titleFont = Typeface.createFromAsset(getAssets(), "Mohave-SemiBold.otf");
-	    yourTextView.setTypeface(titleFont);
-	    yourTextView.setTextSize(22);
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+	protected void onStart(){
+		super.onStart();
+		actionBar = getActionBar();
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -83,6 +62,34 @@ public class RoleActivity extends Activity
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
 				break;			
 		}
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_role);
+		Typeface font = Typeface.createFromAsset(getAssets(), "Mohave.otf");
+		Typeface orFont = Typeface.createFromAsset(getAssets(), "Mission Gothic Bold.otf");
+		TextView DJText = (TextView) findViewById(R.id.DJText);
+		TextView notADJText = (TextView) findViewById(R.id.NotADJText);
+		TextView orText = (TextView) findViewById(R.id.Or);
+		DJText.setTypeface(font);
+		notADJText.setTypeface(font);
+		orText.setTypeface(orFont);
+		DJText.setTextSize(40); //40 pt 153, 153, 153
+		DJText.setTextColor(Color.rgb(153, 153, 153));
+		notADJText.setTextSize(40); //40 pt
+		notADJText.setTextColor(Color.rgb(153, 153, 153));
+		orText.setTextSize(27);//27 gothic bold //51, 51, 51 //diameter is 140
+		orText.setTextColor(Color.rgb(51, 51, 51));
+		actionBar = getActionBar();
+		int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
+	    TextView yourTextView = (TextView) findViewById(titleId);
+	    yourTextView.setTextColor(Color.WHITE);
+	    Typeface titleFont = Typeface.createFromAsset(getAssets(), "Mohave-SemiBold.otf");
+	    yourTextView.setTypeface(titleFont);
+	    yourTextView.setTextSize(22);
 
 		myapp = (MyApplication) this.getApplicationContext();
 		

@@ -26,18 +26,12 @@ public class PreferenceVisualizationActivity extends Activity
 	ArrayList<Artist> requestedArtists = new ArrayList<Artist>();
 	static final float PERCENT_WHITESPACE = 0.60f;
 	public static PreferenceCircle circles[];
+	ActionBar actionBar;
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_preference_visualization);
-		int circleRadius = 100;
-		//PreferenceCircle pc = new PreferenceCircle(this, circleRadius, circleRadius, circleRadius, "hi");
-		LinearLayout circleScreen = (LinearLayout) this.findViewById(R.id.CircleScreen);
-		//circleScreen.addView(pc, circleRadius*2, circleRadius*2); 
-		ActionBar actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-		
+	protected void onStart(){
+		super.onStart();
+		actionBar = getActionBar();
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -66,6 +60,19 @@ public class PreferenceVisualizationActivity extends Activity
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
 				break;			
 		}
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_preference_visualization);
+		int circleRadius = 100;
+		//PreferenceCircle pc = new PreferenceCircle(this, circleRadius, circleRadius, circleRadius, "hi");
+		LinearLayout circleScreen = (LinearLayout) this.findViewById(R.id.CircleScreen);
+		//circleScreen.addView(pc, circleRadius*2, circleRadius*2); 
+		actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 		
 		//Make some fake request data
 		//3 requests (for 1 artist) by 2 people

@@ -35,18 +35,12 @@ public class SearchPartyActivity extends Activity {
 	
 	MyApplication myapp;
 	SearchPartyActivity thisActivity;
-
+	ActionBar actionBar;
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		myapp = (MyApplication) this.getApplicationContext();
-		super.onCreate(savedInstanceState);
-		thisActivity = this;
-		setContentView(R.layout.activity_search_party);
-		
-		// Show the Up button in the action bar.
-		ActionBar actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-		setupActionBar();
+	protected void onStart(){
+		super.onStart();
+		actionBar = getActionBar();
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -75,6 +69,20 @@ public class SearchPartyActivity extends Activity {
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
 				break;			
 		}
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		myapp = (MyApplication) this.getApplicationContext();
+		super.onCreate(savedInstanceState);
+		thisActivity = this;
+		setContentView(R.layout.activity_search_party);
+		
+		// Show the Up button in the action bar.
+		actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		setupActionBar();
+			
 	}
 	
     public InetAddress getBroadcastAddress() throws IOException

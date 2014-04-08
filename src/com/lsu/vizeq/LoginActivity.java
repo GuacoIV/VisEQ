@@ -118,7 +118,7 @@ public class LoginActivity extends Activity {
 		loginExplain.setTextColor(getResources().getColor(R.color.Grey85));
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
-		int posi = memory.getInt("colorPos", -1);
+		/*int posi = memory.getInt("colorPos", -1);
 		if (posi != -1) VizEQ.numRand = posi;		
 		switch (VizEQ.numRand)
 		{
@@ -143,7 +143,7 @@ public class LoginActivity extends Activity {
 			case 6:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
 				break;			
-		}
+		}*/
 		
 		LinearLayout loginFormContainer = (LinearLayout) findViewById(R.id.LoginFormContainer);
 		loginFormContainer.setOnTouchListener(new OnTouchListener(){

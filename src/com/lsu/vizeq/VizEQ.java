@@ -23,6 +23,7 @@ import android.widget.TextView;
 public class VizEQ extends Activity
 {
 	static int numRand;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -41,7 +42,7 @@ public class VizEQ extends Activity
 		
 		// SET COLORS FROM PREFERENCE HERE 
 		// Code is really jank, sorry guys! Basically posi gets the savedPreference value of the index of the color from the string-array color_spinner in colors.xml and uses the old numRand method to assigning those colors
-		// BUG#1 Changing colors only effects screens during onCreate
+		// BUG#1 Changing colors only effects screens during onCreate (which is only called when the screen is pulled up again)
 		if (posi != -1) numRand = posi;		
 
 		switch (numRand)
