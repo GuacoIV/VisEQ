@@ -632,6 +632,11 @@ public class PlayerActivity extends Activity {
 		case R.id.menu_settings:
 			Process.killProcess(Process.myPid());
 			mBinder.getService().destroy();
+			break;
+		case R.id.about:
+			Intent nextIntent2  = new Intent(PlayerActivity.this, AboutActivity.class);
+			startActivity(nextIntent2);
+			break;
 		}
 		return true;
 	}

@@ -152,6 +152,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.lsu.vizeq.PreferenceVisualizationActivity" />
         </activity>
+        <activity
+            android:name="com.lsu.vizeq.AboutActivity"
+            android:label="@string/title_activity_about" >
+        </activity>
     </application>
 
 </manifest>

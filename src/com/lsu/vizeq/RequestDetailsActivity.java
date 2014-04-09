@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -131,6 +132,10 @@ public class RequestDetailsActivity extends Activity
 			//
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
+		case R.id.about:
+			Intent nextIntent2  = new Intent(RequestDetailsActivity.this, AboutActivity.class);
+			startActivity(nextIntent2);
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}

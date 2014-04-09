@@ -52,6 +52,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -355,6 +356,22 @@ public class LoginActivity extends Activity {
 			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
 			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.action_settings:
+			Intent nextIntent  = new Intent(LoginActivity.this, ProfileActivity.class);
+			startActivity(nextIntent);
+			break;
+		case R.id.about:
+			Intent nextIntent2  = new Intent(LoginActivity.this, AboutActivity.class);
+			startActivity(nextIntent2);
+			break;
+		}
+		return true;
 	}
 
 }

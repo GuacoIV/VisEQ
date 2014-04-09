@@ -172,6 +172,11 @@ public class RoleActivity extends Activity
 		case R.id.action_settings:
 			Intent nextIntent  = new Intent(RoleActivity.this, ProfileActivity.class);
 			startActivity(nextIntent);
+			break;
+		case R.id.about:
+			Intent nextIntent2  = new Intent(RoleActivity.this, AboutActivity.class);
+			startActivity(nextIntent2);
+			break;
 		}
 		return true;
 	}	
