@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +21,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -35,9 +42,11 @@ import android.widget.TextView;
 
 public class SearchPartyActivity extends Activity {
 	
+	public LocationManager locationManager;
 	MyApplication myapp;
 	SearchPartyActivity thisActivity;
 	ActionBar actionBar;
+	Location currLocation = null;
 	
 	@Override
 	protected void onStart(){
@@ -79,6 +88,9 @@ public class SearchPartyActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		thisActivity = this;
 		setContentView(R.layout.activity_search_party);
+		
+		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 		
 		// Show the Up button in the action bar.
 		actionBar = getActionBar();
@@ -122,7 +134,7 @@ public class SearchPartyActivity extends Activity {
     public void searchForPartiesServer(View view)
     {
     	String name = "Dummy";
-    	String zipcode = "70820";
+    	String zipcode = getZipcode();
     	new ContactServerTask().execute(name, zipcode);
     }
 	
@@ -491,5 +503,57 @@ public class SearchPartyActivity extends Activity {
 		}
 		return true;
 	}
+	
+	public String getZipcode()
+	{
+		String zipcode = "00000";
+		if(currLocation == null)
+		{
+			String locationProvider = LocationManager.NETWORK_PROVIDER;
+			currLocation = locationManager.getLastKnownLocation(locationProvider);
+		}
 
+		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+		try {
+			List<Address> addresses = geocoder.getFromLocation(currLocation.getLatitude(), currLocation.getLongitude(), 1);
+			zipcode = addresses.get(0).getPostalCode();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Log.d("zipcode", zipcode);
+		return zipcode;
+	}
+	
+
+	public LocationListener locationListener = new LocationListener()
+	{
+
+		@Override
+		public void onLocationChanged(Location arg0) {
+			// TODO Auto-generated method stub
+			Log.d("location listener", "location changed");
+			currLocation = arg0;
+			
+		}
+
+		@Override
+		public void onProviderDisabled(String arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onProviderEnabled(String arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+	
 }

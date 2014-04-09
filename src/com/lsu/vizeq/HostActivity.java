@@ -39,6 +39,7 @@ public class HostActivity extends Activity
 	ActionBar actionBar;
 	String myName, zipcode, externalIp;
 	MyApplication myapp;
+	Location currLocation = null;
 	
 	@Override
 	protected void onStart(){
@@ -93,10 +94,10 @@ public class HostActivity extends Activity
 			@Override
 			public void onClick(View v)
 			{
-				String name = getName();
-				String zipcode = "70820";
-				String ip = "0.0.0.0";
-				new ContactServerTask().execute(name, zipcode, ip);
+				//String name = getName();
+				//String zipcode = "70820";
+				//String ip = "0.0.0.0";
+				new ContactServerTask().execute();
 			}
 			
 		});
@@ -135,12 +136,15 @@ public class HostActivity extends Activity
 	public String getZipcode()
 	{
 		String zipcode = "00000";
-		String locationProvider = LocationManager.NETWORK_PROVIDER;
-		Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-		
+		if(currLocation == null)
+		{
+			String locationProvider = LocationManager.NETWORK_PROVIDER;
+			currLocation = locationManager.getLastKnownLocation(locationProvider);
+		}
+
 		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
 		try {
-			List<Address> addresses = geocoder.getFromLocation(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude(), 1);
+			List<Address> addresses = geocoder.getFromLocation(currLocation.getLatitude(), currLocation.getLongitude(), 1);
 			zipcode = addresses.get(0).getPostalCode();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -156,6 +160,8 @@ public class HostActivity extends Activity
 		@Override
 		public void onLocationChanged(Location arg0) {
 			// TODO Auto-generated method stub
+			Log.d("location listener", "location changed");
+			currLocation = arg0;
 			
 		}
 
