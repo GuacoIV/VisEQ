@@ -97,7 +97,7 @@ import android.view.View;
 		Color color;
 		final float scale = getResources().getDisplayMetrics().density;
 		final float width = getResources().getDisplayMetrics().widthPixels;
-		final float height = getResources().getDisplayMetrics().heightPixels - 50;
+		final float height = getResources().getDisplayMetrics().heightPixels - 70;
 		
 		Paint paint = new Paint();
 		PreferenceCircle circlesToDraw[];

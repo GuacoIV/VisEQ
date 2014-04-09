@@ -4,5 +4,6 @@
         android:id="@+id/menu_forgot_password"
         android:showAsAction="never"
         android:title="@string/menu_forgot_password"/>
+    <item android:id="@+id/about" android:title="About"></item>
 
 </menu>
