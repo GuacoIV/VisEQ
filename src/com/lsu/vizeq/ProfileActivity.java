@@ -15,12 +15,15 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import android.os.Bundle;
 import android.os.Process;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -32,6 +35,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -46,18 +51,121 @@ import android.widget.TextView;
 
 
 
-public class ProfileActivity extends Activity {
+public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	
+	public String mColor;
 	LinearLayout customSearchLayout;
 	public static ArrayList<Track> customList;
 	OnClickListener submitListener;
+	ActionBar actionBar;
 	
 	AsyncHttpClient searchClient = new AsyncHttpClient();
+	
+	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        // An item was selected. You can retrieve the selected item using parent.getItemAtPosition(pos)
+		SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
+		mColor = (String) parent.getItemAtPosition(pos);
+		SharedPreferences.Editor saver = memory.edit();
+		saver.putString("color", mColor);
+		saver.putInt("colorPos", pos);
+		saver.commit();
+				
+		actionBar = getActionBar();
+		int posi = memory.getInt("colorPos", -1);
+		if (posi != -1) VizEQ.numRand = posi;	
+		switch (VizEQ.numRand)
+		{
+			case 0:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
+				break;
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				break;
+			case 5:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;
+			case 6:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				break;			
+		}
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    	actionBar = getActionBar();
+    	SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		if (posi != -1) VizEQ.numRand = posi;	
+		switch (VizEQ.numRand)
+		{
+			case 0:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
+				break;
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				break;
+			case 5:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;
+			case 6:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				break;			
+		}
+    }    
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
-	{
+	{				
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_profile);
+		setContentView(R.layout.activity_profile);		
+		actionBar = getActionBar();
+		
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		if (posi != -1) VizEQ.numRand = posi;		
+		switch (VizEQ.numRand)
+		{
+			case 0:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
+				break;
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				break;
+			case 5:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;
+			case 6:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				break;			
+		}		
+		
 		customSearchLayout = (LinearLayout) findViewById(R.id.customSearchLayout);
 		final EditText searchText = (EditText) findViewById(R.id.CustomSearchField);
 		final OnTouchListener rowTap;
@@ -81,12 +189,13 @@ public class ProfileActivity extends Activity {
 	    final LinearLayout customListTab = (LinearLayout) findViewById(R.id.tab02);
 	    Button submit = (Button)findViewById(R.id.SubmitCustomList);
 	    submit.setOnClickListener(submitListener);
-	    //Animation an = new Animation();
+	    //Animation an = new Animation();	   
 	    
 	    // Color Spinner
 	    Spinner spinner = (Spinner) findViewById(R.id.colorspinner);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.color_spinner, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);		
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);	
+		spinner.setOnItemSelectedListener(this);
 		spinner.setAdapter(adapter);	    	    	    
 		
 		rowTap = new OnTouchListener()
