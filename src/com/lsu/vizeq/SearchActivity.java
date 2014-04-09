@@ -398,6 +398,10 @@ public class SearchActivity extends Activity
 		case R.id.action_settings:
 			Intent nextIntent  = new Intent(SearchActivity.this, ProfileActivity.class);
 			startActivity(nextIntent);
+		case R.id.about:
+			Intent nextIntent2  = new Intent(SearchActivity.this, AboutActivity.class);
+			startActivity(nextIntent2);
+			break;
 		}
 		return true;
 	}

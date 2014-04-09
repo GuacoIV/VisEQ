@@ -111,6 +111,11 @@ public class HostActivity extends Activity
 		case R.id.action_settings:
 			Intent nextIntent  = new Intent(HostActivity.this, ProfileActivity.class);
 			startActivity(nextIntent);
+			break;
+		case R.id.about:
+			Intent nextIntent2  = new Intent(HostActivity.this, AboutActivity.class);
+			startActivity(nextIntent2);
+			break;
 		}
 		return true;
 	}
