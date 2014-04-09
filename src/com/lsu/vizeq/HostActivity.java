@@ -1,8 +1,16 @@
 package com.lsu.vizeq;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Locale;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import redis.clients.jedis.Jedis;
 import android.app.ActionBar;
@@ -29,11 +37,15 @@ public class HostActivity extends Activity
 
 	public LocationManager locationManager;
 	ActionBar actionBar;
+	String myName, zipcode, externalIp;
+	MyApplication myapp;
 	
 	@Override
 	protected void onStart(){
 		super.onStart();
 		actionBar = getActionBar();
+		
+		myapp = (MyApplication) this.getApplicationContext();
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -161,13 +173,45 @@ public class HostActivity extends Activity
 		}
 	};
 	
-	public String getIp()
+	public String getExternalIp()
 	{
 		String ip = "0.0.0.0";
-		
+		HttpClient client = new DefaultHttpClient();
+		HttpGet request = new HttpGet("http://whatismyip.akamai.com/");
+		HttpResponse response;
+		try {
+			response = client.execute(request);
+			String html = "";
+			InputStream in = response.getEntity().getContent();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+			StringBuilder str = new StringBuilder();
+			String line = null;
+			line = reader.readLine();
+			Log.d("external ip", line);
+			ip = line;
+			in.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		
 		return ip;
+	}
+	
+	public void setName(String name)
+	{
+		myapp.myName = name;
+	}
+	
+	public void setExternalIp(String ip)
+	{
+		myapp.myIp = ip;
+	}
+	
+	public void setZipcode(String zipcode)
+	{
+		myapp.zipcode = zipcode;
 	}
 	
 	public void changeNameNotification()
@@ -183,9 +227,9 @@ public class HostActivity extends Activity
 	public void moveToMenu()
 	{
 		MyApplication myapp = (MyApplication) this.getApplicationContext();
-		myapp.myName = getName();
-		myapp.zipcode = getZipcode();
-		myapp.myIp = getIp();
+		//myapp.myName = getName();
+		//myapp.zipcode = getZipcode();
+		//myapp.myIp = getExternalIp();
 		myapp.hosting = true;
 		Intent nextIntent = new Intent(HostActivity.this, HostMenuActivity.class);
 		startActivity(nextIntent);
@@ -193,7 +237,7 @@ public class HostActivity extends Activity
 	
 	private class ContactServerTask extends AsyncTask<String, Void, Integer>
 	{
-
+		String partyName, zipcode, ip;
 		@Override
 		//params[0] = party name
 		//params[1] = zipcode
@@ -203,9 +247,9 @@ public class HostActivity extends Activity
 			Integer result = 2;
 			Jedis jedis = new Jedis(Redis.host, Redis.port);
 			jedis.auth(Redis.auth);
-			String partyName = params[0];
-			String zipcode = params[1];
-			String ip = params[2];
+			partyName = getName();
+			zipcode = getZipcode();
+			ip = getExternalIp();
 			
 			long reply = jedis.setnx(zipcode + ":" + partyName, ip);
 			if(reply == 0)
@@ -228,6 +272,9 @@ public class HostActivity extends Activity
 			// TODO Auto-generated method stub
 			if(result == 0)
 			{
+				setName(partyName);
+				setExternalIp(ip);
+				setZipcode(zipcode);
 				moveToMenu();
 			}
 			else if(result == 1)
