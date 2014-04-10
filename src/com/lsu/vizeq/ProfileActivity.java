@@ -360,9 +360,8 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 			@Override
 			public void onClick(View v)
 			{
-				new Runnable()
+				Thread requestSender = new Thread(new Runnable()
 				{
-
 					@Override
 					public void run()
 					{
@@ -430,7 +429,8 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 						
 					}
 					
-				}.run();//Say run here, once it's correct
+				});//Say run here, once it's correct
+				requestSender.start();
 			}
 
 		};
