@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 public class RoleActivity extends Activity
 {
-	MyApplication myapp;
+	public static MyApplication myapp;
 	ActionBar actionBar;
 	
 	@Override

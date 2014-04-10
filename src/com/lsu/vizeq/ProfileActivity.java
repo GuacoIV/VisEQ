@@ -1,6 +1,7 @@
 package com.lsu.vizeq;
 
 
+import java.io.ByteArrayOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -390,27 +391,33 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 									information += (myapp.myName);
 									Log.d("listen thread", "sending back"+information);*/
 									
-								//make a packet for each element of each Track
+								//make a packet containing all elements with newlines between each
 								for (int j = 0; j < customList.size(); j++)
 								{
+									byte[] requestHeader = "request\n".getBytes();
+									byte[] backslashN = "\n".getBytes();
 									byte[] albumBytes = customList.get(j).mAlbum.getBytes();
 									byte[] artistBytes = customList.get(j).mArtist.getBytes();
 									byte[] requesterBytes = customList.get(j).mRequester.getBytes();
 									byte[] trackBytes= customList.get(j).mTrack.getBytes();
 									byte[] uriBytes = customList.get(j).mUri.getBytes();
-									//byte[] sendData = new byte[1024];
-									InetAddress ip = null;
+									ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+									outputStream.write(requestHeader);
+									outputStream.write(albumBytes);
+									outputStream.write(backslashN);
+									outputStream.write(artistBytes);
+									outputStream.write(backslashN);
+									outputStream.write(requesterBytes);
+									outputStream.write(backslashN);
+									outputStream.write(trackBytes);
+									outputStream.write(backslashN);
+									outputStream.write(uriBytes);
+									outputStream.write(backslashN);
+									byte[] sendData = outputStream.toByteArray();
+									InetAddress ip = RoleActivity.myapp.hostAddress;
+									DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 7770);
+									sendSocket.send(sendPacket);
 
-									DatagramPacket sendPacket = new DatagramPacket(albumBytes, albumBytes.length, ip, 7770);
-									sendSocket.send(sendPacket);
-									sendPacket = new DatagramPacket(albumBytes, artistBytes.length, ip, 7770);
-									sendSocket.send(sendPacket);
-									sendPacket = new DatagramPacket(albumBytes, requesterBytes.length, ip, 7770);
-									sendSocket.send(sendPacket);
-									sendPacket = new DatagramPacket(albumBytes, trackBytes.length, ip, 7770);
-									sendSocket.send(sendPacket);
-									sendPacket = new DatagramPacket(albumBytes, uriBytes.length, ip, 7770);
-									sendSocket.send(sendPacket);
 									
 								}
 									//}

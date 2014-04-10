@@ -1,11 +1,13 @@
 package com.lsu.vizeq;
 
+import java.io.ByteArrayOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -32,6 +34,7 @@ public class HostMenuActivity extends Activity
 {
 	MyApplication myapp;
 	ActionBar actionBar;
+	public static ArrayList<Track> requests = new ArrayList<Track>();
 	
 	@Override
 	protected void onStart(){
@@ -158,7 +161,29 @@ public class HostMenuActivity extends Activity
 							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 7770);
 							sendSocket.send(sendPacket);
 						}
-						
+						if (message.equals("request"))
+						{
+							/*Protocol
+							 * 			outputStream.write(requestHeader);
+										outputStream.write(albumBytes);
+										outputStream.write(backslashN);
+										outputStream.write(artistBytes);
+										outputStream.write(backslashN);
+										outputStream.write(requesterBytes);
+										outputStream.write(backslashN);
+										outputStream.write(trackBytes);
+										outputStream.write(backslashN);
+										outputStream.write(uriBytes);
+										outputStream.write(backslashN);
+							 */
+							Track request = new Track();
+							request.mAlbum = PacketParser.getArgs(receivedPacket)[0];
+							request.mArtist = PacketParser.getArgs(receivedPacket)[1];
+							request.mRequester = PacketParser.getArgs(receivedPacket)[2];
+							request.mTrack = PacketParser.getArgs(receivedPacket)[3];
+							request.mUri = PacketParser.getArgs(receivedPacket)[4];
+							requests.add(request);
+						}
 					}
 				}
 				catch (Exception e)
@@ -273,6 +298,7 @@ public class HostMenuActivity extends Activity
 						Log.d("accept thread", "accept sent");
 						publishProgress();
 					}
+					
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

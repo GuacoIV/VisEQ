@@ -58,6 +58,11 @@ class Track {
 		mArtist = artist;
 		mUri = uri;
 	}
+	
+	public Track()
+	{
+		
+	}
 
 	public String getSpotifyUri() {
 		return mUri;

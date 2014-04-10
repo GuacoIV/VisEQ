@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 
 public class PreferenceVisualizationActivity extends Activity
 {
-	ArrayList<Track> requests = new ArrayList<Track>();
+	ArrayList<Track> requests; //new ArrayList<Track>();
 	ArrayList<Artist> requestedArtists = new ArrayList<Artist>();
 	static final float PERCENT_WHITESPACE = 0.60f;
 	public static PreferenceCircle circles[];
@@ -73,7 +73,8 @@ public class PreferenceVisualizationActivity extends Activity
 		//circleScreen.addView(pc, circleRadius*2, circleRadius*2); 
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-		
+		requests = HostMenuActivity.requests;
+		/*
 		//Make some fake request data
 		//3 requests (for 1 artist) by 2 people
 		requests.add(new Track("Track A", "", "Artist A", "", "Person A"));
@@ -116,7 +117,7 @@ public class PreferenceVisualizationActivity extends Activity
 		requests.add(new Track("Track T", "", "Artist E", "", "Person N"));
 		
 		//1 by 1
-		requests.add(new Track("Track V", "", "Artist F", "", "Person O"));
+		requests.add(new Track("Track V", "", "Artist F", "", "Person O"));*/
 		
 		Arrays.sort(requests.toArray(), new Comparator<Object>()
 		{
