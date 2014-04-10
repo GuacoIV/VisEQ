@@ -42,6 +42,8 @@ JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_seek(JNIEnv *je, jcl
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_star(JNIEnv *je, jclass jc);
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_unstar(JNIEnv *je, jclass jc);
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_poll(JNIEnv *je, jclass jc);
+JNIEXPORT bool JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_isStarred(JNIEnv *je, jclass jc);
+//SP_LIBEXPORT(bool) sp_track_is_starred(sp_session *session, sp_track *track);
 }
 
 extern bool beatOccurrence;

@@ -112,6 +112,14 @@ JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_unstar(JNIEnv *je, j
 	addTask(unstar, "unstar");
 }
 
+JNIEXPORT bool JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_isStarred(JNIEnv *je, jclass jc)
+{
+	//SP_LIBEXPORT(bool) sp_track_is_starred(sp_session *session, sp_track *track);
+	//addTask(isStarred, "isStarred");
+	//return isStarred(isStarred, "isStarred");
+	return true;
+}
+
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_seek(JNIEnv *je, jclass jc, jfloat position) {
 	list<int> int_params;
 	int_params.push_back((int) (position * 100.0));

@@ -98,6 +98,12 @@ void addTask(task_fptr fptr, string name) {
 	addTask(fptr, name, int_params, string_params);
 }
 
+bool isStarred(task_fptr fptr, string name)
+{
+	return true;
+	//return sp_track_is_starred(session, track);
+}
+
 static void connection_error(sp_session *session, sp_error error) {
 	log("------------- Connection error: %s\n -------------", sp_error_message(error));
 }
@@ -213,7 +219,7 @@ void* start_spotify(void *storage_path) {
 	config.settings_location = settings_location.c_str();
 	config.application_key = g_appkey;
 	config.application_key_size = g_appkey_size;
-	config.user_agent = "PsytranceOnSpotify";
+	config.user_agent = "LSUVizEQ";
 	config.callbacks = &callbacks;
 	config.tracefile = NULL;
 

@@ -193,6 +193,10 @@ public class SpotifyService extends Service {
 	public void unStar() {
 		LibSpotifyWrapper.unstar();
 	}
+	
+	public boolean isStarred() {
+		return LibSpotifyWrapper.isStarred();
+	}
 
 	public void destroy() {
 		LibSpotifyWrapper.destroy();

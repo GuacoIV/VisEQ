@@ -141,6 +141,11 @@ void unstar(list<int> int_params, list<string> string_params, sp_session *sessio
 	on_unstarred();
 }
 
+bool isStarred(list<int> int_params, list<string> string_params, sp_session *session, sp_track *track)
+{
+	return sp_track_is_starred(session, track);
+}
+
 void seek(list<int> int_params, list<string> string_params, sp_session *session, sp_track *track) {
 	float position = (float)int_params.front() / 100.0;
 	int pos_ms = (int) ((float) sp_track_duration(track) * position);

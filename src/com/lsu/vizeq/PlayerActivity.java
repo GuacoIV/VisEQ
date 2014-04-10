@@ -221,6 +221,12 @@ public class PlayerActivity extends Activity {
 			mBinder.getService().star();
 		}
 	}
+	
+	public boolean isStarred()
+	{
+		mIsStarred = mBinder.getService().isStarred();
+		return mIsStarred;
+	}
 
 	public void togglePlay() {
 		if (mTracks.size() == 0)
@@ -336,7 +342,7 @@ public class PlayerActivity extends Activity {
 		} else if (keycode == KeyEvent.KEYCODE_MEDIA_NEXT) {
 			playNext();
 		} else if (keycode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
-			star();
+			playPrev();
 		}
 	};
 

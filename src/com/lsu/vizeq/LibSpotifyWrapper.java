@@ -65,6 +65,8 @@ public class LibSpotifyWrapper {
 
 	native public static void poll();
 	
+	native public static boolean isStarred();
+	
 	public static void BeginPolling() {
 		Thread thread = new Thread() {
 			public void run() {

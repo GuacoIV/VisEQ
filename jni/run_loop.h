@@ -43,6 +43,8 @@ void addTask(task_fptr fptr, string name, list<string> string_params);
 void addTask(task_fptr fptr, string name, list<int> int_params);
 void addTask(task_fptr fptr, string name);
 
+bool isStarred(task_fptr fptr, string name);
+
 void* start_spotify(void *storage_location);
 
 #endif

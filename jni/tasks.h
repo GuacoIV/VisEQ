@@ -48,6 +48,7 @@ void play_next(list<int> int_params, list<string> string_params, sp_session *ses
 void pause(list<int> int_params, list<string> string_params, sp_session *session, sp_track *track);
 void star(list<int> int_params, list<string> string_params, sp_session *session, sp_track *track);
 void unstar(list<int> int_params, list<string> string_params, sp_session *session, sp_track *track);
+bool isStarred (list<int> int_params, list<string> string_params, sp_session *session, sp_track *track);
 void seek(list<int> int_params, list<string> string_params, sp_session *session, sp_track *track);
 void load_and_play_track_after_metadata_updated(list<int> int_params, list<string> string_params, sp_session *session, sp_track *track);
 void destroy(list<int> int_params, list<string> string_params, sp_session *session, sp_track *track);
