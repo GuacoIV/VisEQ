@@ -1,13 +1,8 @@
 package com.lsu.vizeq;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,11 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.lsu.vizeq.R.color;
-
-import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,25 +23,28 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.animation.Animation;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
 public class SearchActivity extends Activity
 {
 	LinearLayout searchLayout;
-	public static ArrayList<Track> queue;
+	MyApplication myapp;
 
 	AsyncHttpClient searchClient = new AsyncHttpClient();
 	AsyncHttpClient artworkClient = new AsyncHttpClient();
@@ -91,6 +84,95 @@ public class SearchActivity extends Activity
 		}
 	}
 	
+	public void refreshQueue()
+	{
+		LinearLayout queueTab = (LinearLayout) findViewById(R.id.tab2);
+		queueTab.removeAllViews();	//remove everything that's there
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		
+		/*---color stuff---*/
+		//Calculate start and end colors
+		int startColor = 0;
+		int endColor = 0;
+		switch (VizEQ.numRand)
+		{
+			case 0:;
+				startColor = getResources().getColor(R.color.Red); //203, 32, 38
+				endColor = Color.rgb(203+50, 32+90, 38+90);
+				break;
+			case 1:
+				startColor = getResources().getColor(R.color.Green);//100, 153, 64
+				endColor = Color.rgb(100+90, 153+90, 64+90);
+				break;
+			case 2:
+				startColor = getResources().getColor(R.color.Blue); //0, 153, 204
+				endColor = Color.rgb(0+90, 153+90, 204+50);
+				break;
+			case 3:
+				startColor = getResources().getColor(R.color.Purple); //155, 105, 172
+				endColor = Color.rgb(155+70, 105+70, 172+70);
+				break;
+			case 4:
+				startColor = getResources().getColor(R.color.Orange); //245, 146, 30
+				endColor = Color.rgb(245, 146+90, 30+90);
+				break;
+		}
+		
+		int redStart = Color.red(startColor);
+		int redEnd = Color.red(endColor);
+		int addRed = (redEnd - redStart)/15;
+		
+		int greenStart = Color.green(startColor);
+		int greenEnd = Color.green(endColor);
+		int addGreen = (greenEnd - greenStart)/15;
+		
+		int blueStart = Color.blue(startColor);
+		int blueEnd = Color.blue(endColor);
+		int addBlue = (blueEnd - blueStart)/15;
+		
+		/*---queue stuff---*/
+		
+		for(int i=0; i<myapp.queue.size(); i++)
+		{
+			TrackRow queueRow = new TrackRow(this.getBaseContext(), myapp.queue.get(i).mTrack, myapp.queue.get(i).mAlbum, myapp.queue.get(i).mArtist, myapp.queue.get(i).mUri);
+			queueRow.setOnTouchListener(null);
+			int r,g,b;
+			
+			if (i>15) 
+			{
+				r = redEnd;
+				g = greenEnd;
+				b = blueEnd;
+			}
+			else
+			{
+				r = redStart + addRed * i;
+				g = greenStart + addGreen * i;
+				b = blueStart + addBlue * i;
+			}
+			queueRow.setBackgroundColor(Color.argb(255, r, g, b));
+			queueTab.addView(queueRow);
+			Log.d("refresh queue", "adding row to tab");
+			/*
+			if (queueTab.getChildCount() > 0)
+			{
+				if (((TrackRow)(queueTab.getChildAt(queueTab.getChildCount() - 1))).originalColor == TrackRow.color1)
+					queueRow.setBackgroundColor(TrackRow.color2);
+				else 
+				{
+					queueRow.setBackgroundColor(TrackRow.color1);
+					queueRow.originalColor = TrackRow.color1;
+				}
+			}
+			else
+			{
+				queueRow.setBackgroundColor(TrackRow.color1);
+				queueRow.originalColor = TrackRow.color1;
+			}*/
+		}
+	}
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -99,10 +181,11 @@ public class SearchActivity extends Activity
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));		
 		
+		myapp = (MyApplication) this.getApplicationContext();
+		
 		searchLayout = (LinearLayout) findViewById(R.id.SearchLayout);
 		final EditText searchText = (EditText) findViewById(R.id.SearchField);
 		final OnTouchListener rowTap;
-		queue = new ArrayList<Track>();
 		TabHost tabhost = (TabHost) findViewById(android.R.id.tabhost);
 	    tabhost.setup();
 	    
@@ -122,8 +205,10 @@ public class SearchActivity extends Activity
 		//{
 			//tabhost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.LightGreen));
 		//}
-	    final LinearLayout queueTab = (LinearLayout) findViewById(R.id.tab2);
+	    refreshQueue();
 		
+	    
+	    
 		rowTap = new OnTouchListener()
 		{
 
@@ -144,36 +229,42 @@ public class SearchActivity extends Activity
 			        builder.setMessage(R.string.QueueTopOrBottom)
 			               .setPositiveButton("Top", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                	   queue.add(0, row.getTrack());//URLConnection con = url.openConnection();
+			                	   myapp.queue.add(0, row.getTrack());//URLConnection con = url.openConnection();
+			                	   searchLayout.removeView(row);
+			                	   refreshQueue();
+			                	   /*
 			                	   TrackRow queueRow = row;
 			                	   queueRow.setOnTouchListener(null);
-			                	   searchLayout.removeView(queueRow);
+			                	   
 			                	   
 			                	   queueTab.addView(queueRow, 0);
-								if (queueTab.getChildCount() > 1)
-								{
-			                		    if (((TrackRow)(queueTab.getChildAt(1))).originalColor == TrackRow.color1)
-			                		    {
-			                		    	queueRow.setBackgroundColor(TrackRow.color2);
-			                		    	queueRow.originalColor = TrackRow.color2;
-			                		    }
-			                		    else 
-			                		    {
-			                		    	queueRow.setBackgroundColor(TrackRow.color1);
-			                		    	queueRow.originalColor = TrackRow.color1;
-			                		    }
-								}
-								else
-								{
-									queueRow.setBackgroundColor(TrackRow.color1);
-			                	    queueRow.originalColor = TrackRow.color1;
-								}
-			                	   
+									if (queueTab.getChildCount() > 1)
+									{
+				                		    if (((TrackRow)(queueTab.getChildAt(1))).originalColor == TrackRow.color1)
+				                		    {
+				                		    	queueRow.setBackgroundColor(TrackRow.color2);
+				                		    	queueRow.originalColor = TrackRow.color2;
+				                		    }
+				                		    else 
+				                		    {
+				                		    	queueRow.setBackgroundColor(TrackRow.color1);
+				                		    	queueRow.originalColor = TrackRow.color1;
+				                		    }
+									}
+									else
+									{
+										queueRow.setBackgroundColor(TrackRow.color1);
+				                	    queueRow.originalColor = TrackRow.color1;
+									}
+			                	   */
 			                   }
 			               })
 			               .setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                	   queue.add(row.getTrack());
+			                	   myapp.queue.add(row.getTrack());
+			                	   searchLayout.removeView(row);
+			                	   refreshQueue();
+			                	   /*
 			                	   TrackRow queueRow = row;
 			                	   queueRow.setOnTouchListener(null);
 			                	   searchLayout.removeView(queueRow);
@@ -192,7 +283,7 @@ public class SearchActivity extends Activity
 									{
 										queueRow.setBackgroundColor(TrackRow.color1);
 				                	    queueRow.originalColor = TrackRow.color1;
-									}
+									}*/
 			                	   
 			                   }
 			               });

@@ -86,8 +86,9 @@ public class WebService {
 		}
 	};
 
-	public void loadAlbum(TracksLoadedDelegate tracksLoadedDelegate) {
+	public void loadAlbum(TracksLoadedDelegate tracksLoadedDelegate, MyApplication myapp) {
 
+		
 		mTracksLoadedDelegate = tracksLoadedDelegate;
 
 		//mPsytranceClient.get("http://psytrance.se/rest.php?style=psytrance&page=0&pageSize=1&filter=hide&uid=" + mLoginId, new JsonHttpResponseHandler() {
@@ -95,19 +96,19 @@ public class WebService {
 			//public void onSuccess(JSONObject response) {
 				//try {
 					//JSONArray albums = response.getJSONArray("albums");
-					if (SearchActivity.queue != null)
+					if (myapp.queue != null)
 					{
-						if (SearchActivity.queue.size() > 0)
+						if (myapp.queue.size() > 0)
 						{
 							//was remove before
 							ArrayList<Track> fakeQueue = new ArrayList<Track>();
 							Track trackToAdd = null;
-							for (int i = 0; i < SearchActivity.queue.size(); i++)
+							for (int i = 0; i < myapp.queue.size(); i++)
 							{
-								trackToAdd = SearchActivity.queue.get(i);							
+								trackToAdd = myapp.queue.get(i);							
 								fakeQueue.add(trackToAdd);
 							}
-							mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), SearchActivity.queue.get(0).mThumbnail); //last is image
+							mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), myapp.queue.get(0).mThumbnail); //last is image
 						}
 					}
 					//mAlbumUri = album.getString("spotify");

@@ -532,7 +532,7 @@ public class PlayerActivity extends Activity {
 				// track might not be loaded yet but assume it is
 				mIsTrackLoaded = true;
 			}
-		});
+		}, myapp);
 
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
