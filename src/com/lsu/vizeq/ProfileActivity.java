@@ -430,7 +430,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 						
 					}
 					
-				};//Say run here, once it's correct
+				}.run();//Say run here, once it's correct
 			}
 
 		};
