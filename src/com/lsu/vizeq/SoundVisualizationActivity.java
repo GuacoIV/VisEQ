@@ -195,7 +195,7 @@ public class SoundVisualizationActivity extends Activity
 			{
 				delayedHide(AUTO_HIDE_DELAY_MILLIS);
 			}
-			Intent nextIntent = new Intent(SoundVisualizationActivity.this, SettingsActivity.class);
+			Intent nextIntent = new Intent(SoundVisualizationActivity.this, ProfileActivity.class);
 			startActivity(nextIntent);
 			return false;
 		}
