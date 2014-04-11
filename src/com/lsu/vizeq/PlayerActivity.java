@@ -84,37 +84,9 @@ public class PlayerActivity extends Activity {
 	boolean isPlaying = false;
 	boolean AudioFocus = false;
 	String LOGTAG = "Audio focus";
-	OnAudioFocusChangeListener mAudioFocusListener = new OnAudioFocusChangeListener() {
-		public void onAudioFocusChange(int focusChange) {
-		    switch (focusChange) {
-		        case AudioManager.AUDIOFOCUS_LOSS:
-		            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS");
-		            AudioFocus = false;
-		            break;
-
-		        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-		            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
-		            break;
-
-		        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-		            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT");
-
-		            
-		            break;
-		        case AudioManager.AUDIOFOCUS_GAIN:
-		            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_GAIN");
-
-		            AudioFocus = true;
-		            break;
-		        default:
-		            Log.e(LOGTAG, "Unknown audio focus change code " + focusChange);
-		    }
-		}
-		};
 	
-		AudioManager am = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-		AudioManager.OnAudioFocusChangeListener afChangeListener;
-
+	AudioManager am;
+	AudioManager.OnAudioFocusChangeListener afChangeListener;
 		
 	private ServiceBinder mBinder;
 	private WebService mWebservice;
@@ -397,7 +369,9 @@ public class PlayerActivity extends Activity {
 
 		// Start listening for button presses
 		am.registerMediaButtonEventReceiver(new ComponentName(getPackageName(), RemoteControlReceiver.class.getName()));
-
+		
+		//Refresh the queue
+		//mWebservice.loadAlbum(null, myapp);
 		super.onResume();
 	}
 
@@ -413,7 +387,34 @@ public class PlayerActivity extends Activity {
 		myapp = (MyApplication) this.getApplicationContext();
 		MyApp = myapp;
 		playerBackground = (RelativeLayout) findViewById(R.id.PlayerLayout);
-		
+		am = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+		OnAudioFocusChangeListener mAudioFocusListener = new OnAudioFocusChangeListener() {
+			public void onAudioFocusChange(int focusChange) {
+			    switch (focusChange) {
+			        case AudioManager.AUDIOFOCUS_LOSS:
+			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS");
+			            AudioFocus = false;
+			            break;
+
+			        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+			            break;
+
+			        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT");
+
+			            
+			            break;
+			        case AudioManager.AUDIOFOCUS_GAIN:
+			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_GAIN");
+
+			            AudioFocus = true;
+			            break;
+			        default:
+			            Log.e(LOGTAG, "Unknown audio focus change code " + focusChange);
+			    }
+			}
+		};
 //		//light sending stuff
 //		new Thread( new Runnable()
 //		{
@@ -528,11 +529,6 @@ public class PlayerActivity extends Activity {
 				// Set the data of the first track
 				mIndex = 0;
 				updateTrackState();
-
-				//AsyncTask<String, Integer, Bitmap> coverLoader = new AsyncTask<String, Integer, Bitmap>() {
-
-					//@Override
-					//protected Bitmap doInBackground(String... uris) {
 					Thread coverThread = new Thread(new Runnable()
 					{
 						public void run()
@@ -563,16 +559,6 @@ public class PlayerActivity extends Activity {
 						}
 					});
 					coverThread.start();
-					//}
-
-					//protected void onPostExecute(Bitmap bmp) {
-						
-					//}
-				//};
-				//coverLoader.execute(new String[] { imageUri });
-				
-				// load the track
-				//mBinder.getService().playNext(mTracks.get(mIndex).getSpotifyUri(), playerPositionDelegate); //had getSpotifyUri
 				// track might not be loaded yet but assume it is
 				mIsTrackLoaded = true;
 			}

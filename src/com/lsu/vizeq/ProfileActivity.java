@@ -338,7 +338,6 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 								tableRowToAdd.setOnTouchListener(rowTap);
 								tableRowToAdd.addView(linearLayoutToAdd);
 								customSearchLayout.addView(tableRowToAdd);
-								
 							}
 							
 							//mAlbumUri = album.getString("spotify");
@@ -367,7 +366,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 					{
 						try
 						{
-							DatagramSocket listenSocket = new DatagramSocket(7770);
+							//DatagramSocket listenSocket = new DatagramSocket(7770);
 							DatagramSocket sendSocket = new DatagramSocket();
 							//while(true)
 							//{
