@@ -327,7 +327,6 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 								tableRowToAdd.setOnTouchListener(rowTap);
 								tableRowToAdd.addView(linearLayoutToAdd);
 								customSearchLayout.addView(tableRowToAdd);
-								
 							}
 							
 							//mAlbumUri = album.getString("spotify");

@@ -20,7 +20,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="Loading the latest album!"
+        android:text="@string/noMusic"
         android:singleLine="true"
         android:textColor="#fff" />
         <TextView
@@ -38,7 +38,7 @@
             android:layout_height="300px"
             android:layout_marginTop="10dp"
             android:scaleType="fitXY"
-            android:src="@drawable/cover_mock" />
+            android:src="@drawable/albumart" />
 
         <LinearLayout
             android:id="@+id/topbar"
@@ -61,7 +61,7 @@
                     android:id="@+id/star_image"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/star_disabled_state" />
+                    android:background="@drawable/unstar_100x100" />
             </LinearLayout>
 
             <!-- <LinearLayout
