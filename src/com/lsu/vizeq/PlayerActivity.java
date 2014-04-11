@@ -207,14 +207,14 @@ public class PlayerActivity extends Activity {
 		@Override
 		public void onTrackStarred() {
 			ImageView view = (ImageView) findViewById(R.id.star_image);
-			view.setBackgroundResource(R.drawable.star_state);
+			view.setBackgroundResource(R.drawable.star_100x100);
 			mIsStarred = true;
-		}
+	}
 
 		@Override
 		public void onTrackUnStarred() {
 			ImageView view = (ImageView) findViewById(R.id.star_image);
-			view.setBackgroundResource(R.drawable.star_disabled_state);
+			view.setBackgroundResource(R.drawable.unstar_100x100);
 			mIsStarred = false;
 		}
 	};
@@ -338,7 +338,7 @@ public class PlayerActivity extends Activity {
 
 	public void updateTrackState() {
 		ImageView view = (ImageView) findViewById(R.id.star_image);
-		view.setBackgroundResource(R.drawable.star_disabled_state);
+		view.setBackgroundResource(R.drawable.unstar_100x100);
 		if (mTracks.size() > 0)
 		{
 			((TextView) findViewById(R.id.track_info)).setText(mTracks.get(mIndex).getTrackInfo());
@@ -371,7 +371,7 @@ public class PlayerActivity extends Activity {
 		am.registerMediaButtonEventReceiver(new ComponentName(getPackageName(), RemoteControlReceiver.class.getName()));
 		
 		//Refresh the queue
-		//mWebservice.loadAlbum(null, myapp);
+		checkTheQueue();
 		super.onResume();
 	}
 
@@ -402,12 +402,9 @@ public class PlayerActivity extends Activity {
 
 			        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT");
-
-			            
 			            break;
 			        case AudioManager.AUDIOFOCUS_GAIN:
 			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_GAIN");
-
 			            AudioFocus = true;
 			            break;
 			        default:
@@ -522,47 +519,7 @@ public class PlayerActivity extends Activity {
 		});
 		Log.e("", "Your login id is " + Installation.id(this));
 		mWebservice = new WebService(Installation.id(this));
-		mWebservice.loadAlbum(new WebService.TracksLoadedDelegate() {
-			public void onTracksLoaded(ArrayList<Track> tracks, String albumUri, final String imageUri) {
-				mTracks = tracks;
-				mAlbumUri = albumUri;
-				// Set the data of the first track
-				mIndex = 0;
-				updateTrackState();
-					Thread coverThread = new Thread(new Runnable()
-					{
-						public void run()
-						{
-							try {
-								URL url = new URL(imageUri);
-								final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-								runOnUiThread(new Runnable()
-								{
-									@Override
-									public void run()
-									{
-										((ImageView) findViewById(R.id.cover_image)).setImageBitmap(bmp);
-										
-									}
-									
-								});
-								//return bmp;
-							} catch (MalformedURLException e) {
-								throw new RuntimeException("Cannot load cover image", e);
-							} catch (IOException e) {
-								throw new RuntimeException("Cannot load cover image", e);
-							}
-							catch (Exception e)
-							{
-								e.printStackTrace();
-							}
-						}
-					});
-					coverThread.start();
-				// track might not be loaded yet but assume it is
-				mIsTrackLoaded = true;
-			}
-		}, myapp);
+		checkTheQueue();
 
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -717,6 +674,50 @@ public class PlayerActivity extends Activity {
 				
 			});			
 		}
+	}
+	public void checkTheQueue()
+	{
+		mWebservice.loadAlbum(new WebService.TracksLoadedDelegate() {
+			public void onTracksLoaded(ArrayList<Track> tracks, String albumUri, final String imageUri) {
+				mTracks = tracks;
+				mAlbumUri = albumUri;
+				// Set the data of the first track
+				mIndex = 0;
+				updateTrackState();
+					Thread coverThread = new Thread(new Runnable()
+					{
+						public void run()
+						{
+							try {
+								URL url = new URL(imageUri);
+								final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+								runOnUiThread(new Runnable()
+								{
+									@Override
+									public void run()
+									{
+										((ImageView) findViewById(R.id.cover_image)).setImageBitmap(bmp);
+										
+									}
+									
+								});
+								//return bmp;
+							} catch (MalformedURLException e) {
+								throw new RuntimeException("Cannot load cover image", e);
+							} catch (IOException e) {
+								throw new RuntimeException("Cannot load cover image", e);
+							}
+							catch (Exception e)
+							{
+								e.printStackTrace();
+							}
+						}
+					});
+					coverThread.start();
+				// track might not be loaded yet but assume it is
+				mIsTrackLoaded = true;
+			}
+		}, myapp);
 	}
 
 }

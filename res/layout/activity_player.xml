@@ -61,7 +61,7 @@
                     android:id="@+id/star_image"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/star_disabled_state" />
+                    android:background="@drawable/unstar_100x100" />
             </LinearLayout>
 
             <!-- <LinearLayout
