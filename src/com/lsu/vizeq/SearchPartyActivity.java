@@ -134,7 +134,9 @@ public class SearchPartyActivity extends Activity {
     public void searchForPartiesServer(View view)
     {
     	String name = "Dummy";
+    	myapp.myName = name;
     	String zipcode = getZipcode();
+    	myapp.zipcode = zipcode;
     	new ContactServerTask().execute(name, zipcode);
     }
 	
@@ -169,17 +171,16 @@ public class SearchPartyActivity extends Activity {
 		}).start();
 	}
 	
-	public void refreshPartyList(Set<String> partyNames)
+	public void refreshPartyList(ArrayList<String> partyNames)
 	{
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		
 		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
 		LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
 		
-		Iterator<String> it = partyNames.iterator();
-		while(it.hasNext())
+		for(int i=0; i<partyNames.size(); i++)
 		{
-			final String name = it.next();
+			final String name = partyNames.get(i);
 			
 			//name of party
 			TextView tv = new TextView(this);
@@ -200,6 +201,7 @@ public class SearchPartyActivity extends Activity {
 				@Override
 				public void onClick(View arg0) {
 					Log.d("Join", "Joining party");
+					new JoinTaskServer().execute(myapp.zipcode + ":" + name);
 					//new JoinTask().execute((InetAddress) pairs.getValue());
 				}
 			});
@@ -261,23 +263,24 @@ public class SearchPartyActivity extends Activity {
 		Log.d("Contact Server", "Error Connecting");
 	}
 	
-	private class ContactServerTask extends AsyncTask<String, Set<String>, Integer>
+	private class ContactServerTask extends AsyncTask<String, Integer, ArrayList<String>>
 	{
 
 		@Override
 		//params[0] = party name
 		//params[1] = zipcode
-		protected Integer doInBackground(String... params) {
+		protected ArrayList<String> doInBackground(String... params) {
 			String partyName = params[0];
 			String zipcode = params[1];
 			Integer result = 2;
 			
 			Jedis jedis = new Jedis(Redis.host, Redis.port);
 			jedis.auth(Redis.auth);
-			Set<String> partyNames = jedis.smembers(zipcode);
+			Set<String> names = jedis.smembers(zipcode);
+			ArrayList<String> partyNames = new ArrayList<String>();
 			
 			//Check if they all have valid ips
-			Iterator<String> it = partyNames.iterator();
+			Iterator<String> it = names.iterator();
 			
 			while(it.hasNext())
 			{
@@ -286,39 +289,41 @@ public class SearchPartyActivity extends Activity {
 				if(!check)
 				{
 					jedis.srem(zipcode, name);
-					partyNames.remove(name);
+					it.remove();
 				}
+				else partyNames.add(name);
 			}
 			
 			if (partyNames.size() <= 0) result = 1;
 			else result = 0;
-			publishProgress(partyNames);
+			publishProgress(result);
 			jedis.close();
 			
-			return result;
+			return partyNames;
 		}
 
 		@Override
-		protected void onPostExecute(Integer result) {
+		protected void onPostExecute(ArrayList<String> result) {
 			// TODO Auto-generated method stub
-			if(result == 0)
+			refreshPartyList(result);
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			// TODO Auto-generated method stub
+			if(values[0] == 0)
 			{
 				//good to go
 			}
-			else if(result == 1)
+			else if(values[0] == 1)
 			{
 				noPartiesNotification();
 			}
-			else if(result == 2)
+			else if(values[0] == 2)
 			{
 				connectionErrorNotification();
 			}
-		}
-
-		@Override
-		protected void onProgressUpdate(Set<String>... values) {
-			// TODO Auto-generated method stub
-			refreshPartyList(values[0]);
+			
 		}
 		
 	}
@@ -372,10 +377,6 @@ public class SearchPartyActivity extends Activity {
 						else e.printStackTrace();
 					}
 				}
-
-				
-
-			
 			return result;
 		}
 
@@ -392,6 +393,87 @@ public class SearchPartyActivity extends Activity {
 		protected void onProgressUpdate(String... values) {
 			// TODO Auto-generated method stub
 			refreshPartyList();
+		}
+		
+	}
+	
+	public class JoinTaskServer extends AsyncTask<String, Void, String>
+	{
+
+		@Override
+		protected String doInBackground(String... params) {
+			//check if not entered username
+			if(!checkIfNameEntered()) return "Must enter name first";
+			Jedis jedis = new Jedis(Redis.host, Redis.port);
+			jedis.auth(Redis.auth);
+		
+			DatagramSocket sendSocket;
+			DatagramSocket listenSocket;
+			// TODO Auto-generated method stub
+			//send join request
+			Log.d("join party", "Clicked");
+			try {
+				sendSocket = new DatagramSocket();
+				listenSocket = new DatagramSocket(7771);
+				//send join request
+				byte[] sendData = new byte[1024];
+				byte[] receiveData = new byte[1024];
+				String searchString = "join\n"+myapp.myName;
+				sendData = searchString.getBytes();
+				
+				String ip = jedis.get(params[0]);
+				Log.d("join thru server", "host ip: "+ip);
+				
+				InetAddress ipaddress = InetAddress.getByName(ip);
+				
+				Log.d("join party", "Sending to " + ipaddress.getHostName());
+				DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7771);
+				sendSocket.send(searchPacket);
+				Log.d("join party", "join sent to "+ipaddress.getHostName());
+				//now wait for response
+				boolean joined = false;
+				while(!joined)
+				{
+					Log.d("listen for join", "listening");
+					DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
+					listenSocket.receive(receivePacket);
+					String message = PacketParser.getHeader(receivePacket);
+					Log.d("listen for join", message);
+					if(message.equals("accept"))
+					{
+						Log.d("listen for join", "we are joined");
+						myapp.joined = true;
+						myapp.hostAddress = receivePacket.getAddress();
+						joined = true;
+					}
+				}
+				return "Joined!";
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return "Failed!";
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			// TODO Auto-generated method stub
+			final String s = result;
+			AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
+			builder.setMessage(result).setCancelable(false)
+			.setPositiveButton("ok", new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int id)
+				{
+					if(!s.equals("Must enter name first"))
+					{	
+						Intent nextIntent = new Intent(SearchPartyActivity.this, SoundVisualizationActivity.class);
+						startActivity(nextIntent);
+					}
+				}
+			});
+			AlertDialog alert = builder.create();
+			alert.show();
 		}
 		
 	}
@@ -517,6 +599,7 @@ public class SearchPartyActivity extends Activity {
 		try {
 			List<Address> addresses = geocoder.getFromLocation(currLocation.getLatitude(), currLocation.getLongitude(), 1);
 			zipcode = addresses.get(0).getPostalCode();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

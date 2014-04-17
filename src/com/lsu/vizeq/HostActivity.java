@@ -24,8 +24,10 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -184,7 +186,7 @@ public class HostActivity extends Activity
 		}
 	};
 	
-	public String getExternalIp()
+	public String getPublicIp()
 	{
 		String ip = "0.0.0.0";
 		HttpClient client = new DefaultHttpClient();
@@ -210,15 +212,24 @@ public class HostActivity extends Activity
 		return ip;
 	}
 	
+	public String getPrivateIp()
+	{
+		WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+		String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
+		Log.d("Private ip", "Obtained: "+ip);
+		return ip;
+	}
+	
 	public void setName(String name)
 	{
 		myapp.myName = name;
 	}
 	
-	public void setExternalIp(String ip)
+	public void setIp(String ip)
 	{
 		myapp.myIp = ip;
 	}
+	
 	
 	public void setZipcode(String zipcode)
 	{
@@ -260,7 +271,7 @@ public class HostActivity extends Activity
 			jedis.auth(Redis.auth);
 			partyName = getName();
 			zipcode = getZipcode();
-			ip = getExternalIp();
+			ip = getPrivateIp();
 			
 			long reply = jedis.setnx(zipcode + ":" + partyName, ip);
 			if(reply == 0)
@@ -284,7 +295,7 @@ public class HostActivity extends Activity
 			if(result == 0)
 			{
 				setName(partyName);
-				setExternalIp(ip);
+				setIp(ip);
 				setZipcode(zipcode);
 				moveToMenu();
 			}

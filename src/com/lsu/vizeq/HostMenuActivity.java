@@ -102,17 +102,19 @@ public class HostMenuActivity extends Activity
 				jedis.auth(Redis.auth);
 				while(myapp.hosting)
 				{
-					jedis.expire(myapp.zipcode + ":" + myapp.myName, 2);
+					Log.d("heartbeat", "sending heartbeat");
+					jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
 					try {
-						Thread.sleep(1800L);
+						Thread.sleep(3000L);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
+				jedis.close();
 			}
 			
-		});
+		}).start();
 	}
 
 	@Override
