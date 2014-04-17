@@ -8,20 +8,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".HostMenuActivity" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/HostMenu:" />
-
-
     <Button
         android:id="@+id/Scope"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/Search"
         android:layout_centerHorizontal="true"
-        android:text="@string/ScopeThisCrowd" />
+        android:text="@string/ScopeThisCrowd" 
+        android:layout_margin="10dp"/>
 
     <Button
         android:id="@+id/NowPlaying"
@@ -29,7 +23,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/Scope"
         android:layout_centerHorizontal="true"
-        android:text="@string/NowPlaying" />
+        android:text="@string/NowPlaying"
+        android:layout_margin="10dp" />
 
     <Button
         android:id="@+id/Search"
@@ -38,7 +33,8 @@
         android:layout_below="@+id/textView1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="14dp"
-        android:text="@string/HostSearch" />
+        android:text="@string/HostSearch"
+        android:layout_margin="10dp" />
 
     <EditText
         android:id="@+id/name_field"

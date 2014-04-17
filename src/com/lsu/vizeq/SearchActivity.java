@@ -229,62 +229,149 @@ public class SearchActivity extends Activity
 			        builder.setMessage(R.string.QueueTopOrBottom)
 			               .setPositiveButton("Top", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                	   myapp.queue.add(0, row.getTrack());//URLConnection con = url.openConnection();
+			                	   Thread coverThread = new Thread(new Runnable()
+									{
+										public void run()
+										{
+										URI url;
+										Track tempTrack = row.getTrack();
+										//Get the album art
+										try
+										{									
+											url = new URI("https://embed.spotify.com/oembed/?url=" + tempTrack.mUri);
+											HttpClient httpClient = new DefaultHttpClient();
+											HttpResponse response2 = httpClient.execute(new HttpGet(url));
+											HttpEntity entity = response2.getEntity();
+											String s = EntityUtils.toString(entity, "UTF-8");
+											int numThumb = s.indexOf("thumbnail_url");
+											String thumbnail = s.substring(numThumb + 16);
+											thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
+											thumbnail = thumbnail.replace("\\", "");
+											tempTrack.mThumbnail = thumbnail;
+										} catch (URISyntaxException e)
+										{
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										} catch (ClientProtocolException e)
+										{
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										} catch (IOException e)
+										{
+											// TODO Auto-generated catch block
+											e.printStackTrace();
+										}	
+		
+					                	   myapp.queue.add(0, tempTrack);
+					                	   /*
+					                	   TrackRow queueRow = row;
+					                	   queueRow.setOnTouchListener(null);
+					                	   
+					                	   
+					                	   queueTab.addView(queueRow, 0);
+											if (queueTab.getChildCount() > 1)
+											{
+						                		    if (((TrackRow)(queueTab.getChildAt(1))).originalColor == TrackRow.color1)
+						                		    {
+						                		    	queueRow.setBackgroundColor(TrackRow.color2);
+						                		    	queueRow.originalColor = TrackRow.color2;
+						                		    }
+						                		    else 
+						                		    {
+						                		    	queueRow.setBackgroundColor(TrackRow.color1);
+						                		    	queueRow.originalColor = TrackRow.color1;
+						                		    }
+											}
+											else
+											{
+												queueRow.setBackgroundColor(TrackRow.color1);
+						                	    queueRow.originalColor = TrackRow.color1;
+											}
+					                	   */
+										}
+									});
+			                	   coverThread.start();
+			                	   
+			                	   try
+			                	   {
+			                		   coverThread.join(2000);
+			                	   } catch (InterruptedException e)
+			                	   {
+			                		   // TODO Auto-generated catch block
+			                		   e.printStackTrace();
+			                	   }
 			                	   searchLayout.removeView(row);
 			                	   refreshQueue();
-			                	   /*
-			                	   TrackRow queueRow = row;
-			                	   queueRow.setOnTouchListener(null);
-			                	   
-			                	   
-			                	   queueTab.addView(queueRow, 0);
-									if (queueTab.getChildCount() > 1)
-									{
-				                		    if (((TrackRow)(queueTab.getChildAt(1))).originalColor == TrackRow.color1)
-				                		    {
-				                		    	queueRow.setBackgroundColor(TrackRow.color2);
-				                		    	queueRow.originalColor = TrackRow.color2;
-				                		    }
-				                		    else 
-				                		    {
-				                		    	queueRow.setBackgroundColor(TrackRow.color1);
-				                		    	queueRow.originalColor = TrackRow.color1;
-				                		    }
-									}
-									else
-									{
-										queueRow.setBackgroundColor(TrackRow.color1);
-				                	    queueRow.originalColor = TrackRow.color1;
-									}
-			                	   */
 			                   }
 			               })
 			               .setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                	   myapp.queue.add(row.getTrack());
+			                	   Thread coverThread = new Thread(new Runnable()
+									{
+										public void run()
+										{
+					                	    URI url;
+											Track tempTrack = row.getTrack();
+											//Get the album art
+											try
+											{									
+												url = new URI("https://embed.spotify.com/oembed/?url=" + tempTrack.mUri);
+												HttpClient httpClient = new DefaultHttpClient();
+												HttpResponse response2 = httpClient.execute(new HttpGet(url));
+												HttpEntity entity = response2.getEntity();
+												String s = EntityUtils.toString(entity, "UTF-8");
+												int numThumb = s.indexOf("thumbnail_url");
+												String thumbnail = s.substring(numThumb + 16);
+												thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
+												thumbnail = thumbnail.replace("\\", "");
+												tempTrack.mThumbnail = thumbnail;
+											} catch (URISyntaxException e)
+											{
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											} catch (ClientProtocolException e)
+											{
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											} catch (IOException e)
+											{
+												// TODO Auto-generated catch block
+												e.printStackTrace();
+											}	
+					                	   myapp.queue.add(tempTrack);
+					                	   /*
+					                	   TrackRow queueRow = row;
+					                	   queueRow.setOnTouchListener(null);
+					                	   searchLayout.removeView(queueRow);
+					                	   queueTab.addView(queueRow);
+					                	   if (queueTab.getChildCount() > 0)
+											{
+						                		    if (((TrackRow)(queueTab.getChildAt(queueTab.getChildCount() - 1))).originalColor == TrackRow.color1)
+						                		    	queueRow.setBackgroundColor(TrackRow.color2);
+						                		    else 
+						                		    {
+						                		    	queueRow.setBackgroundColor(TrackRow.color1);
+						                		    	queueRow.originalColor = TrackRow.color1;
+						                		    }
+											}
+											else
+											{
+												queueRow.setBackgroundColor(TrackRow.color1);
+						                	    queueRow.originalColor = TrackRow.color1;
+											}*/
+										}
+									});		
+			                	   coverThread.start();
+			                	   try
+			                	   {
+			                		   coverThread.join(2000);
+			                	   } catch (InterruptedException e)
+			                	   {
+			                		   // TODO Auto-generated catch block
+			                		   e.printStackTrace();
+			                	   }
 			                	   searchLayout.removeView(row);
 			                	   refreshQueue();
-			                	   /*
-			                	   TrackRow queueRow = row;
-			                	   queueRow.setOnTouchListener(null);
-			                	   searchLayout.removeView(queueRow);
-			                	   queueTab.addView(queueRow);
-			                	   if (queueTab.getChildCount() > 0)
-									{
-				                		    if (((TrackRow)(queueTab.getChildAt(queueTab.getChildCount() - 1))).originalColor == TrackRow.color1)
-				                		    	queueRow.setBackgroundColor(TrackRow.color2);
-				                		    else 
-				                		    {
-				                		    	queueRow.setBackgroundColor(TrackRow.color1);
-				                		    	queueRow.originalColor = TrackRow.color1;
-				                		    }
-									}
-									else
-									{
-										queueRow.setBackgroundColor(TrackRow.color1);
-				                	    queueRow.originalColor = TrackRow.color1;
-									}*/
-			                	   
 			                   }
 			               });
 			        //builder.create();
@@ -391,12 +478,6 @@ public class SearchActivity extends Activity
 												HttpResponse response2 = httpClient.execute(new HttpGet(url));
 												HttpEntity entity = response2.getEntity();
 												String s = EntityUtils.toString(entity, "UTF-8");
-												
-												//URLConnection con = url.openConnection();
-												//InputStream is = con.getInputStream();
-												//String encoding = con.getContentEncoding();
-												//encoding = encoding == null ? "UTF-8" : encoding;
-												//String s = .toString(is, encoding);
 												int numThumb = s.indexOf("thumbnail_url");
 												String thumbnail = s.substring(numThumb + 16);
 												thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
@@ -415,15 +496,10 @@ public class SearchActivity extends Activity
 											{
 												// TODO Auto-generated catch block
 												e.printStackTrace();
-											}
-											
-											
-											
-											
+											}	
 										}
-									
 									});
-									coverThread.start();
+									//coverThread.start();
 															
 
 								/*if (i % 2 == 0) 

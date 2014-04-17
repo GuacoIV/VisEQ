@@ -57,6 +57,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -80,7 +81,13 @@ import com.lsu.vizeq.ServiceBinder.ServiceBinderDelegate;
 import com.lsu.vizeq.SpotifyService.PlayerUpdateDelegate;
 
 public class PlayerActivity extends Activity {
-
+	boolean isPlaying = false;
+	boolean AudioFocus = false;
+	String LOGTAG = "Audio focus";
+	
+	AudioManager am;
+	AudioManager.OnAudioFocusChangeListener afChangeListener;
+		
 	private ServiceBinder mBinder;
 	private WebService mWebservice;
 	private boolean mIsStarred;
@@ -200,14 +207,14 @@ public class PlayerActivity extends Activity {
 		@Override
 		public void onTrackStarred() {
 			ImageView view = (ImageView) findViewById(R.id.star_image);
-			view.setBackgroundResource(R.drawable.star_state);
+			view.setBackgroundResource(R.drawable.star_100x100);
 			mIsStarred = true;
-		}
+	}
 
 		@Override
 		public void onTrackUnStarred() {
 			ImageView view = (ImageView) findViewById(R.id.star_image);
-			view.setBackgroundResource(R.drawable.star_disabled_state);
+			view.setBackgroundResource(R.drawable.unstar_100x100);
 			mIsStarred = false;
 		}
 	};
@@ -233,9 +240,18 @@ public class PlayerActivity extends Activity {
 			return;
 
 		Track track = mTracks.get(mIndex);
+		if (isPlaying)
+			isPlaying = false;
+		else
+			isPlaying = true;
+		int result = am.requestAudioFocus(afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
-		mBinder.getService().togglePlay(track.getSpotifyUri(), playerPositionDelegate);
-
+		if (result == am.AUDIOFOCUS_REQUEST_FAILED)
+			isPlaying = false;
+		else {
+			isPlaying = true;
+			mBinder.getService().togglePlay(track.getSpotifyUri(), playerPositionDelegate);
+		}
 	}
 
 	public void playNext() {
@@ -322,7 +338,7 @@ public class PlayerActivity extends Activity {
 
 	public void updateTrackState() {
 		ImageView view = (ImageView) findViewById(R.id.star_image);
-		view.setBackgroundResource(R.drawable.star_disabled_state);
+		view.setBackgroundResource(R.drawable.unstar_100x100);
 		if (mTracks.size() > 0)
 		{
 			((TextView) findViewById(R.id.track_info)).setText(mTracks.get(mIndex).getTrackInfo());
@@ -353,7 +369,9 @@ public class PlayerActivity extends Activity {
 
 		// Start listening for button presses
 		am.registerMediaButtonEventReceiver(new ComponentName(getPackageName(), RemoteControlReceiver.class.getName()));
-
+		
+		//Refresh the queue
+		checkTheQueue();
 		super.onResume();
 	}
 
@@ -369,7 +387,31 @@ public class PlayerActivity extends Activity {
 		myapp = (MyApplication) this.getApplicationContext();
 		MyApp = myapp;
 		playerBackground = (RelativeLayout) findViewById(R.id.PlayerLayout);
-		
+		am = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+		OnAudioFocusChangeListener mAudioFocusListener = new OnAudioFocusChangeListener() {
+			public void onAudioFocusChange(int focusChange) {
+			    switch (focusChange) {
+			        case AudioManager.AUDIOFOCUS_LOSS:
+			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS");
+			            AudioFocus = false;
+			            break;
+
+			        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+			            break;
+
+			        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT");
+			            break;
+			        case AudioManager.AUDIOFOCUS_GAIN:
+			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_GAIN");
+			            AudioFocus = true;
+			            break;
+			        default:
+			            Log.e(LOGTAG, "Unknown audio focus change code " + focusChange);
+			    }
+			}
+		};
 //		//light sending stuff
 //		new Thread( new Runnable()
 //		{
@@ -477,62 +519,7 @@ public class PlayerActivity extends Activity {
 		});
 		Log.e("", "Your login id is " + Installation.id(this));
 		mWebservice = new WebService(Installation.id(this));
-		mWebservice.loadAlbum(new WebService.TracksLoadedDelegate() {
-			public void onTracksLoaded(ArrayList<Track> tracks, String albumUri, final String imageUri) {
-				mTracks = tracks;
-				mAlbumUri = albumUri;
-				// Set the data of the first track
-				mIndex = 0;
-				updateTrackState();
-
-				//AsyncTask<String, Integer, Bitmap> coverLoader = new AsyncTask<String, Integer, Bitmap>() {
-
-					//@Override
-					//protected Bitmap doInBackground(String... uris) {
-					Thread coverThread = new Thread(new Runnable()
-					{
-						public void run()
-						{
-							try {
-								URL url = new URL(imageUri);
-								final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-								runOnUiThread(new Runnable()
-								{
-									@Override
-									public void run()
-									{
-										((ImageView) findViewById(R.id.cover_image)).setImageBitmap(bmp);
-										
-									}
-									
-								});
-								//return bmp;
-							} catch (MalformedURLException e) {
-								throw new RuntimeException("Cannot load cover image", e);
-							} catch (IOException e) {
-								throw new RuntimeException("Cannot load cover image", e);
-							}
-							catch (Exception e)
-							{
-								e.printStackTrace();
-							}
-						}
-					});
-					coverThread.start();
-					//}
-
-					//protected void onPostExecute(Bitmap bmp) {
-						
-					//}
-				//};
-				//coverLoader.execute(new String[] { imageUri });
-				
-				// load the track
-				//mBinder.getService().playNext(mTracks.get(mIndex).getSpotifyUri(), playerPositionDelegate); //had getSpotifyUri
-				// track might not be loaded yet but assume it is
-				mIsTrackLoaded = true;
-			}
-		}, myapp);
+		checkTheQueue();
 
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -570,6 +557,7 @@ public class PlayerActivity extends Activity {
 			}
 		});
 
+		
 		findViewById(R.id.player_play_pause).setOnClickListener(
 
 		new OnClickListener() {
@@ -686,6 +674,50 @@ public class PlayerActivity extends Activity {
 				
 			});			
 		}
+	}
+	public void checkTheQueue()
+	{
+		mWebservice.loadAlbum(new WebService.TracksLoadedDelegate() {
+			public void onTracksLoaded(ArrayList<Track> tracks, String albumUri, final String imageUri) {
+				mTracks = tracks;
+				mAlbumUri = albumUri;
+				// Set the data of the first track
+				mIndex = 0;
+				updateTrackState();
+					Thread coverThread = new Thread(new Runnable()
+					{
+						public void run()
+						{
+							try {
+								URL url = new URL(imageUri);
+								final Bitmap bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+								runOnUiThread(new Runnable()
+								{
+									@Override
+									public void run()
+									{
+										((ImageView) findViewById(R.id.cover_image)).setImageBitmap(bmp);
+										
+									}
+									
+								});
+								//return bmp;
+							} catch (MalformedURLException e) {
+								throw new RuntimeException("Cannot load cover image", e);
+							} catch (IOException e) {
+								throw new RuntimeException("Cannot load cover image", e);
+							}
+							catch (Exception e)
+							{
+								e.printStackTrace();
+							}
+						}
+					});
+					coverThread.start();
+				// track might not be loaded yet but assume it is
+				mIsTrackLoaded = true;
+			}
+		}, myapp);
 	}
 
 }

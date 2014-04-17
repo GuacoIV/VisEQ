@@ -33,6 +33,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 public class HostActivity extends Activity
 {
@@ -49,7 +50,7 @@ public class HostActivity extends Activity
 		actionBar = getActionBar();
 		
 		myapp = (MyApplication) this.getApplicationContext();
-		
+		RelativeLayout rl = (RelativeLayout) findViewById(R.id.hostBackground);
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
 		if (posi != -1) VizEQ.numRand = posi;		
@@ -59,22 +60,27 @@ public class HostActivity extends Activity
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
 				break;
 			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				rl.setBackground(getResources().getDrawable(R.drawable.blue));
 				break;
 			case 2:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				rl.setBackground(getResources().getDrawable(R.drawable.green));
 				break;
 			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+				rl.setBackground(getResources().getDrawable(R.drawable.red));
 				break;
 			case 4:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				rl.setBackground(getResources().getDrawable(R.drawable.orange));
 				break;
 			case 6:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				rl.setBackground(getResources().getDrawable(R.drawable.purple));
 				break;			
 		}
 	}

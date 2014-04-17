@@ -73,7 +73,7 @@ public class PreferenceVisualizationActivity extends Activity
 		//circleScreen.addView(pc, circleRadius*2, circleRadius*2); 
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-		requests = HostMenuActivity.requests;
+		if (HostMenuActivity.requests != null) requests = HostMenuActivity.requests;
 		/*
 		//Make some fake request data
 		//3 requests (for 1 artist) by 2 people
@@ -149,7 +149,7 @@ public class PreferenceVisualizationActivity extends Activity
 		}
 		int totalWeights = 0;
 		Artist artist = new Artist();
-		artist.requestTrack(requests.get(0));
+		if (requests != null && requests.size() > 0) artist.requestTrack(requests.get(0));
 		for (int i = 1; i < requests.size(); i++)
 		{
 			if (lastArtist.compareTo(requests.get(i).mArtist)==0)

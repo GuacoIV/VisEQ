@@ -47,6 +47,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -370,6 +371,27 @@ public class LoginActivity extends Activity {
 			Intent nextIntent2  = new Intent(LoginActivity.this, AboutActivity.class);
 			startActivity(nextIntent2);
 			break;
+		case R.id.menu_forgot_password:
+			break;
+		case R.id.premium:
+			AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
+	        builder.setMessage("Are you a college student?")
+	               .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	                   public void onClick(DialogInterface dialog, int id) 
+	                   {
+	                	   startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.spotify.com/us/student/")));
+	                   }
+	               })
+	               .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	            	   public void onClick(DialogInterface dialog, int id)
+	            	   {
+	           				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.spotify.com/us/password-reset/")));
+	            	   }
+	               });
+	        builder.show();
+	               break;
 		}
 		return true;
 	}

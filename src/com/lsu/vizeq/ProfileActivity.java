@@ -11,44 +11,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import android.os.Bundle;
-import android.os.Process;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.util.Log;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 
 
@@ -338,7 +327,6 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 								tableRowToAdd.setOnTouchListener(rowTap);
 								tableRowToAdd.addView(linearLayoutToAdd);
 								customSearchLayout.addView(tableRowToAdd);
-								
 							}
 							
 							//mAlbumUri = album.getString("spotify");
@@ -355,20 +343,21 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 				});
 			}
 		});
-		submitListener = new OnClickListener()
+		findViewById(R.id.SubmitCustomList).setOnClickListener(new OnClickListener()
 		{
+			
 			@Override
 			public void onClick(View v)
 			{
-				new Runnable()
+				Log.d("yo", "yo");
+				Thread requestSender = new Thread(new Runnable()
 				{
-
 					@Override
 					public void run()
 					{
 						try
 						{
-							DatagramSocket listenSocket = new DatagramSocket(7770);
+							//DatagramSocket listenSocket = new DatagramSocket(7770);
 							DatagramSocket sendSocket = new DatagramSocket();
 							//while(true)
 							//{
@@ -430,10 +419,11 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 						
 					}
 					
-				};//Say run here, once it's correct
+				});//Say run here, once it's correct
+				requestSender.start();
 			}
 
-		};
+		});
 	}	
 
 }
