@@ -14,6 +14,7 @@ public class TrackRow extends TableRow
 	public String mArtist;
 	public String mUri;
 	public String mThumbnail;
+	public String mRequester;
 	public int originalColor;
 	public static int color1 = Color.rgb(200, 200, 200);
 	public static int color2 = Color.WHITE;

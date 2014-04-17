@@ -5,7 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.ArrayList;
+import java.net.SocketException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,10 +15,13 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,7 +37,6 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -45,9 +47,9 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	
 	public String mColor;
 	LinearLayout customSearchLayout;
-	public static ArrayList<Track> customList;
 	OnClickListener submitListener;
 	ActionBar actionBar;
+	public MyApplication myapp;
 	
 	AsyncHttpClient searchClient = new AsyncHttpClient();
 	
@@ -128,6 +130,10 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 		setContentView(R.layout.activity_profile);		
 		actionBar = getActionBar();
 		
+		myapp = (MyApplication) this.getApplicationContext();
+		
+		refreshQueue();
+		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
 		if (posi != -1) VizEQ.numRand = posi;		
@@ -159,7 +165,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 		customSearchLayout = (LinearLayout) findViewById(R.id.customSearchLayout);
 		final EditText searchText = (EditText) findViewById(R.id.CustomSearchField);
 		final OnTouchListener rowTap;
-		customList = new ArrayList<Track>();
+
 		TabHost tabhost = (TabHost) findViewById(android.R.id.tabhost);
 	    tabhost.setup();
 	    TabSpec ts = tabhost.newTabSpec("tab01"); 
@@ -169,7 +175,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	
 	    ts = tabhost.newTabSpec("tab02"); 
 	    ts.setContent(R.id.tab02);
-	    ts.setIndicator("Playlist");  
+	    ts.setIndicator("Playlist"); 
 	    tabhost.addTab(ts);
 	    
 	    ts = tabhost.newTabSpec("tab03");
@@ -208,8 +214,10 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 			        builder.setMessage(R.string.QueueTopOrBottom)
 			               .setPositiveButton("Top", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                	   customList.add(0, row.getTrack());
-			                	   TrackRow customListRow = row;
+			                	   myapp.queue.add(0, row.getTrack());
+			                	   refreshQueue();
+			                	   customSearchLayout.removeView(row);
+			                	   /*TrackRow customListRow = row;
 			                	   customListRow.setOnTouchListener(null);
 			                	   customSearchLayout.removeView(customListRow);
 			                	   
@@ -231,14 +239,16 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 								{
 									customListRow.setBackgroundColor(TrackRow.color1);
 			                	    customListRow.originalColor = TrackRow.color1;
-								}
+								}*/
 			                	   
 			                   }
 			               })
 			               .setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                	   customList.add(row.getTrack());
-			                	   TrackRow customListRow = row;
+			                	   myapp.queue.add(row.getTrack());
+			                	   refreshQueue();
+			                	   customSearchLayout.removeView(row);
+			                	   /*TrackRow customListRow = row;
 			                	   customListRow.setOnTouchListener(null);
 			                	   customSearchLayout.removeView(customListRow);
 			                	   customListTab.addView(customListRow);
@@ -256,7 +266,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 									{
 										customListRow.setBackgroundColor(TrackRow.color1);
 				                	    customListRow.originalColor = TrackRow.color1;
-									}
+									}*/
 			                	   
 			                   }
 			               });
@@ -350,80 +360,149 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 			public void onClick(View v)
 			{
 				Log.d("yo", "yo");
-				Thread requestSender = new Thread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						try
-						{
-							//DatagramSocket listenSocket = new DatagramSocket(7770);
-							DatagramSocket sendSocket = new DatagramSocket();
-							//while(true)
-							//{
-								//listen for search
-								//Log.d("listen thread","listening");
-								//byte[] receiveData = new byte[1024];
-								//DatagramPacket receivedPacket = new DatagramPacket(receiveData, receiveData.length);
-								//listenSocket.receive(receivedPacket);
-								//Log.d("listen thread", "packet received");
-								
-								/*InetAddress ip = receivedPacket.getAddress();
-								int port = receivedPacket.getPort();
-								
-								String data = new String(receivedPacket.getData());
-								if (data.substring(0, 6).equals("search"))
-								{
-									Log.d("listen thread", "search received from "+ip.toString()+" "+ip.getHostAddress());
-									//send back information
-									String information = "found ";
-									information += (myapp.myName);
-									Log.d("listen thread", "sending back"+information);*/
-									
-								//make a packet containing all elements with newlines between each
-								for (int j = 0; j < customList.size(); j++)
-								{
-									byte[] requestHeader = "request\n".getBytes();
-									byte[] backslashN = "\n".getBytes();
-									byte[] albumBytes = customList.get(j).mAlbum.getBytes();
-									byte[] artistBytes = customList.get(j).mArtist.getBytes();
-									byte[] requesterBytes = customList.get(j).mRequester.getBytes();
-									byte[] trackBytes= customList.get(j).mTrack.getBytes();
-									byte[] uriBytes = customList.get(j).mUri.getBytes();
-									ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-									outputStream.write(requestHeader);
-									outputStream.write(albumBytes);
-									outputStream.write(backslashN);
-									outputStream.write(artistBytes);
-									outputStream.write(backslashN);
-									outputStream.write(requesterBytes);
-									outputStream.write(backslashN);
-									outputStream.write(trackBytes);
-									outputStream.write(backslashN);
-									outputStream.write(uriBytes);
-									outputStream.write(backslashN);
-									byte[] sendData = outputStream.toByteArray();
-									InetAddress ip = RoleActivity.myapp.hostAddress;
-									DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 7770);
-									sendSocket.send(sendPacket);
-
-									
-								}
-									//}
-								
-							}
-						catch (Exception e)
-						{
-							e.printStackTrace();
-						}							
-						
-					}
-					
-				});//Say run here, once it's correct
-				requestSender.start();
+				sendRequest();
+				Log.d("lol","lol");
 			}
 
 		});
 	}	
+	
+
+	public void sendRequest()
+	{
+		new Thread(new Runnable()
+		{
+				@Override
+				public void run() 
+				{
+					// TODO Auto-generated method stub
+					DatagramSocket sendSocket;
+					try 
+					{
+							sendSocket = new DatagramSocket();
+							//make a packet containing all elements with newlines between each
+							for (int j = 0; j < myapp.queue.size(); j++)
+							{
+								Log.d("SendRequestTask", "Sending: "+myapp.queue.get(j).mTrack);
+								byte[] requestHeader = "request\n".getBytes();
+								byte[] backslashN = "\n".getBytes();
+								byte[] albumBytes = myapp.queue.get(j).mAlbum.getBytes();
+								byte[] artistBytes = myapp.queue.get(j).mArtist.getBytes();
+								byte[] requesterBytes = myapp.myName.getBytes(); //myapp.queue.get(j).mRequester.getBytes(); //NO
+								byte[] trackBytes= myapp.queue.get(j).mTrack.getBytes();
+								byte[] uriBytes = myapp.queue.get(j).mUri.getBytes();
+								ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+								outputStream.write(requestHeader);
+								outputStream.write(albumBytes);
+								outputStream.write(backslashN);
+								outputStream.write(artistBytes);
+								outputStream.write(backslashN);
+								outputStream.write(requesterBytes);
+								outputStream.write(backslashN);
+								outputStream.write(trackBytes);
+								outputStream.write(backslashN);
+								outputStream.write(uriBytes);
+								outputStream.write(backslashN);
+								byte[] sendData = outputStream.toByteArray();
+								InetAddress ip = RoleActivity.myapp.hostAddress;
+								DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, ip, 7770);
+								sendSocket.send(sendPacket);
+							}
+							sendSocket.close();
+							myapp.queue.clear();
+					} 
+					catch (Exception e) 
+					{
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					runOnUiThread(new Runnable()
+					{
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							refreshQueue();
+						}
+						
+					});
+				}
+				
+		}).start();
+		
+		
+	}
+	
+	public void refreshQueue()
+	{
+		LinearLayout queueTab = (LinearLayout) findViewById(R.id.tab02);
+		queueTab.removeAllViews();	//remove everything that's there
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		Log.d("refreshQueue", "refreshing");
+		/*---color stuff---*/
+		//Calculate start and end colors
+		int startColor = 0;
+		int endColor = 0;
+		switch (VizEQ.numRand)
+		{
+			case 0:;
+				startColor = getResources().getColor(R.color.Red); //203, 32, 38
+				endColor = Color.rgb(203+50, 32+90, 38+90);
+				break;
+			case 1:
+				startColor = getResources().getColor(R.color.Green);//100, 153, 64
+				endColor = Color.rgb(100+90, 153+90, 64+90);
+				break;
+			case 2:
+				startColor = getResources().getColor(R.color.Blue); //0, 153, 204
+				endColor = Color.rgb(0+90, 153+90, 204+50);
+				break;
+			case 3:
+				startColor = getResources().getColor(R.color.Purple); //155, 105, 172
+				endColor = Color.rgb(155+70, 105+70, 172+70);
+				break;
+			case 4:
+				startColor = getResources().getColor(R.color.Orange); //245, 146, 30
+				endColor = Color.rgb(245, 146+90, 30+90);
+				break;
+		}
+		
+		int redStart = Color.red(startColor);
+		int redEnd = Color.red(endColor);
+		int addRed = (redEnd - redStart)/15;
+		
+		int greenStart = Color.green(startColor);
+		int greenEnd = Color.green(endColor);
+		int addGreen = (greenEnd - greenStart)/15;
+		
+		int blueStart = Color.blue(startColor);
+		int blueEnd = Color.blue(endColor);
+		int addBlue = (blueEnd - blueStart)/15;
+		
+		/*---queue stuff---*/
+		
+		for(int i=0; i<myapp.queue.size(); i++)
+		{
+			TrackRow queueRow = new TrackRow(this.getBaseContext(), myapp.queue.get(i).mTrack, myapp.queue.get(i).mAlbum, myapp.queue.get(i).mArtist, myapp.queue.get(i).mUri);
+			queueRow.setOnTouchListener(null);
+			int r,g,b;
+			
+			if (i>15) 
+			{
+				r = redEnd;
+				g = greenEnd;
+				b = blueEnd;
+			}
+			else
+			{
+				r = redStart + addRed * i;
+				g = greenStart + addGreen * i;
+				b = blueStart + addBlue * i;
+			}
+			queueRow.setBackgroundColor(Color.argb(255, r, g, b));
+			queueTab.addView(queueRow);
+			Log.d("refresh queue", "adding row to tab");
+		}
+	}
 
 }

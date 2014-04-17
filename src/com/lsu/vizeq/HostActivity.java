@@ -94,7 +94,7 @@ public class HostActivity extends Activity
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));		
 		
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 		
 		findViewById(R.id.OK).setOnClickListener(new View.OnClickListener()
 		{
@@ -159,6 +159,7 @@ public class HostActivity extends Activity
 			e.printStackTrace();
 		}
 		Log.d("zipcode", zipcode);
+		locationManager.removeUpdates(locationListener);
 		return zipcode;
 	}
 	

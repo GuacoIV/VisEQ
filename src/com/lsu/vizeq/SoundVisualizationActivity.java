@@ -54,6 +54,8 @@ public class SoundVisualizationActivity extends Activity
 	 */
 	private SystemUiHider mSystemUiHider;
 
+	private ReceiveColorTask rct;
+	
 	ActionBar actionBar;
 	
 	@Override
@@ -101,8 +103,8 @@ public class SoundVisualizationActivity extends Activity
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		final View contentView = findViewById(R.id.fullscreen_content);
-
-		new ReceiveColorTask().execute();
+		rct = new ReceiveColorTask();
+		rct.execute();
 		
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
@@ -197,6 +199,7 @@ public class SoundVisualizationActivity extends Activity
 			}
 			Intent nextIntent = new Intent(SoundVisualizationActivity.this, ProfileActivity.class);
 			startActivity(nextIntent);
+			rct.cancel(true);
 			return false;
 		}
 	};

@@ -185,6 +185,11 @@ public class HostMenuActivity extends Activity
 							request.mTrack = PacketParser.getArgs(receivedPacket)[3];
 							request.mUri = PacketParser.getArgs(receivedPacket)[4];
 							requests.add(request);
+							Log.d("listen thread", "Request added!");
+							Log.d("listen thread", "request album = " + request.mAlbum);
+							Log.d("listen thread", "request artist = " + request.mArtist);
+							Log.d("listen thread", "request requester = " + request.mRequester);
+							Log.d("listen thread", "request track = " + request.mTrack);
 						}
 					}
 				}

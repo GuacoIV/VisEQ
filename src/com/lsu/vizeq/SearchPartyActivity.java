@@ -591,7 +591,7 @@ public class SearchPartyActivity extends Activity {
 		String zipcode = "00000";
 		if(currLocation == null)
 		{
-			String locationProvider = LocationManager.NETWORK_PROVIDER;
+			String locationProvider = LocationManager.GPS_PROVIDER;
 			currLocation = locationManager.getLastKnownLocation(locationProvider);
 		}
 
@@ -605,6 +605,7 @@ public class SearchPartyActivity extends Activity {
 			e.printStackTrace();
 		}
 		Log.d("zipcode", zipcode);
+		locationManager.removeUpdates(locationListener);
 		return zipcode;
 	}
 	
