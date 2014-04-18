@@ -30,11 +30,10 @@
         android:id="@+id/Search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="14dp"
         android:text="@string/HostSearch"
-        android:layout_margin="10dp" />
+        android:layout_margin="10dp"/>"
 
     <EditText
         android:id="@+id/name_field"
@@ -45,7 +44,8 @@
         android:layout_below="@+id/NowPlaying"
         android:layout_marginTop="17dp"
         android:ems="10"
-        android:hint="@string/HostName" >
+        android:hint="@string/HostName"
+        android:visibility="gone" >
 
     <requestFocus/>    
     </EditText>
@@ -59,7 +59,8 @@
         android:layout_below="@+id/name_field"
         android:layout_marginTop="13dp"
         android:ems="10"
-        android:hint="@string/HostIPAddress" />
+        android:hint="@string/HostIPAddress"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/button1"
@@ -68,7 +69,8 @@
         android:layout_alignBottom="@+id/ip_field"
         android:layout_toRightOf="@+id/Scope"
         android:text="@string/AddClient"
-        android:onClick="addUserToList" />
+        android:onClick="addUserToList"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/name_list"
