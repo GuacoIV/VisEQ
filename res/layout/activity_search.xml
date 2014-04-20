@@ -67,13 +67,25 @@
                                 android:orientation="vertical"/>
                         </ScrollView>
                 </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tab2"
+                
+				
+	            <LinearLayout
+	                android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical" >"
-                </LinearLayout>
+                    android:orientation="vertical" >      
+	                <ScrollView
+                    	android:layout_width="match_parent"
+                    	android:layout_height="match_parent"
+                    	android:orientation="vertical" >
+	                    <LinearLayout
+		                    android:id="@+id/host_queue"
+		                    android:layout_width="match_parent"
+		                    android:layout_height="wrap_content"
+		                    android:orientation="vertical" >"
+		                </LinearLayout>
+		             </ScrollView>
+	            </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/tab3"

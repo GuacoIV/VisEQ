@@ -86,9 +86,9 @@ public class SearchActivity extends Activity
 	
 	public void refreshQueue()
 	{
-		LinearLayout queueTab = (LinearLayout) findViewById(R.id.tab2);
+		LinearLayout queueTab = (LinearLayout) findViewById(R.id.host_queue);
 		queueTab.removeAllViews();	//remove everything that's there
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		
 		/*---color stuff---*/
 		//Calculate start and end colors
@@ -151,24 +151,10 @@ public class SearchActivity extends Activity
 				b = blueStart + addBlue * i;
 			}
 			queueRow.setBackgroundColor(Color.argb(255, r, g, b));
-			queueTab.addView(queueRow);
+			params.setMargins(0, 2, 0, 2);
+			queueTab.addView(queueRow, params);
 			Log.d("refresh queue", "adding row to tab");
-			/*
-			if (queueTab.getChildCount() > 0)
-			{
-				if (((TrackRow)(queueTab.getChildAt(queueTab.getChildCount() - 1))).originalColor == TrackRow.color1)
-					queueRow.setBackgroundColor(TrackRow.color2);
-				else 
-				{
-					queueRow.setBackgroundColor(TrackRow.color1);
-					queueRow.originalColor = TrackRow.color1;
-				}
-			}
-			else
-			{
-				queueRow.setBackgroundColor(TrackRow.color1);
-				queueRow.originalColor = TrackRow.color1;
-			}*/
+
 		}
 	}
 	

@@ -435,9 +435,9 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	
 	public void refreshQueue()
 	{
-		LinearLayout queueTab = (LinearLayout) findViewById(R.id.tab02);
+		LinearLayout queueTab = (LinearLayout) findViewById(R.id.profile_queue);
 		queueTab.removeAllViews();	//remove everything that's there
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		Log.d("refreshQueue", "refreshing");
 		/*---color stuff---*/
 		//Calculate start and end colors
@@ -500,7 +500,8 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 				b = blueStart + addBlue * i;
 			}
 			queueRow.setBackgroundColor(Color.argb(255, r, g, b));
-			queueTab.addView(queueRow);
+			params.setMargins(0, 2, 0, 2);
+			queueTab.addView(queueRow, params);
 			Log.d("refresh queue", "adding row to tab");
 		}
 	}
