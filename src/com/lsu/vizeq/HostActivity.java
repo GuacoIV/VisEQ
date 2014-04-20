@@ -15,7 +15,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import redis.clients.jedis.Jedis;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
@@ -245,12 +247,34 @@ public class HostActivity extends Activity
 	
 	public void changeNameNotification()
 	{
-		
+		Log.d("Contact Server", "Name already in use");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("This party name is already in use. Please choose another.").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();	
 	}
 	
 	public void connectionErrorNotification()
 	{
-		
+		Log.d("Contact Server", "Error connecting");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Error connecting to server").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 	
 	public void moveToMenu()

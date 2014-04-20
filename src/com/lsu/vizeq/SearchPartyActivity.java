@@ -256,11 +256,33 @@ public class SearchPartyActivity extends Activity {
 	public void noPartiesNotification()
 	{
 		Log.d("Contact Server", "No parties found");
+		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
+		builder.setMessage("No parties found").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 	
 	public void connectionErrorNotification()
 	{
 		Log.d("Contact Server", "Error Connecting");
+		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
+		builder.setMessage("Error connecting to server").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 	
 	private class ContactServerTask extends AsyncTask<String, Integer, ArrayList<String>>
