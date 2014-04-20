@@ -27,6 +27,7 @@ public class PreferenceVisualizationActivity extends Activity
 	static final float PERCENT_WHITESPACE = 0.60f;
 	public static PreferenceCircle circles[];
 	ActionBar actionBar;
+	MyApplication myapp;
 	
 	@Override
 	protected void onStart(){
@@ -68,12 +69,13 @@ public class PreferenceVisualizationActivity extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_preference_visualization);
 		int circleRadius = 100;
+		myapp = (MyApplication) this.getApplicationContext();
 		//PreferenceCircle pc = new PreferenceCircle(this, circleRadius, circleRadius, circleRadius, "hi");
 		LinearLayout circleScreen = (LinearLayout) this.findViewById(R.id.CircleScreen);
 		//circleScreen.addView(pc, circleRadius*2, circleRadius*2); 
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-		if (HostMenuActivity.requests != null) requests = HostMenuActivity.requests;
+		if (myapp.requests != null) requests = myapp.requests;
 		/*
 		//Make some fake request data
 		//3 requests (for 1 artist) by 2 people

@@ -1,30 +1,42 @@
 package com.lsu.vizeq;
 
-import java.util.ArrayList;
+import java.net.URI;
 
-import android.os.Bundle;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.support.v4.app.NavUtils;
 
 public class RequestDetailsActivity extends Activity
 {
 	Artist artist;
+	public LinearLayout list;
+	public MyApplication myapp;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_request_details);
+		
+		myapp = (MyApplication) this.getApplicationContext();
 			
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) 
@@ -36,7 +48,7 @@ public class RequestDetailsActivity extends Activity
 		    setupActionBar();
 		    TextView info = ((TextView) findViewById(R.id.requestInfo));
 		    info.setText(artist.mNumTrackRequests + " track requests by " + artist.mNumPeopleRequestingArtist + " different people.");
-		    LinearLayout list = (LinearLayout) findViewById(R.id.trackRequests);
+		    list = (LinearLayout) findViewById(R.id.trackRequests);
 		    //list.setBackgroundColor(thisCircle.color);
 		    
 		    OnTouchListener rowTap = new OnTouchListener()
@@ -47,8 +59,10 @@ public class RequestDetailsActivity extends Activity
 				{
 					if (arg1.getAction() == MotionEvent.ACTION_DOWN)
 					{
-						TableRow row = (TableRow)arg0;
+						TrackRow row = (TrackRow)arg0;
 						row.setBackgroundColor(Color.BLUE);
+						addToQueue(row);
+						
 						return true;
 					}
 					else if (arg1.getAction() == MotionEvent.ACTION_UP)
@@ -72,27 +86,29 @@ public class RequestDetailsActivity extends Activity
 			int addBlue = (blueEnd - blueStart)/15;
 		    for (int i = 0; i < artist.mTrackRequests.size(); i++)
 		    {
-		    	TrackRow tableRowToAdd = new TrackRow(this);
-				TextView textViewToAdd = new TextView(this);
-				TextView textTwoViewToAdd = new TextView(this);
-		    	tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
-				tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+				String trackName = artist.mTrackRequests.get(i).mTrack;
+				String trackArtist = artist.mTrackRequests.get(i).mArtist;
+				String trackAlbum = artist.mTrackRequests.get(i).mAlbum;
+				String trackUri = artist.mTrackRequests.get(i).mUri;
+				
 				if (redStart + addRed < 255 && i < 16) redStart += addRed;
 				if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
 				if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
-				textViewToAdd.setText(artist.mTrackRequests.get(i).mTrack);
-				textTwoViewToAdd.setText(artist.mTrackRequests.get(i).mArtist);
-				textViewToAdd.setTextSize(20);
-				textTwoViewToAdd.setTextColor(Color.DKGRAY);
-				LinearLayout linearLayoutToAdd = new LinearLayout(this);
-				linearLayoutToAdd.setOrientation(LinearLayout.VERTICAL);
-				linearLayoutToAdd.addView(textViewToAdd);
-				linearLayoutToAdd.addView(textTwoViewToAdd);
-				tableRowToAdd.setOnTouchListener(rowTap);
-				tableRowToAdd.addView(linearLayoutToAdd);
+				
+				TrackRow trackRowToAdd = new TrackRow(this, trackName, trackAlbum, trackArtist, trackUri);
+				
+				trackRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
+				trackRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+				
+				
+				//textViewToAdd.setText(artist.mTrackRequests.get(i).mTrack);
+				//textTwoViewToAdd.setText(artist.mTrackRequests.get(i).mArtist);
+				//textViewToAdd.setTextSize(20);
+				//textTwoViewToAdd.setTextColor(Color.DKGRAY);
+				trackRowToAdd.setOnTouchListener(rowTap);
 				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 				params.setMargins(0, 2, 0, 2);
-				list.addView(tableRowToAdd, params);
+				list.addView(trackRowToAdd, params);
 		    }
 	    
 		}
@@ -138,6 +154,71 @@ public class RequestDetailsActivity extends Activity
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void addToQueue(final TrackRow row)
+	{
+		final Track track = row.getTrack();
+		Log.d("addToQueue", "track name = " + track.mTrack);
+        //get the track cover
+        final Thread getTrackCoverThread = new Thread(new Runnable()
+		{
+			public void run()
+			{
+        	    URI url;
+				//Get the album art
+				try
+				{									
+					url = new URI("https://embed.spotify.com/oembed/?url=" + track.mUri);
+					HttpClient httpClient = new DefaultHttpClient();
+					HttpResponse response2 = httpClient.execute(new HttpGet(url));
+					HttpEntity entity = response2.getEntity();
+					String s = EntityUtils.toString(entity, "UTF-8");
+					Log.d("Get Album Art", "String s = " + s);
+					int numThumb = s.indexOf("thumbnail_url");
+					String thumbnail = s.substring(numThumb + 16);
+					thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
+					thumbnail = thumbnail.replace("\\", "");
+					track.mThumbnail = thumbnail;
+				} catch (Exception e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+			}
+		});
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(RequestDetailsActivity.this);
+        builder.setMessage(R.string.QueueTopOrBottom)
+        	.setPositiveButton("Top", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					Log.d("addToQueue", "Adding " + track.mTrack + " to top");
+					myapp.queue.add(0, track);	
+					list.removeView(row);
+					myapp.requests.remove(row.getTrack());
+					getTrackCoverThread.start();
+				}
+        		
+        	})
+        	.setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
+
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Log.d("addToQueue","Adding " + track.mTrack + " to bottom");
+					myapp.queue.add(track);
+					list.removeView(row);
+					myapp.requests.remove(row.getTrack());
+					getTrackCoverThread.start();
+				}
+				
+        	});
+        
+        builder.show();
+        
+
+        	
 	}
 
 }

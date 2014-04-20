@@ -34,7 +34,6 @@ public class HostMenuActivity extends Activity
 {
 	MyApplication myapp;
 	ActionBar actionBar;
-	public static ArrayList<Track> requests = new ArrayList<Track>();
 	
 	@Override
 	protected void onStart(){
@@ -184,12 +183,13 @@ public class HostMenuActivity extends Activity
 							request.mRequester = PacketParser.getArgs(receivedPacket)[2];
 							request.mTrack = PacketParser.getArgs(receivedPacket)[3];
 							request.mUri = PacketParser.getArgs(receivedPacket)[4];
-							requests.add(request);
+							myapp.requests.add(request);
 							Log.d("listen thread", "Request added!");
 							Log.d("listen thread", "request album = " + request.mAlbum);
 							Log.d("listen thread", "request artist = " + request.mArtist);
 							Log.d("listen thread", "request requester = " + request.mRequester);
 							Log.d("listen thread", "request track = " + request.mTrack);
+							Log.d("listen thread", "request uri = " + request.mUri);
 						}
 					}
 				}
