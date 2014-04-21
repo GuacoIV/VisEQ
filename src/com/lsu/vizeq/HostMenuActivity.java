@@ -235,6 +235,16 @@ public class HostMenuActivity extends Activity
 			}
 			
 		});
+		
+		findViewById(R.id.sound_viz).setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent nextIntent = new Intent(HostMenuActivity.this, HostSoundVisualizationActivity.class);
+				startActivity(nextIntent);
+				
+			}
+		});
 	}
 	
 	public void addUserToList(View view)
