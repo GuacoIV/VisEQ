@@ -65,27 +65,27 @@ public class HostActivity extends Activity
 				break;
 			case 1:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
-				//rl.setBackground(getResources().getDrawable(R.drawable.blue));
+				rl.setBackground(getResources().getDrawable(R.drawable.blue));
 				//r1.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue));
 				break;
 			case 2:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
-				//rl.setBackground(getResources().getDrawable(R.drawable.green));
+				rl.setBackground(getResources().getDrawable(R.drawable.green));
 				break;
 			case 3:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
-				//rl.setBackground(getResources().getDrawable(R.drawable.red));
+				rl.setBackground(getResources().getDrawable(R.drawable.red));
 				break;
 			case 4:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
-				//rl.setBackground(getResources().getDrawable(R.drawable.orange));
+				rl.setBackground(getResources().getDrawable(R.drawable.orange));
 				break;
 			case 6:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
-				//rl.setBackground(getResources().getDrawable(R.drawable.purple));
+				rl.setBackground(getResources().getDrawable(R.drawable.purple));
 				break;			
 		}
 	}
