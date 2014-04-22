@@ -12,7 +12,7 @@
          TextureView, etc.
     -->
 
-    <VisualizerView
+    <com.lsu.vizeq.VisualizerView
         android:id="@+id/fullscreen_content"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
