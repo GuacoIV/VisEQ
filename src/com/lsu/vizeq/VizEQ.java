@@ -24,6 +24,9 @@ public class VizEQ extends Activity
 {
 	static int numRand;
 	
+	static int colorScheme;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -49,24 +52,31 @@ public class VizEQ extends Activity
 		{
 			case 0:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
+				colorScheme = getResources().getColor(R.color.black);
 				break;
 			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));		
+				colorScheme = getResources().getColor(R.color.Blue);
 				break;
 			case 2:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				colorScheme = getResources().getColor(R.color.Green);
 				break;
 			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));	
+				colorScheme = getResources().getColor(R.color.Red);
 				break;
 			case 4:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				colorScheme = getResources().getColor(R.color.Grey85);
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				colorScheme = getResources().getColor(R.color.Orange);
 				break;
 			case 6:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				colorScheme = getResources().getColor(R.color.Purple);
 				break;			
 		}						
 		
