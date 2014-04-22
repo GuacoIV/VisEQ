@@ -53,6 +53,9 @@ public class SearchPartyActivity extends Activity {
 		super.onStart();
 		actionBar = getActionBar();
 		
+		EditText et = (EditText) findViewById(R.id.username_box);
+		et.setText(myapp.myName);
+		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
 		if (posi != -1) VizEQ.numRand = posi;		
@@ -88,6 +91,8 @@ public class SearchPartyActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		thisActivity = this;
 		setContentView(R.layout.activity_search_party);
+		
+		
 		
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);

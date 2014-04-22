@@ -100,18 +100,30 @@
 					        android:id="@+id/Profile"
 					        android:layout_width="wrap_content"
 					        android:layout_height="wrap_content"
-					        android:text="Username:" />                    
-                        <EditText
-                            android:id="@+id/ProfileUsername"
-				        	android:layout_width="wrap_content"
-				        	android:layout_height="wrap_content"
-					        android:text="@string/username"
-					        android:inputType="textCapWords"
-					        android:maxLines="1"
-					        android:selectAllOnFocus="true"
-					        android:singleLine="true"
-					        android:title="@string/usernameTitle" 
-					        android:ems="16" />
+					        android:text="Username:" />   
+					    <LinearLayout
+		                    android:id="@+id/tab03"
+		                    android:layout_width="match_parent"
+		                    android:layout_height="wrap_content" 
+		                    android:orientation="horizontal">                
+	                        <EditText
+	                            android:id="@+id/ProfileUsername"
+					        	android:layout_width="wrap_content"
+					        	android:layout_height="wrap_content"
+						        
+						        android:inputType="textCapWords"
+						        android:maxLines="1"
+						        android:selectAllOnFocus="true"
+						        android:singleLine="true"
+						        android:title="@string/usernameTitle" 
+						        android:ems="16" />
+	                        <Button
+	                            android:id="@+id/changeNameBtn"
+	                            android:layout_width="wrap_content"
+	                            android:layout_height="wrap_content"
+	                            android:onClick="updateName"
+	                            android:text="Update" />
+	                    </LinearLayout>
                         
                         <TextView
 					        android:id="@+id/HostQueue"

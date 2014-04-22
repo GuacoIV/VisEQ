@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,12 +13,13 @@ import org.json.JSONObject;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -131,6 +131,10 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 		actionBar = getActionBar();
 		
 		myapp = (MyApplication) this.getApplicationContext();
+		
+		EditText et = (EditText) this.findViewById(R.id.ProfileUsername);
+		if(myapp.myName.equals("")) et.setText("Enter username");
+		else et.setText(myapp.myName);
 		
 		refreshQueue();
 		
@@ -359,13 +363,69 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 			@Override
 			public void onClick(View v)
 			{
-				Log.d("yo", "yo");
-				sendRequest();
-				Log.d("lol","lol");
+				if(!isNetworkAvailable())
+				{
+					noNetworkNotification();
+				}
+				else if(myapp.hostAddress == null)
+				{
+					noHostNotification();
+				}
+				else
+				{
+					Log.d("yo", "yo");
+					sendRequest();
+					Log.d("lol","lol");
+				}
 			}
 
 		});
-	}	
+	}
+	
+	public void updateName(View view)
+	{
+		EditText et = (EditText) findViewById(R.id.ProfileUsername);
+		myapp.myName = et.getText().toString();
+	}
+	
+	public void noNetworkNotification()
+	{
+		//Log.d("Contact Server", "Name already in use");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("No network connection").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();	
+	}
+	
+	public void noHostNotification()
+	{
+		//Log.d("Contact Server", "Name already in use");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("You haven't joined a party yet. :(").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();	
+	}
+	
+	private boolean isNetworkAvailable() {
+	    ConnectivityManager connectivityManager 
+	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+	    return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+	}
 	
 
 	public void sendRequest()
