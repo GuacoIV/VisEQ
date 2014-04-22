@@ -285,6 +285,22 @@ public class SearchPartyActivity extends Activity {
 		alert.show();
 	}
 	
+	public void noLocationNotification()
+	{
+		Log.d("Contact Server", "no location");
+		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
+		builder.setMessage("Couldn't find your location").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
 	private class ContactServerTask extends AsyncTask<String, Integer, ArrayList<String>>
 	{
 
@@ -317,6 +333,7 @@ public class SearchPartyActivity extends Activity {
 			}
 			
 			if (partyNames.size() <= 0) result = 1;
+			if (zipcode.equals("00000")) result = 3;
 			else result = 0;
 			publishProgress(result);
 			jedis.close();
@@ -344,6 +361,10 @@ public class SearchPartyActivity extends Activity {
 			else if(values[0] == 2)
 			{
 				connectionErrorNotification();
+			}
+			else if(values[0] == 3)
+			{
+				noLocationNotification();
 			}
 			
 		}

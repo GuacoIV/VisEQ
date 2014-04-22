@@ -104,6 +104,7 @@ public class HostMenuActivity extends Activity
 					try
 					{
 						Log.d("heartbeat", "sending heartbeat");
+						jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
 						jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
 						Thread.sleep(3000L);
 					} catch (Exception e) {

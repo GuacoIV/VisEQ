@@ -277,6 +277,22 @@ public class HostActivity extends Activity
 		alert.show();
 	}
 	
+	public void noLocationNotification()
+	{
+		Log.d("Contact Server", "Couldn't find your location.");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Couldn't find your location").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
 	public void moveToMenu()
 	{
 		MyApplication myapp = (MyApplication) this.getApplicationContext();
@@ -302,6 +318,11 @@ public class HostActivity extends Activity
 			jedis.auth(Redis.auth);
 			partyName = getName();
 			zipcode = getZipcode();
+			if(zipcode.equals("00000"))
+			{
+				result = 3;
+				return result;
+			}
 			ip = getPrivateIp();
 			
 			long reply = jedis.setnx(zipcode + ":" + partyName, ip);
@@ -337,6 +358,10 @@ public class HostActivity extends Activity
 			else if(result == 2)
 			{
 				connectionErrorNotification();
+			}
+			else if(result == 3)
+			{
+				noLocationNotification();
 			}
 		}
 		
