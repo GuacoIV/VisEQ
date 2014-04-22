@@ -246,9 +246,9 @@ public class PlayerActivity extends Activity {
 			isPlaying = true;
 		int result = am.requestAudioFocus(afChangeListener, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
-		if (result == am.AUDIOFOCUS_REQUEST_FAILED)
+		if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED)
 			isPlaying = false;
-		else {
+		else if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED){
 			isPlaying = true;
 			mBinder.getService().togglePlay(track.getSpotifyUri(), playerPositionDelegate);
 		}
@@ -394,6 +394,7 @@ public class PlayerActivity extends Activity {
 			        case AudioManager.AUDIOFOCUS_LOSS:
 			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS");
 			            AudioFocus = false;
+			            if (isPlaying) togglePlay();
 			            break;
 
 			        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
@@ -401,6 +402,8 @@ public class PlayerActivity extends Activity {
 			            break;
 
 			        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+			        	AudioFocus = false;
+			        	if (isPlaying) togglePlay();
 			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT");
 			            break;
 			        case AudioManager.AUDIOFOCUS_GAIN:

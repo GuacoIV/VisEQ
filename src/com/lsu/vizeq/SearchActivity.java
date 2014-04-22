@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,6 +32,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
@@ -548,11 +550,16 @@ public class SearchActivity extends Activity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.action_settings:
+		/*case R.id.action_settings:
 			Intent nextIntent  = new Intent(SearchActivity.this, ProfileActivity.class);
+			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(searchLayout.getWindowToken(), 0);
 			startActivity(nextIntent);
+			break;*/
 		case R.id.about:
 			Intent nextIntent2  = new Intent(SearchActivity.this, AboutActivity.class);
+			InputMethodManager imm1 = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm1.hideSoftInputFromWindow(searchLayout.getWindowToken(), 0);
 			startActivity(nextIntent2);
 			break;
 		}
