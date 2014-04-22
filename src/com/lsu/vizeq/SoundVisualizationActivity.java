@@ -106,6 +106,8 @@ public class SoundVisualizationActivity extends Activity
 		rct = new ReceiveColorTask();
 		rct.execute();
 		
+		((VisualizerView)contentView).init(0);
+		
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
 		mSystemUiHider = SystemUiHider.getInstance(this, contentView, HIDER_FLAGS);

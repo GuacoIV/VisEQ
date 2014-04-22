@@ -12,10 +12,10 @@
          TextureView, etc.
     -->
 
-    <TextView
+    <VisualizerView
         android:id="@+id/fullscreen_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:gravity="center"
         android:keepScreenOn="true"
         android:text="@string/dummy_content"
