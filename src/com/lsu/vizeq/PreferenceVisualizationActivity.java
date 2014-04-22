@@ -71,7 +71,7 @@ public class PreferenceVisualizationActivity extends Activity {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				final List<Circle> circles;
+				final List<PVCircle> circles;
 				viz.init();
 				viz.sortByArtist();
 				currentSort = "artist";
@@ -107,7 +107,7 @@ public class PreferenceVisualizationActivity extends Activity {
 				public void run()
 				{
 					// TODO Auto-generated method stub
-					final List<Circle> circles;
+					final List<PVCircle> circles;
 					viz.init();
 					viz.sortByArtist();
 					currentSort = "artist";
@@ -140,7 +140,7 @@ public class PreferenceVisualizationActivity extends Activity {
 				public void run()
 				{
 					// TODO Auto-generated method stub
-					final List<Circle> circles;
+					final List<PVCircle> circles;
 					viz.init();
 					viz.sortByAlbum();
 					currentSort = "album";
@@ -173,7 +173,7 @@ public class PreferenceVisualizationActivity extends Activity {
 				public void run()
 				{
 					// TODO Auto-generated method stub
-					final List<Circle> circles;
+					final List<PVCircle> circles;
 					viz.init();
 					viz.sortByTrack();
 					currentSort = "track";
@@ -204,14 +204,14 @@ public class PreferenceVisualizationActivity extends Activity {
 		return true;
 	}
 	
-	public void viewCircles(List<Circle> circles)
+	public void viewCircles(List<PVCircle> circles)
 	{
 		RelativeLayout vizlayout = (RelativeLayout) findViewById(R.id.vizlayout);
 		vizlayout.removeAllViews();
 		List<PreferenceCircle> pCircles = new ArrayList<PreferenceCircle>();
 		for(int i=0; i<circles.size(); i++)
 		{
-			Circle currCircle = circles.get(i);
+			PVCircle currCircle = circles.get(i);
 			Log.d("viewCircles", "currCircle.getRadius = " + currCircle.getRadius());
 			Log.d("viewCircles", "currCircle.getRadius * 300 = " + (currCircle.getRadius()*225));
 			PreferenceCircle pCircle = new PreferenceCircle(this, (int) (currCircle.getX()*225), (int) (currCircle.getY()*225), (int) (currCircle.getRadius()*225), currCircle.getName(), currCircle.getTrackList());

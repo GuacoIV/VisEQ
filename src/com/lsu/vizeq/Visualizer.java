@@ -27,7 +27,7 @@ public class Visualizer {
 	private List<String> circleNames;		//max size is 10
 	private final int MAX_CIRCLES = 20;
 	private String sortType;
-	private List<Circle> circles;
+	private List<PVCircle> circles;
 	
 	
 	public Visualizer(ArrayList<Track> requests)
@@ -38,7 +38,7 @@ public class Visualizer {
 		tracks = new HashMap<String, Integer>();
 		genres = new HashMap<String, Integer>();
 		circleNames = new ArrayList<String>();
-		circles = new ArrayList<Circle>();
+		circles = new ArrayList<PVCircle>();
 	}
 	
 	public void countStats()
@@ -135,7 +135,7 @@ public class Visualizer {
 		}
 	}
 	
-	private boolean checkCollision(Circle circle, int maxIndx, int indx)
+	private boolean checkCollision(PVCircle circle, int maxIndx, int indx)
 	{
 		boolean collision = false;
 		//assuming bounding box from point (-0.2, -0.2) to (2.2, 3.2)
@@ -148,7 +148,7 @@ public class Visualizer {
 			//check against each circle
 			for(int i=0; i<maxIndx; i++)
 			{
-				Circle nextCircle = circles.get(i);
+				PVCircle nextCircle = circles.get(i);
 				if(i == indx) continue;
 				double distance = getDistance(circle, nextCircle);
 				if(distance < (nextCircle.getRadius() + circle.getRadius()))
@@ -161,16 +161,16 @@ public class Visualizer {
 		return collision;
 	}
 	
-	private double getDistance(Circle c1, Circle c2)
+	private double getDistance(PVCircle c1, PVCircle c2)
 	{
 		double distance = Math.sqrt(Math.pow(c1.getX() - c2.getX(), 2.0) + Math.pow(c1.getY() - c2.getY(), 2.0));
 		return distance;
 	}
 	
 	
-	private Circle getClosestNeighbor(Circle circle)
+	private PVCircle getClosestNeighbor(PVCircle circle)
 	{
-		Circle nCircle = circles.get(0);
+		PVCircle nCircle = circles.get(0);
 		double closest_distance = -1;
 		for(int i=0; i< circles.size(); i++)
 		{
@@ -204,11 +204,11 @@ public class Visualizer {
 				for(int j=0; j<circles.size(); j++)
 				{
 					//get closest neighbor
-					Circle closestNeighbor, hypotheticalCircle;
+					PVCircle closestNeighbor, hypotheticalCircle;
 					double hypotheticalDistance, currentDistance;
 					closestNeighbor = getClosestNeighbor(circles.get(j));
 					currentDistance = getDistance(circles.get(j), closestNeighbor);
-					hypotheticalCircle = new Circle();
+					hypotheticalCircle = new PVCircle();
 					
 					//what if we move north?
 					hypotheticalCircle.setPosition(circles.get(j).getX(), circles.get(j).getY() - stepSize);
@@ -285,9 +285,9 @@ public class Visualizer {
 	public void packCircles2()
 	{
 		//find center-most circle
-		Circle mid = new Circle();
+		PVCircle mid = new PVCircle();
 		mid.setPosition(2.0, 4.0);
-		Circle centerCircle = circles.get(0);
+		PVCircle centerCircle = circles.get(0);
 		double centerDistance = getDistance(mid, centerCircle);
 		for(int i=1; i<circles.size(); i++)
 		{
@@ -320,7 +320,7 @@ public class Visualizer {
 					diry /= d;
 					
 					//lets see if we can make this move
-					Circle hypotheticalCircle = new Circle();
+					PVCircle hypotheticalCircle = new PVCircle();
 					hypotheticalCircle.setRadius(circles.get(j).getRadius());
 					hypotheticalCircle.setPosition(circles.get(j).getX() + dirx * stepSize, circles.get(j).getY() + diry * stepSize);
 					
@@ -350,7 +350,7 @@ public class Visualizer {
 			int count = countMap.get(circleNames.get(i));
 			if (count > maxCount)
 				maxCount = count;
-			Circle circle = new Circle();
+			PVCircle circle = new PVCircle();
 			circle.setWeight(count);
 			circle.setName(circleNames.get(i));
 			//randomly set color
@@ -370,11 +370,11 @@ public class Visualizer {
 		Log.d("initCircles", "pass 2");
 		
 		//use iterator to be able to remove
-		Iterator<Circle> it = circles.iterator();
+		Iterator<PVCircle> it = circles.iterator();
 		int indx = 0;
 		while (it.hasNext())
 		{	
-			Circle currCircle = it.next();
+			PVCircle currCircle = it.next();
 			currCircle.setRadius((double) currCircle.getWeight() / maxCount);
 			boolean collision = true;
 			int loopCount = 0;
@@ -452,7 +452,7 @@ public class Visualizer {
 		initCircles(genres);
 	}
 	
-	public List<Circle> getCircles()
+	public List<PVCircle> getCircles()
 	{
 		return circles;
 	}
