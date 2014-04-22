@@ -313,6 +313,7 @@ public class SearchPartyActivity extends Activity {
 		//params[0] = party name
 		//params[1] = zipcode
 		protected ArrayList<String> doInBackground(String... params) {
+			Log.d("ContactServerTask", "Trying to contact server");
 			String partyName = params[0];
 			String zipcode = params[1];
 			Integer result = 2;
@@ -338,8 +339,8 @@ public class SearchPartyActivity extends Activity {
 			}
 			
 			if (partyNames.size() <= 0) result = 1;
-			if (zipcode.equals("00000")) result = 3;
 			else result = 0;
+			if (zipcode.equals("00000")) result = 3;
 			publishProgress(result);
 			jedis.close();
 			
@@ -349,6 +350,7 @@ public class SearchPartyActivity extends Activity {
 		@Override
 		protected void onPostExecute(ArrayList<String> result) {
 			// TODO Auto-generated method stub
+			Log.d("ContactServerTask", "Finished");
 			refreshPartyList(result);
 		}
 
@@ -382,6 +384,7 @@ public class SearchPartyActivity extends Activity {
 		@Override
 		protected String doInBackground(Void... arg0) {
 			//listen for incoming party info
+		
 			String result = "Unable to find parties. Make sure you're connected to Wifi and try again.";
 			try {
 				receiveSocket = new DatagramSocket(7770);
@@ -431,6 +434,7 @@ public class SearchPartyActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
+			Log.d("ContactServerTask", "Finished");
 			TextView resultText = (TextView) findViewById(R.id.resultText);
 			resultText.setText(result);
 
