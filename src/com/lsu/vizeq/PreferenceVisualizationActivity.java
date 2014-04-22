@@ -19,7 +19,7 @@ import android.widget.RelativeLayout;
 public class PreferenceVisualizationActivity extends Activity {
 
 	public MyApplication myapp;
-	public Visualizer viz;
+	public PreferenceVisualizer viz;
 	private String currentSort;
 	private ActionBar actionBar;
 	
@@ -61,7 +61,7 @@ public class PreferenceVisualizationActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		myapp = (MyApplication) this.getApplicationContext();
-		viz = new Visualizer(myapp.requests);
+		viz = new PreferenceVisualizer(myapp.requests);
 		setContentView(R.layout.activity_preference_visualization);
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));

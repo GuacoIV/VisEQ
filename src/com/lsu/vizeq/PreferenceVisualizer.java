@@ -17,7 +17,7 @@ import android.util.Log;
 
 //keeps track of Circles instead of PreferenceCircles - the difference being that the latter is a view and the former is not
 
-public class Visualizer {
+public class PreferenceVisualizer {
 	
 	private ArrayList<Track> requests;
 	private Map<String, Integer> artists;
@@ -30,7 +30,7 @@ public class Visualizer {
 	private List<PVCircle> circles;
 	
 	
-	public Visualizer(ArrayList<Track> requests)
+	public PreferenceVisualizer(ArrayList<Track> requests)
 	{
 		this.requests = requests;
 		artists = new HashMap<String, Integer>();
