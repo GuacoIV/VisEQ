@@ -34,6 +34,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 
@@ -47,6 +48,7 @@ public class HostActivity extends Activity
 	Location currLocation = null;
 	
 	@Override
+	@SuppressWarnings(value = { })
 	protected void onStart(){
 		super.onStart();
 		actionBar = getActionBar();
@@ -63,26 +65,27 @@ public class HostActivity extends Activity
 				break;
 			case 1:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
-				rl.setBackground(getResources().getDrawable(R.drawable.blue));
+				//rl.setBackground(getResources().getDrawable(R.drawable.blue));
+				//r1.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue));
 				break;
 			case 2:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
-				rl.setBackground(getResources().getDrawable(R.drawable.green));
+				//rl.setBackground(getResources().getDrawable(R.drawable.green));
 				break;
 			case 3:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
-				rl.setBackground(getResources().getDrawable(R.drawable.red));
+				//rl.setBackground(getResources().getDrawable(R.drawable.red));
 				break;
 			case 4:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
-				rl.setBackground(getResources().getDrawable(R.drawable.orange));
+				//rl.setBackground(getResources().getDrawable(R.drawable.orange));
 				break;
 			case 6:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
-				rl.setBackground(getResources().getDrawable(R.drawable.purple));
+				//rl.setBackground(getResources().getDrawable(R.drawable.purple));
 				break;			
 		}
 	}
@@ -133,10 +136,14 @@ public class HostActivity extends Activity
 		switch (item.getItemId()) {
 		case R.id.action_settings:
 			Intent nextIntent  = new Intent(HostActivity.this, ProfileActivity.class);
+			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(findViewById(R.id.hostBackground).getWindowToken(), 0);
 			startActivity(nextIntent);
 			break;
 		case R.id.about:
 			Intent nextIntent2  = new Intent(HostActivity.this, AboutActivity.class);
+			InputMethodManager imm1 = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm1.hideSoftInputFromWindow(findViewById(R.id.hostBackground).getWindowToken(), 0);
 			startActivity(nextIntent2);
 			break;
 		}
