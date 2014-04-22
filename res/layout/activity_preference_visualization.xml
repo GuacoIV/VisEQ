@@ -1,39 +1,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/CircleScreen"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
     android:paddingTop="0dp"
-    tools:context=".PreferenceVisualizationActivity"
-    android:orientation="horizontal" 
-    android:gravity="left"
-    > 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation= "vertical" 
+    tools:context=".PreferenceVizActivity" >
+    
     <LinearLayout
-        android:id="@+id/CircleColumn1"
-        android:orientation="vertical"
-        android:gravity="bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"></LinearLayout>
-    <LinearLayout
-        android:id="@+id/CircleColumn2"
-        android:orientation="vertical"
-        android:gravity="bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"></LinearLayout>
-    <LinearLayout
-        android:id="@+id/CircleColumn3"
-        android:orientation="vertical"
-        android:gravity="bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"></LinearLayout>
-
-    <!-- <TextView
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content"
+        android:orientation=   "horizontal"
+        style ="?android:attr/buttonBarButtonStyle">
+        
+        <Button
+        android:id="@+id/SortByArtist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Circles or squares here"
-        android:textColor="@color/LightGreen" />-->
+        android:text="Artists"
+        android:layout_margin="10dp"
+        android:onClick="sortByArtist" />
+
+        <Button
+        android:id="@+id/SortByAlbum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Albums"
+        android:layout_margin="10dp"
+        android:onClick="sortByAlbum" />
+        
+        <Button
+        android:id="@+id/SortByTrack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tracks"
+        android:layout_margin="10dp"
+        android:onClick="sortByTrack" />
+     
+    </LinearLayout>
+    
+    <RelativeLayout 
+        android:id="@+id/vizlayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+    </RelativeLayout>
+        
 
 </LinearLayout>

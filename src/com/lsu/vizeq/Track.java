@@ -27,7 +27,12 @@
 
 package com.lsu.vizeq;
 
-class Track {
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.v4.os.ParcelableCompat;
+
+class Track implements Parcelable
+{
 	public String mTrack;
 	public String mAlbum;
 	public String mArtist;
@@ -41,6 +46,16 @@ class Track {
 		mArtist = artist;
 		mUri = uri;
 		mThumbnail = thumbnail;
+	}
+	
+	public Track(Parcel source)
+	{
+		mTrack = source.readString();
+		mAlbum = source.readString();
+		mArtist = source.readString();
+		mUri = source.readString();
+		mThumbnail = source.readString();
+		mRequester = source.readString();
 	}
 	
 	public Track(String track, String album, String artist,	String uri, String requester) {
@@ -80,5 +95,34 @@ class Track {
 	{
 		return mAlbum;
 	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(mTrack);
+		dest.writeString(mAlbum);
+		dest.writeString(mArtist);
+		dest.writeString(mUri);
+		dest.writeString(mThumbnail);
+		dest.writeString(mRequester);
+	}
+	
+	public static final Parcelable.Creator CREATOR = new Parcelable.Creator()
+		{
+			public Track createFromParcel(Parcel in)
+			{
+				return new Track(in);
+			}
+			
+			public Track[] newArray(int size)
+			{
+				return new Track[size];
+			}
+		};
 	
 }

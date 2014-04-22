@@ -1,5 +1,6 @@
 package com.lsu.vizeq;
 
+import java.util.List;
 import java.util.Random;
 
 import android.content.Context;
@@ -7,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
-import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,13 +19,13 @@ import android.view.View;
 			super(context);
 			// TODO Auto-generated constructor stub
 		}
-	
+		public List<Track> tracks;
 		String text;
 		int x;
 		int y;
 		int radius;
 		int color;
-		Artist artist;
+		String name;
 		final float scale = getResources().getDisplayMetrics().density;
 		final float width = getResources().getDisplayMetrics().widthPixels;
 		final float height = getResources().getDisplayMetrics().heightPixels;
@@ -80,13 +80,14 @@ import android.view.View;
 		    canvas.drawText(text, x, y, paint);
 		}
 
-		public PreferenceCircle(Context context, int x, int y, int radius, Artist a)
+		public PreferenceCircle(Context context, int x, int y, int radius, String a, List<Track> tracks)
 		{
 			super(context);
+			this.tracks = tracks;
 			//super.setX(x);
 			//super.setY(y);
-			this.artist = a;
-			this.text = a.mArtist;
+			this.name = a;
+			this.text = a;
 			this.x = x;
 			this.y = y;
 			this.radius = radius;

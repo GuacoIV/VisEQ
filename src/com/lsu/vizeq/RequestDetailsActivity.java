@@ -1,6 +1,7 @@
 package com.lsu.vizeq;
 
 import java.net.URI;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -27,9 +28,11 @@ import android.widget.TextView;
 
 public class RequestDetailsActivity extends Activity
 {
-	Artist artist;
 	public LinearLayout list;
 	public MyApplication myapp;
+	private String requestName;
+	private List<Track> tracks;
+	private int color;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -41,13 +44,15 @@ public class RequestDetailsActivity extends Activity
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) 
 		{
-		    String value = extras.getString("whichArtist");
-		    PreferenceCircle thisCircle = PreferenceVisualizationActivity.circles[Integer.parseInt(value)];
-		    artist = thisCircle.artist;
+		    tracks = extras.getParcelableArrayList("tracks");
+		    requestName = extras.getString("requestname");
+		    color = extras.getInt("color");
+		    //artist = thisCircle.name;
 		    // Show the Up button in the action bar.
 		    setupActionBar();
 		    TextView info = ((TextView) findViewById(R.id.requestInfo));
-		    info.setText(artist.mNumTrackRequests + " track requests by " + artist.mNumPeopleRequestingArtist + " different people.");
+		   // info.setText(artist.mNumTrackRequests + " track requests by " + artist.mNumPeopleRequestingArtist + " different people.");
+		    info.setText(3 + " track requests by " + 3 + " different people.");
 		    list = (LinearLayout) findViewById(R.id.trackRequests);
 		    //list.setBackgroundColor(thisCircle.color);
 		    
@@ -71,7 +76,7 @@ public class RequestDetailsActivity extends Activity
 					return true;
 				}
 			};
-			int startColor = thisCircle.color;
+			int startColor = color;
 			int redStart = Color.red(startColor);
 			int greenStart = Color.green(startColor);
 			int blueStart = Color.blue(startColor);
@@ -84,12 +89,12 @@ public class RequestDetailsActivity extends Activity
 			
 			int blueEnd = Color.blue(startColor);
 			int addBlue = (blueEnd - blueStart)/15;
-		    for (int i = 0; i < artist.mTrackRequests.size(); i++)
+		    for (int i = 0; i < tracks.size(); i++)
 		    {
-				String trackName = artist.mTrackRequests.get(i).mTrack;
-				String trackArtist = artist.mTrackRequests.get(i).mArtist;
-				String trackAlbum = artist.mTrackRequests.get(i).mAlbum;
-				String trackUri = artist.mTrackRequests.get(i).mUri;
+				String trackName = tracks.get(i).mTrack;
+				String trackArtist = tracks.get(i).mArtist;
+				String trackAlbum = tracks.get(i).mAlbum;
+				String trackUri = tracks.get(i).mUri;
 				
 				if (redStart + addRed < 255 && i < 16) redStart += addRed;
 				if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
@@ -110,7 +115,6 @@ public class RequestDetailsActivity extends Activity
 				params.setMargins(0, 2, 0, 2);
 				list.addView(trackRowToAdd, params);
 		    }
-	    
 		}
 	}
 
@@ -121,7 +125,7 @@ public class RequestDetailsActivity extends Activity
 	{
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		getActionBar().setTitle("Requests for " + artist.mArtist);
+		getActionBar().setTitle("Requests for " + requestName);
 
 	}
 
