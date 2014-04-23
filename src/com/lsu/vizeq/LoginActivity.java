@@ -87,6 +87,9 @@ public class LoginActivity extends Activity {
 	private String mEmail;
 	private String mPassword;
 
+	public static boolean logCheck = false;
+	public static boolean backToPlayer = false;
+	
 	// UI references.
 	private EditText mEmailView;
 	private EditText mPasswordView;
@@ -295,11 +298,16 @@ public class LoginActivity extends Activity {
 
 				@Override
 				public void onLogin() {
-					Toast.makeText(LoginActivity.this, "Logged in successfully!", Toast.LENGTH_SHORT);
+					Toast.makeText(LoginActivity.this, "Logged in successfully!", Toast.LENGTH_SHORT).show();
 					Installation.writeInstallationFile(LoginActivity.this, mEmail);
 					showProgress(false);
-					Intent playerIntent = new Intent(LoginActivity.this, RoleActivity.class);
-					startActivity(playerIntent);
+					logCheck =true;
+					if (backToPlayer) {
+						Intent goToPlayer = new Intent(LoginActivity.this, PlayerActivity.class);
+						startActivity(goToPlayer);
+					}
+					Intent roleIntent = new Intent(LoginActivity.this, RoleActivity.class);
+					startActivity(roleIntent);
 
 				}
 
