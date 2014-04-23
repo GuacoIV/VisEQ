@@ -17,3 +17,10 @@ Spotify: This product uses SPOTIFY CORE but is not endorsed, certified or otherw
 Libspotify wrapper: https://github.com/spotify/psyonspotify
 
 Fast Fourier Transform Algorithm: http://www.librow.com/articles/article-10
+
+Bugfix for newer Galaxy devices:
+ * Copyright 2013, Haruki Hasegawa
+ *
+ * Licensed under the MIT license:
+ * http://creativecommons.org/licenses/MIT/
+https://github.com/felixpalmer/android-visualizer/pull/6
