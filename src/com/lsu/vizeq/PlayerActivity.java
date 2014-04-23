@@ -416,7 +416,6 @@ public class PlayerActivity extends Activity {
 			Intent nextIntent = new Intent(PlayerActivity.this, LoginActivity.class);
 			startActivity(nextIntent);
 		}
-
 		
 		mVisualizer = new Visualizer(0);
 		if (mVisualizer.getEnabled()) {
@@ -456,9 +455,7 @@ public class PlayerActivity extends Activity {
 					thisEnergy /= bandWidth;
 					
 					boolean isOnThisFrame = false;
-					
-					prevEnergies[j] = thisEnergy;
-					
+
 					if (thisEnergy > threshold*prevEnergies[j]) {
 						isOnThisFrame = true;
 					}
@@ -474,6 +471,9 @@ public class PlayerActivity extends Activity {
 					
 					if (isOnThisFrame) {
 						isOnLastFrame[j] = true;
+					}
+					else {
+						isOnLastFrame[j] = false;
 					}
 					prevEnergies[j] = thisEnergy;
 				}

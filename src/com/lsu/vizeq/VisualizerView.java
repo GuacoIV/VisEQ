@@ -93,7 +93,7 @@ public class VisualizerView extends View {
 		mActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-            	for (int i = 0; i < states.length; i++) {
+            	for (int i = 0; i < circles.length; i++) {
         			if (states[i].compareTo("off") == 0) {
         				circles[i].SetEnergy(false);
         			}
