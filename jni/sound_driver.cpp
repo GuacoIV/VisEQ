@@ -145,7 +145,7 @@ void analyze_samples(short *buffer, int size) {
 
 	int band_width = fftBufSize/NUM_BANDS;
 
-	log("%d", fftBufSize);
+	//log("%d", fftBufSize);
 
 	memset(fin_r, 0, sizeof(fin_r));
 	memset(fin_l, 0, sizeof(fin_l));
@@ -190,19 +190,8 @@ void analyze_samples(short *buffer, int size) {
 		}
 		local_avg_energy /= (double)HISTORY_LENGTH;
 
-		//double variance = 0;
-//		for (int i = 0; i < HISTORY_LENGTH; i++) {
-//			double thing = local_avg_energy - band_energy_history_l[i][j];
-//			variance += thing*thing;
-//		}
-		//variance /= (double)HISTORY_LENGTH;
-		//log("variance = %f", variance);
-
-		//C = -.0025714*variance + 3.51;
-
 		if (instant_energy > C * local_avg_energy && j < (startBand-endBand)/3) {
 			foundBeat = true;
-			log("beat l band %d", j);
 		}
 	}
 
@@ -220,20 +209,6 @@ void analyze_samples(short *buffer, int size) {
 		}
 		local_avg_energy /= (double)HISTORY_LENGTH;
 
-		//double variance = 0;
-//		for (int i = 0; i < HISTORY_LENGTH; i++) {
-//			double thing = local_avg_energy - band_energy_history_l[i][j];
-//			variance += thing*thing;
-//		}
-		//variance /= (double)HISTORY_LENGTH;
-		//log("variance = %f", variance);
-
-		//C = -.0025714*variance + 3.51;
-
-		if (instant_energy > C * local_avg_energy) {
-			foundBeat = true;
-			log("beat right band %d", j);
-		}
 	}
 
 	//int64_t currentTime = getTimeNsec();
@@ -242,7 +217,7 @@ void analyze_samples(short *buffer, int size) {
 
 	if (foundBeat) {
 		beatOccurrence = true;
-		log("beat");
+		//log("beat");
 		/*timeHistory[timeHistoryIndex] = currentTime;
 		timeHistoryIndex = (++timeHistoryIndex % 14);
 		if (timeHistoryIndex > 4)
@@ -268,7 +243,7 @@ void analyze_samples(short *buffer, int size) {
 void enqueue(short *buffer, int size) {
 	// Play the buffer and flip to the other buffer
 
-	logPlayback("Consume buffer %d", (buffer == buffer1) ? 1 : 2);
+	//logPlayback("Consume buffer %d", (buffer == buffer1) ? 1 : 2);
 	SLresult result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, buffer, size);
 	assert(SL_RESULT_SUCCESS != result);
 
@@ -345,7 +320,7 @@ void enqueue(short *buffer, int size) {
 
 int music_delivery(sp_session *sess, const sp_audioformat *format, const void *frames, int num_frames) {
 	if (num_frames == 0) {
-		logPlayback("No more audio");
+		//logPlayback("No more audio");
 		return 0; // Audio discontinuity, do nothing
 	}
 
@@ -367,7 +342,7 @@ int music_delivery(sp_session *sess, const sp_audioformat *format, const void *f
 		// if we dont exceed buffer size then dont copy anything more into the buffer (should be rare) and will
 		// result in audio loss
 		if ((position + size) >= BUFFER_SIZE) {
-			log("Buffer to small... Buffer size %d, try to fill with size %d", BUFFER_SIZE, size);
+			//log("Buffer to small... Buffer size %d, try to fill with size %d", BUFFER_SIZE, size);
 		} else {
 			memcpy(current_buffer + position, frames, size);
 			// advance by half the size because buffer1 is of size int16_t
@@ -379,16 +354,16 @@ int music_delivery(sp_session *sess, const sp_audioformat *format, const void *f
 		if (total_samples > SAMPLES_PER_BUFFER) {
 			int total_size = total_samples * sizeof(int16_t) * format->channels;
 
-			analyze_samples(current_buffer, total_size);
+			//analyze_samples(current_buffer, total_size);
 
 			// play the buffer if both buffers are empty (no sound is playing)
 			if (buffer1_size == 0 && buffer2_size == 0) {
-				logPlayback("No sound, play buffer %d", (current_buffer == buffer1) ? 1 : 2);
+				//logPlayback("No sound, play buffer %d", (current_buffer == buffer1) ? 1 : 2);
 				enqueue(current_buffer, total_size);
 
 			} else {
 				// Make it possible for the consumer to use this buffer
-				logPlayback("Produced buffer %d", (current_buffer == buffer1) ? 1 : 2);
+				//logPlayback("Produced buffer %d", (current_buffer == buffer1) ? 1 : 2);
 			}
 			*current_buffer_size = total_size;
 

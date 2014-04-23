@@ -13,7 +13,7 @@
     -->
 
     <com.lsu.vizeq.VisualizerView
-        android:id="@+id/fullscreen_content"
+        android:id="@+id/visualizer_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"

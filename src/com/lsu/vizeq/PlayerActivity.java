@@ -44,10 +44,8 @@ import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -55,12 +53,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
-import android.hardware.Camera.Parameters;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
+import android.media.MediaPlayer;
+import android.media.audiofx.Visualizer;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
 import android.util.Log;
@@ -72,14 +70,13 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
-import android.content.pm.PackageManager;
+import android.widget.Toast;
 
-import com.lsu.vizeq.R.color;
 import com.lsu.vizeq.ServiceBinder.ServiceBinderDelegate;
 import com.lsu.vizeq.SpotifyService.PlayerUpdateDelegate;
+import com.lsu.vizeq.util.TunnelPlayerWorkaround;
 
 public class PlayerActivity extends Activity {
 	boolean isPlaying = false;
@@ -97,6 +94,8 @@ public class PlayerActivity extends Activity {
 	private boolean mIsTrackLoaded;
 	private ArrayList<Track> mTracks = new ArrayList<Track>();
 
+	private MediaPlayer mSilentPlayer;
+	
 	private String mAlbumUri;
 	private int mIndex = 0;
 	MyApplication myapp;
@@ -140,29 +139,7 @@ public class PlayerActivity extends Activity {
 		}
 	}
 	
-	public static void SendBeat(String color) {
-		byte[] sendData = new byte[1024];
-		try {
-			DatagramSocket sendSocket = new DatagramSocket();
-			String data = "color\n"+color;
-			sendData = data.getBytes();
-			Iterator it = MyApp.connectedUsers.entrySet().iterator();
-			while (it.hasNext())
-			{
-				Log.d("sendbeat", "hey");
-				Map.Entry pairs= (Map.Entry) it.next();
-				InetAddress IPAddress = (InetAddress) pairs.getValue();
-				String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
-				Log.d("UDP",test);
-				DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
-				sendSocket.send(sendPacket);
-			}
-			sendSocket.close();
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
 	
     public InetAddress getBroadcastAddress() throws IOException
     {
@@ -370,27 +347,148 @@ public class PlayerActivity extends Activity {
 
 		// Start listening for button presses
 		am.registerMediaButtonEventReceiver(new ComponentName(getPackageName(), RemoteControlReceiver.class.getName()));
+
+	    initTunnelPlayerWorkaround();
 		
 		//Refresh the queue
 		checkTheQueue();
 		super.onResume();
 	}
 
+	private float[] prevEnergies = new float[VisualizerView.NUM_BANDS];
+	private boolean[] isOnLastFrame = new boolean[VisualizerView.NUM_BANDS];
+	
+	public static void SendBeat(final String[] datas) {
+		final MyApplication myapp = MyApp;
+		new Thread(new Runnable()
+		{
+
+			@Override
+			public void run() 
+			{
+
+					try
+					{
+						byte[] sendData = new byte[1024];
+						DatagramSocket sendSocket = new DatagramSocket();
+						String data = "freq_circle";
+						for (int i = 0; i < datas.length; i++) {
+							data += "\n" + datas[i];
+						}
+						sendData = data.getBytes();
+						Iterator it = MyApp.connectedUsers.entrySet().iterator();
+						while (it.hasNext())
+						{
+							Log.d("Send circl data", "hey");
+							Map.Entry pairs= (Map.Entry) it.next();
+							InetAddress IPAddress = (InetAddress) pairs.getValue();
+							String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
+							Log.d("UDP",test);
+							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
+							sendSocket.send(sendPacket);
+						}
+						sendSocket.close();
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			
+		}).start();
+
+	}
+	
+	Visualizer mVisualizer;
+	int captureRate;
+	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
-		
+		actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
+
 		if (LoginActivity.logCheck == false) {
 			Toast.makeText(PlayerActivity.this, "You must log in to Spotify Premium first!", Toast.LENGTH_LONG).show();
 			LoginActivity.backToPlayer = true;
 			Intent nextIntent = new Intent(PlayerActivity.this, LoginActivity.class);
 			startActivity(nextIntent);
 		}
-			
-		actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
 
+		
+		mVisualizer = new Visualizer(0);
+		if (mVisualizer.getEnabled()) {
+			mVisualizer.setEnabled(false);
+		}
+		mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[0]);
+
+		captureRate = Visualizer.getMaxCaptureRate()/4;
+		
+		for (int i = 0; i < isOnLastFrame.length; i++) {
+			isOnLastFrame[i] = true;
+		}
+		
+		Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
+
+			@Override
+			public void onWaveFormDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
+				// TODO Auto-generated method stub
+			}
+
+			private float threshold = 1.1f;
+			
+			@Override
+			public void onFftDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
+				int bandWidth = arg1.length/VisualizerView.NUM_BANDS;
+				boolean needToSend = false;
+				Log.d("capture", "fft");
+				String[] sendValues = new String[VisualizerView.NUM_BANDS];
+				for (int i = 0; i < sendValues.length; i++) {
+					sendValues[i] = "none";
+				}
+				for (int j = 0; j < VisualizerView.NUM_BANDS; j++) {
+					float thisEnergy = 0;
+					for (int i = bandWidth*j; i < bandWidth*(j+1); i++) {
+						thisEnergy += Math.abs(arg1[i]);
+					}
+					thisEnergy /= bandWidth;
+					
+					boolean isOnThisFrame = false;
+					
+					prevEnergies[j] = thisEnergy;
+					
+					if (thisEnergy > threshold*prevEnergies[j]) {
+						isOnThisFrame = true;
+					}
+					if (isOnLastFrame[j] ^ isOnThisFrame) {
+						needToSend = true;
+						if (isOnThisFrame) {
+							sendValues[j] = "on";
+						}
+						else {
+							sendValues[j] = "off";
+						}
+					}
+					
+					if (isOnThisFrame) {
+						isOnLastFrame[j] = true;
+					}
+					prevEnergies[j] = thisEnergy;
+				}
+				
+				if (needToSend) {
+					Log.d("needtosend", "needtosend");
+					SendBeat(sendValues);
+				}
+			}
+		};
+		
+		mVisualizer.setDataCaptureListener(captureListener, captureRate, false, true);
+		mVisualizer.setEnabled(true);
+		
+		
 		//Makes volume buttons control music stream even when nothing playing
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
 		myapp = (MyApplication) this.getApplicationContext();
@@ -614,8 +712,7 @@ public class PlayerActivity extends Activity {
 			}
 		});*/
 		
-		LibSpotifyWrapper.BeginPolling();
-		Log.d("what", "up");
+		//LibSpotifyWrapper.BeginPolling();
 	}
 
 	@Override
@@ -631,6 +728,16 @@ public class PlayerActivity extends Activity {
 		super.finish();
 	}
 
+	private void initTunnelPlayerWorkaround() {
+		 // Read "tunnel.decode" system property to determine
+		 // the workaround is needed
+		 if (TunnelPlayerWorkaround.isTunnelDecodeEnabled(this)) {
+		      mSilentPlayer = TunnelPlayerWorkaround.createSilentMediaPlayer(this);
+		 }
+	}
+
+	
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection

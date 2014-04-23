@@ -92,6 +92,8 @@ public class SoundVisualizationActivity extends Activity
 		}
 	}
 	
+	private VisualizerView vizView;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -102,15 +104,15 @@ public class SoundVisualizationActivity extends Activity
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
-		final View contentView = findViewById(R.id.fullscreen_content);
+		vizView = (VisualizerView)findViewById(R.id.visualizer_view);
 		rct = new ReceiveColorTask();
 		rct.execute();
 		
-		((VisualizerView)contentView).init(0);
+		((VisualizerView)vizView).init(this);
 		
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
-		mSystemUiHider = SystemUiHider.getInstance(this, contentView, HIDER_FLAGS);
+		mSystemUiHider = SystemUiHider.getInstance(this, vizView, HIDER_FLAGS);
 		mSystemUiHider.setup();
 		mSystemUiHider.setOnVisibilityChangeListener(new SystemUiHider.OnVisibilityChangeListener()
 		{
@@ -154,7 +156,7 @@ public class SoundVisualizationActivity extends Activity
 		});
 
 		// Set up the user interaction to manually show or hide the system UI.
-		contentView.setOnClickListener(new View.OnClickListener()
+		vizView.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View view)
@@ -246,10 +248,13 @@ public class SoundVisualizationActivity extends Activity
 				{
 					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 					receiveSocket.receive(receivePacket);
-					if(PacketParser.getHeader(receivePacket).equals("color"))
+					String[] args = PacketParser.getArgs(receivePacket);
+					Log.d("packet", PacketParser.getHeader(receivePacket));
+					if(PacketParser.getHeader(receivePacket).compareTo("freq_circle") == 0)
 					{
+						vizView.SetCircleStates(args);
 						color = PacketParser.getArgs(receivePacket)[0];
-						publishProgress(color);
+						//publishProgress(color);
 						Log.d("UDP","Received!"+color);
 					}
 				}

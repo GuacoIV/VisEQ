@@ -2,13 +2,14 @@ package com.lsu.vizeq;
 
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.audiofx.Visualizer;
+import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -43,36 +44,24 @@ public class VisualizerView extends View {
 			invalidate();
 		}
 		
-		public void SetEnergy(float s) {
-			boolean isOnLastFrame = false;
-			boolean isOnThisFrame = false;
-			if (energy > threshold*prevEnergy) {
-				isOnLastFrame = true;
+		public void SetEnergy(boolean isOn) {
+			if (isOn) {
+				mAnimator.setValues(PropertyValuesHolder.ofFloat("size", size, onSize));
 			}
-			prevEnergy = energy;
-			energy = s;
-			if (energy > threshold*prevEnergy) {
-				isOnThisFrame = true;
+			else {
+				mAnimator.setValues(PropertyValuesHolder.ofFloat("size", size, offSize));
 			}
-			if (isOnLastFrame ^ isOnThisFrame) {
-				if (isOnThisFrame) {
-					mAnimator.setValues(PropertyValuesHolder.ofFloat("size", size, onSize));
-				}
-				else {
-					mAnimator.setValues(PropertyValuesHolder.ofFloat("size", size, offSize));
-				}
-				mAnimator.start();
-			}
+			mAnimator.start();
 		}
 		
 		public void render(Canvas canvas) {
-			Log.d("color", String.valueOf(mPaint.getColor()));
 			canvas.drawCircle(getWidth()/2, getHeight()/2, size*getWidth(), mPaint);
 		}
 	}
 	
-	private final int NUM_BANDS = 4;
+	public static final int NUM_BANDS = 4;
 	
+	private Activity mActivity;
 	private Visualizer mVisualizer;
 	private Interpolator mInterpolator = new DecelerateInterpolator();
 	private int captureRate;
@@ -82,38 +71,11 @@ public class VisualizerView extends View {
 		super(context, attrs);
 	}
 
-	public void init(int audioSessionId) {
-		mVisualizer = new Visualizer(audioSessionId);
-		if (mVisualizer.getEnabled()) {
-			mVisualizer.setEnabled(false);
-		}
-		mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[0]);
+	public void init(Activity host) {
 
 		captureRate = Visualizer.getMaxCaptureRate()/4;
 
-		Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
-
-			@Override
-			public void onWaveFormDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void onFftDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
-				int bandWidth = arg1.length/NUM_BANDS;
-				for (int j = 0; j < NUM_BANDS; j++) {
-					float sum = 0;
-					for (int i = bandWidth*j; i < bandWidth*(j+1); i++) {
-						sum += Math.abs(arg1[i]);
-					}
-					sum /= bandWidth;
-					circles[j].SetEnergy(sum);
-				}
-			}
-		};
-
-		mVisualizer.setDataCaptureListener(captureListener, captureRate, false, true);
-		mVisualizer.setEnabled(true);
+		mActivity = host;
 		
 		for (int i = 0; i < circles.length; i++) {
 			Paint p = new Paint();
@@ -127,6 +89,23 @@ public class VisualizerView extends View {
 		}
 	}
 
+	public void SetCircleStates(final String[] states) {
+		mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+            	for (int i = 0; i < states.length; i++) {
+        			if (states[i].compareTo("off") == 0) {
+        				circles[i].SetEnergy(false);
+        			}
+        			else if (states[i].compareTo("on") == 0) {
+        				circles[i].SetEnergy(true);
+        			}
+        		}
+            }
+        });
+		
+	}
+	
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		this.setBackgroundColor(Color.BLACK);

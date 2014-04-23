@@ -20,7 +20,7 @@ public class HostSoundVisualizationActivity extends Activity {
 		
 		VisualizerView vizView = (VisualizerView)findViewById(R.id.visualizer);
 		
-		vizView.init(0);
+		vizView.init(this);
 	}
 
 	@Override
