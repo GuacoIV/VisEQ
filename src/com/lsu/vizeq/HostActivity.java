@@ -112,7 +112,7 @@ public class HostActivity extends Activity
 			{
 				//String name = getName();
 				
-				if(myapp.zipcode.isEmpty() || myapp.zipcode.equals("00000"))
+				if(myapp.zipcode == null || myapp.zipcode.equals("00000"))
 		    		myapp.zipcode = getZipcode();
 		    	if(myapp.zipcode.equals("00000"))
 		    	{
