@@ -33,7 +33,6 @@ public class HostSoundVisualizationActivity extends Activity {
 
 			@Override
 			protected String doInBackground(Void... params) {
-				Log.d("do in", "background");
 				while (!isCancelled()) {
 					try {
 						Thread.sleep(20);
@@ -41,9 +40,7 @@ public class HostSoundVisualizationActivity extends Activity {
 					catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					Log.d("polling", "hsv");
 					if (dirty) {
-						Log.d("dirty", "nigga");
 						vizView.SetCircleStates(data);
 						dirty = false;
 					}

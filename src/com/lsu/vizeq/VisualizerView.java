@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.media.audiofx.Visualizer;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -94,16 +95,19 @@ public class VisualizerView extends View {
             @Override
             public void run() {
             	for (int i = 0; i < circles.length; i++) {
-        			if (states[i].compareTo("off") == 0) {
+        			Log.d("setting energy", states[i] + " " + i);
+            		if (states[i].equals("off")) {
         				circles[i].SetEnergy(false);
         			}
-        			else if (states[i].compareTo("on") == 0) {
+        			else if (states[i].equals("on")) {
         				circles[i].SetEnergy(true);
         			}
         		}
             }
+            
         });
 		
+		Log.d("setting energy", " ");
 	}
 	
 	protected void onDraw(Canvas canvas) {

@@ -2,6 +2,8 @@ package com.lsu.vizeq;
 
 import java.net.DatagramPacket;
 
+import android.util.Log;
+
 public class PacketParser {
 	
 	public static String getHeader(DatagramPacket packet)
@@ -22,6 +24,8 @@ public class PacketParser {
 		String[] args;
 		String data = new String(packet.getData());
 		int numArgs = 0;
+		Log.d("packetparser", data);
+		
 		for(int i=0; i<data.length(); i++)
 		{
 			if(data.charAt(i)=='\n')

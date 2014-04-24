@@ -370,14 +370,16 @@ public class PlayerActivity extends Activity {
 
 					try
 					{
-						byte[] sendData = new byte[1024];
+						byte[] sendData = new byte[200];
 						DatagramSocket sendSocket = new DatagramSocket();
 						String data = "freq_circle";
 						for (int i = 0; i < datas.length; i++) {
 							data += "\n" + datas[i];
 						}
+						data += "\n" + " junk ";
 						HostSoundVisualizationActivity.data = datas;
 						HostSoundVisualizationActivity.dirty = true;
+
 						sendData = data.getBytes();
 						Iterator it = MyApp.connectedUsers.entrySet().iterator();
 						while (it.hasNext())
