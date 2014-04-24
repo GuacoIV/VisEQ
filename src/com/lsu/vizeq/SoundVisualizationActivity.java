@@ -253,9 +253,9 @@ public class SoundVisualizationActivity extends Activity
 					if(PacketParser.getHeader(receivePacket).compareTo("freq_circle") == 0)
 					{
 						vizView.SetCircleStates(args);
-						color = PacketParser.getArgs(receivePacket)[0];
+						//color = PacketParser.getArgs(receivePacket)[0];
 						//publishProgress(color);
-						Log.d("UDP","Received!"+color);
+						//Log.d("UDP","Received!"+color);
 					}
 				}
 			} 

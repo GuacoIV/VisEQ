@@ -38,6 +38,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -375,6 +376,8 @@ public class PlayerActivity extends Activity {
 						for (int i = 0; i < datas.length; i++) {
 							data += "\n" + datas[i];
 						}
+						HostSoundVisualizationActivity.data = datas;
+						HostSoundVisualizationActivity.dirty = true;
 						sendData = data.getBytes();
 						Iterator it = MyApp.connectedUsers.entrySet().iterator();
 						while (it.hasNext())
@@ -417,6 +420,8 @@ public class PlayerActivity extends Activity {
 			startActivity(nextIntent);
 		}
 		
+		
+		
 		mVisualizer = new Visualizer(0);
 		if (mVisualizer.getEnabled()) {
 			mVisualizer.setEnabled(false);
@@ -442,7 +447,6 @@ public class PlayerActivity extends Activity {
 			public void onFftDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
 				int bandWidth = arg1.length/VisualizerView.NUM_BANDS;
 				boolean needToSend = false;
-				Log.d("capture", "fft");
 				String[] sendValues = new String[VisualizerView.NUM_BANDS];
 				for (int i = 0; i < sendValues.length; i++) {
 					sendValues[i] = "none";
@@ -479,7 +483,6 @@ public class PlayerActivity extends Activity {
 				}
 				
 				if (needToSend) {
-					Log.d("needtosend", "needtosend");
 					SendBeat(sendValues);
 				}
 			}
