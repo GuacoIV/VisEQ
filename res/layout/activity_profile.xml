@@ -116,13 +116,14 @@
 						        android:selectAllOnFocus="true"
 						        android:singleLine="true"
 						        android:title="@string/usernameTitle" 
-						        android:ems="16" />
+						        android:layout_weight=".7" />
 	                        <Button
 	                            android:id="@+id/changeNameBtn"
 	                            android:layout_width="wrap_content"
 	                            android:layout_height="wrap_content"
 	                            android:onClick="updateName"
-	                            android:text="Update" />
+	                            android:text="Update" 
+	                            android:layout_weight=".3"/>
 	                    </LinearLayout>
                         
                         <TextView
