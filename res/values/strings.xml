@@ -10,7 +10,7 @@
     <string name="DJButton">Host as a DJ</string>
     <string name="NotADJButton">Join a party</string>
     <string name="title_activity_sound_visualization">SoundVisualizationActivity</string>
-    <string name="search_request">Search</string>
+    <string name="search_request">Make a request</string>
     <string name="dummy_content">VIZEQ</string>
     <string name="title_activity_host">Host a Party</string>
     <string name="title_activity_splash">SplashActivity</string>
