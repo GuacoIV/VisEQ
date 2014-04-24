@@ -111,9 +111,20 @@ public class HostActivity extends Activity
 			public void onClick(View v)
 			{
 				//String name = getName();
-				//String zipcode = "70820";
+				
+				if(myapp.zipcode.isEmpty() || myapp.zipcode.equals("00000"))
+		    		myapp.zipcode = "00000";// = getZipcode();
+		    	if(myapp.zipcode.equals("00000"))
+		    	{
+		    		noLocationNotification();
+		    	}
+		    	else
+		    	{
+		    		new ContactServerTask().execute();
+		    	}
+				//myapp.zipcode = getZipcode();//"70820";
 				//String ip = "0.0.0.0";
-				new ContactServerTask().execute();
+				
 			}
 			
 		});
@@ -291,12 +302,30 @@ public class HostActivity extends Activity
 	{
 		Log.d("Contact Server", "Couldn't find your location.");
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Couldn't find your location").setCancelable(false)
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout alertLayout = new LinearLayout(this);
+		TextView message = new TextView(this);
+		message.setText("Couldn't find your location. Please manually enter your zipcode: ");
+		final EditText zipin = new EditText(this);
+		
+		alertLayout.setOrientation(1);
+		alertLayout.addView(message, params);
+		alertLayout.addView(zipin, params);
+		builder.setView(alertLayout).setCancelable(true)
 		.setPositiveButton("ok", new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int id)
 			{
-
+				String zipcode = zipin.getText().toString();
+				myapp.zipcode = zipcode;
+			}
+		})
+		.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() 
+		{	
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) 
+			{
+				
 			}
 		});
 		AlertDialog alert = builder.create();
@@ -327,49 +356,8 @@ public class HostActivity extends Activity
 			Jedis jedis = new Jedis(Redis.host, Redis.port);
 			jedis.auth(Redis.auth);
 			partyName = getName();
-			zipcode = getZipcode();
-			if(zipcode.equals("00000"))
-			{
-				HostActivity.this.runOnUiThread(new Runnable()
-				{
-					public void run()
-					{
-						LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-						LinearLayout alertLayout = new LinearLayout(HostActivity.this);
-						TextView message = new TextView(HostActivity.this);
-						message.setText("Couldn't find your location. Please manually enter your zipcode: ");
-						final EditText zipin = new EditText(HostActivity.this);
-						
-						alertLayout.setOrientation(1);
-						alertLayout.addView(message, params1);
-						alertLayout.addView(zipin, params1);
-						AlertDialog.Builder builder = new AlertDialog.Builder(HostActivity.this);
-						builder.setView(alertLayout).setCancelable(true)
-						.setPositiveButton("ok", new DialogInterface.OnClickListener()
-						{
-							public void onClick(DialogInterface dialog, int id)
-							{
-
-								String zipcode = zipin.getText().toString();
-								myapp.zipcode = zipcode;
-							}
-						})
-						.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() 
-						{	
-							@Override
-							public void onClick(DialogInterface arg0, int arg1) 
-							{
-								
-							}
-						});
-						AlertDialog alert = builder.create();
-					}
-				
-				});
-
-				//result = 3;
-				//return result;
-			}
+			zipcode = params[0];
+			
 			ip = getPrivateIp();
 			
 			long reply = jedis.setnx(zipcode + ":" + partyName, ip);
@@ -395,7 +383,7 @@ public class HostActivity extends Activity
 			{
 				setName(partyName);
 				setIp(ip);
-				setZipcode(zipcode);
+				//setZipcode(zipcode);
 				moveToMenu();
 			}
 			else if(result == 1)

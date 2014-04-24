@@ -140,7 +140,7 @@ public class SearchPartyActivity extends Activity {
     {
     	String name = "Dummy";
     	myapp.myName = name;
-    	if(myapp.zipcode.isEmpty() || myapp.zipcode.isEmpty())
+    	if(myapp.zipcode.isEmpty() || myapp.zipcode.compareTo("00000")==0)
     		myapp.zipcode = getZipcode();
     	if(myapp.zipcode.equals("00000"))
     	{
