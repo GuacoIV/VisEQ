@@ -22,13 +22,12 @@
     <color name="Green">#649940</color>
     
     <string-array name="color_spinner">
-        <item>Black</item>
-        <item>Blue</item>
-        <item>Green</item>
+        <item>Random</item>
         <item>Red</item>
-        <item>Grey</item>
-        <item>Orange</item>
+        <item>Green</item>
+        <item>Blue</item>
         <item>Purple</item>
+        <item>Orange</item>
     </string-array>
 
 </resources>
