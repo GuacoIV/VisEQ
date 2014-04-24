@@ -16,6 +16,7 @@ import redis.clients.jedis.Jedis;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,7 +37,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class HostActivity extends Activity
 {
@@ -327,8 +330,45 @@ public class HostActivity extends Activity
 			zipcode = getZipcode();
 			if(zipcode.equals("00000"))
 			{
-				result = 3;
-				return result;
+				HostActivity.this.runOnUiThread(new Runnable()
+				{
+					public void run()
+					{
+						LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+						LinearLayout alertLayout = new LinearLayout(HostActivity.this);
+						TextView message = new TextView(HostActivity.this);
+						message.setText("Couldn't find your location. Please manually enter your zipcode: ");
+						final EditText zipin = new EditText(HostActivity.this);
+						
+						alertLayout.setOrientation(1);
+						alertLayout.addView(message, params1);
+						alertLayout.addView(zipin, params1);
+						AlertDialog.Builder builder = new AlertDialog.Builder(HostActivity.this);
+						builder.setView(alertLayout).setCancelable(true)
+						.setPositiveButton("ok", new DialogInterface.OnClickListener()
+						{
+							public void onClick(DialogInterface dialog, int id)
+							{
+
+								String zipcode = zipin.getText().toString();
+								myapp.zipcode = zipcode;
+							}
+						})
+						.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() 
+						{	
+							@Override
+							public void onClick(DialogInterface arg0, int arg1) 
+							{
+								
+							}
+						});
+						AlertDialog alert = builder.create();
+					}
+				
+				});
+
+				//result = 3;
+				//return result;
 			}
 			ip = getPrivateIp();
 			
