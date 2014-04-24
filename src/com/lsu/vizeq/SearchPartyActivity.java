@@ -140,8 +140,8 @@ public class SearchPartyActivity extends Activity {
     {
     	String name = "Dummy";
     	myapp.myName = name;
-    	if(myapp.zipcode.isEmpty())
-    		myapp.zipcode = "00000";///getZipcode();
+    	if(myapp.zipcode.isEmpty() || myapp.zipcode.isEmpty())
+    		myapp.zipcode = getZipcode();
     	if(myapp.zipcode.equals("00000"))
     	{
     		noLocationNotification();
