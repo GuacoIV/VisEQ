@@ -113,14 +113,14 @@ public class HostActivity extends Activity
 				//String name = getName();
 				
 				if(myapp.zipcode.isEmpty() || myapp.zipcode.equals("00000"))
-		    		myapp.zipcode = "00000";// = getZipcode();
+		    		myapp.zipcode = getZipcode();
 		    	if(myapp.zipcode.equals("00000"))
 		    	{
 		    		noLocationNotification();
 		    	}
 		    	else
 		    	{
-		    		new ContactServerTask().execute();
+		    		new ContactServerTask().execute(myapp.zipcode);
 		    	}
 				//myapp.zipcode = getZipcode();//"70820";
 				//String ip = "0.0.0.0";
