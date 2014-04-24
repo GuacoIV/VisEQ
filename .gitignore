@@ -37,3 +37,4 @@ src/com/lsu/vizeq/Redis.java
 res/raw/star.wav
 *.class
 *.class
+*.class

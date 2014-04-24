@@ -181,6 +181,8 @@ public class PlayerActivity extends Activity {
 		public void onPlayerPlay() {
 			ImageView image = (ImageView) findViewById(R.id.player_play_pause_image);
 			image.setBackgroundResource(R.drawable.pausebutton_140x140);
+			VizEQ.nowPlaying = mTracks.get(mIndex).mTrack + " - " + mTracks.get(mIndex).mArtist;
+			SendTrackInfo();
 		}
 
 		@Override
@@ -379,6 +381,45 @@ public class PlayerActivity extends Activity {
 						data += "\n" + " junk ";
 						HostSoundVisualizationActivity.data = datas;
 						HostSoundVisualizationActivity.dirty = true;
+
+						sendData = data.getBytes();
+						Iterator it = MyApp.connectedUsers.entrySet().iterator();
+						while (it.hasNext())
+						{
+							Log.d("Send circl data", "hey");
+							Map.Entry pairs= (Map.Entry) it.next();
+							InetAddress IPAddress = (InetAddress) pairs.getValue();
+							String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
+							Log.d("UDP",test);
+							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
+							sendSocket.send(sendPacket);
+						}
+						sendSocket.close();
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			
+		}).start();
+
+	}
+	
+	public void SendTrackInfo() {
+		final MyApplication myapp = MyApp;
+		new Thread(new Runnable()
+		{
+
+			@Override
+			public void run() 
+			{
+
+					try
+					{
+						byte[] sendData = new byte[200];
+						DatagramSocket sendSocket = new DatagramSocket();
+						String data = "track_info\n" + VizEQ.nowPlaying;
+						data += "\n" + " junk ";
 
 						sendData = data.getBytes();
 						Iterator it = MyApp.connectedUsers.entrySet().iterator();

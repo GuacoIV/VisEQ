@@ -296,6 +296,7 @@ public class HostMenuActivity extends Activity
 			try {
 				listenSocket = new DatagramSocket(7771);
 				sendSocket = new DatagramSocket();
+				
 				while(true)
 				{
 					byte listenData[] = new byte[1024]; 
@@ -309,7 +310,7 @@ public class HostMenuActivity extends Activity
 						myapp.connectedUsers.put(clientName, clientIp);
 						Log.d("join listener", "added "+clientName+" "+clientIp.getHostName());
 						byte sendData[] = new byte[1024];
-						String sendString = "accept";
+						String sendString = "accept\n" + VizEQ.nowPlaying + "\njunkk";
 						sendData = sendString.getBytes();
 						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, clientIp, 7771);
 						sendSocket.send(sendPacket);

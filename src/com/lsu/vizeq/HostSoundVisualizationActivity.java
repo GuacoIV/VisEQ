@@ -15,13 +15,17 @@ public class HostSoundVisualizationActivity extends Activity {
 	
 	private VisualizerView vizView;
 
-	
 	public static boolean dirty = false;
 	public static String[] data = new String[VisualizerView.NUM_BANDS];
+	
+	AsyncTask<Void,String,String> my_task;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		dirty = false;
+		data = new String[VisualizerView.NUM_BANDS];
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
@@ -29,7 +33,7 @@ public class HostSoundVisualizationActivity extends Activity {
 		
 		setContentView(R.layout.activity_host_sound_visualization);
 		
-		AsyncTask<Void,String,String> my_task = new AsyncTask<Void,String,String>() {
+		my_task = new AsyncTask<Void,String,String>() {
 
 			@Override
 			protected String doInBackground(Void... params) {
@@ -67,6 +71,12 @@ public class HostSoundVisualizationActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.host_sound_visualization, menu);
 		return true;
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		my_task.cancel(true);
 	}
 
 	

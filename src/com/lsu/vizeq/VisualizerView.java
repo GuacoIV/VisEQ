@@ -114,7 +114,9 @@ public class VisualizerView extends View {
 		super.onDraw(canvas);
 		this.setBackgroundColor(Color.BLACK);
 		for (int i = 0; i < circles.length; i++) {
-			circles[i].render(canvas);
+			if (circles[i] != null) {
+				circles[i].render(canvas);
+			}
 		}
 	}
 

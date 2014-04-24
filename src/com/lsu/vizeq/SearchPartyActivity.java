@@ -497,6 +497,7 @@ public class SearchPartyActivity extends Activity {
 						myapp.joined = true;
 						myapp.hostAddress = receivePacket.getAddress();
 						joined = true;
+						VizEQ.nowPlaying = PacketParser.getArgs(receivePacket)[0];
 					}
 				}
 				return "Joined!";

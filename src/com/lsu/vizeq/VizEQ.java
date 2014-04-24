@@ -26,6 +26,7 @@ public class VizEQ extends Activity
 	
 	static int colorScheme;
 	
+	public static String nowPlaying = "nothing playing!";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)

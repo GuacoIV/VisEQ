@@ -18,8 +18,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
-import com.lsu.vizeq.R.color;
 import com.lsu.vizeq.util.SystemUiHider;
 
 /**
@@ -55,6 +55,10 @@ public class SoundVisualizationActivity extends Activity
 	private SystemUiHider mSystemUiHider;
 
 	private ReceiveColorTask rct;
+	
+	private String nowPlaying;
+	
+	private TextView textViewNowPlaying;
 	
 	ActionBar actionBar;
 	
@@ -95,6 +99,12 @@ public class SoundVisualizationActivity extends Activity
 	private VisualizerView vizView;
 	
 	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		rct.cancel(true);
+	}
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
@@ -102,13 +112,20 @@ public class SoundVisualizationActivity extends Activity
 		setContentView(R.layout.activity_sound_visualization);
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-
+		actionBar.hide();
+		
+		textViewNowPlaying = (TextView)findViewById(R.id.track_info_visualizer);
+		textViewNowPlaying.setSelected(true);
+		textViewNowPlaying.setText(VizEQ.nowPlaying);
+		
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		vizView = (VisualizerView)findViewById(R.id.visualizer_view);
 		rct = new ReceiveColorTask();
 		rct.execute();
 		
 		((VisualizerView)vizView).init(this);
+		
+		
 		
 		// Set up an instance of SystemUiHider to control the system UI for
 		// this activity.
@@ -174,7 +191,7 @@ public class SoundVisualizationActivity extends Activity
 		// Upon interacting with UI controls, delay any scheduled hide()
 		// operations to prevent the jarring behavior of controls going away
 		// while interacting with the UI.
-		findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+		findViewById(R.id.search_request).setOnTouchListener(mDelayHideTouchListener);
 	}
 
 	@Override
@@ -246,7 +263,7 @@ public class SoundVisualizationActivity extends Activity
 				byte[] receiveData = new byte[1024];
 				while (!isCancelled())
 				{
-					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+					final DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 					receiveSocket.receive(receivePacket);
 					String[] args = PacketParser.getArgs(receivePacket);
 					Log.d("packet", PacketParser.getHeader(receivePacket));
@@ -256,6 +273,20 @@ public class SoundVisualizationActivity extends Activity
 						//color = PacketParser.getArgs(receivePacket)[0];
 						//publishProgress(color);
 						//Log.d("UDP","Received!"+color);
+					}
+					else if (PacketParser.getHeader(receivePacket).equals("track_info")) {
+						Handler mainHandler = new Handler(SoundVisualizationActivity.this.getMainLooper());
+						Runnable myRunnable = new Runnable() {
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								textViewNowPlaying.setText(PacketParser.getArgs(receivePacket)[0]);
+							}
+							
+						};
+						mainHandler.post(myRunnable);
+						
 					}
 				}
 			} 
