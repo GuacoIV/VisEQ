@@ -40,7 +40,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
 		android:text="@string/SoundVisualizer"
-		android:layout_margin="10dp"/>
+		android:layout_margin="10dp"
+		android:layout_below="@id/Search"/>
 
     <EditText
         android:id="@+id/name_field"

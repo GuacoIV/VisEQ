@@ -188,7 +188,7 @@ public class SearchPartyActivity extends Activity {
 		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
 		LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
 		
-		
+		nameLayout.removeAllViews();
 		for(int i=0; i<partyNames.size(); i++)
 		{
 			final String name = partyNames.get(i);
