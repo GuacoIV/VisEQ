@@ -13,7 +13,7 @@ public class MyApplication extends Application {
 	public ArrayList<Track> requests = new ArrayList<Track>();
 	public InetAddress hostAddress;
 	public String myName = "";
-	public String zipcode;
+	public String zipcode = "";
 	public String myIp;
 	public boolean joined = false;
 	public boolean hosting = false;

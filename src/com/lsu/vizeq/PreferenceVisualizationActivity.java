@@ -61,10 +61,16 @@ public class PreferenceVisualizationActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		myapp = (MyApplication) this.getApplicationContext();
-		viz = new PreferenceVisualizer(myapp.requests);
+		
 		setContentView(R.layout.activity_preference_visualization);
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		
+		RelativeLayout vizlayout = (RelativeLayout) findViewById(R.id.vizlayout);
+		
+		int res_x = vizlayout.getWidth();
+		int res_y = vizlayout.getHeight();
+		viz = new PreferenceVisualizer(myapp.requests, res_x, res_y);
 		new Thread(new Runnable()
 		{
 

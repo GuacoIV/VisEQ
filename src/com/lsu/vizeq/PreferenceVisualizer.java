@@ -26,13 +26,21 @@ public class PreferenceVisualizer {
 	private Map<String, Integer> genres;
 	private List<String> circleNames;		//max size is 10
 	private final int MAX_CIRCLES = 20;
+	private double MAX_RADIUS;
+	private int res_x, res_y;
+	private double ar_x, ar_y;		//aspect ratio: <float>:1
 	private String sortType;
 	private List<PVCircle> circles;
 	
 	
-	public PreferenceVisualizer(ArrayList<Track> requests)
+	public PreferenceVisualizer(ArrayList<Track> requests, int res_x, int res_y)
 	{
 		this.requests = requests;
+		this.res_x = res_y;
+		this.res_y = res_y;
+		this.ar_x = (double) res_x / res_y;
+		this.ar_y = 1.0;
+		this.MAX_RADIUS = ar_x / 3.0;
 		artists = new HashMap<String, Integer>();
 		albums = new HashMap<String, Integer>();
 		tracks = new HashMap<String, Integer>();
@@ -106,42 +114,41 @@ public class PreferenceVisualizer {
 			circleNames.add(curr_entry.getKey());
 		}
 		
-		//if less than 10, we're done
-		//otherwise we need to trim our list
+
+		//good ole insertion sort
+		String key;
+		for(int i=1; i<circleNames.size(); i++)
+		{
+			key = circleNames.get(i);
+			int j;
+			for(j=i-1; j>=0; j--)
+			{
+				String compkey = circleNames.get(j);
+				if(countMap.get(compkey) > countMap.get(key))
+					break;
+				else
+					circleNames.set(j+1, circleNames.get(j));
+			}
+			circleNames.set(j+1, key);
+
+		}
+			
+			//trim if too many circles
 		if(circleNames.size() > MAX_CIRCLES)
 		{
-			//first sort the list
-			//good ole insertion sort
-			String key;
-			for(int i=1; i<circleNames.size(); i++)
-			{
-				key = circleNames.get(i);
-				int j;
-				for(j=i-1; j>=0; j--)
-				{
-					String compkey = circleNames.get(j);
-					if(countMap.get(compkey) > countMap.get(key))
-						break;
-					else
-						circleNames.set(j+1, circleNames.get(j));
-				}
-				circleNames.set(j+1, key);
-				
-			}
-			
-			//trim
 			circleNames = circleNames.subList(0, MAX_CIRCLES);
 			logCircleNames(countMap);
 		}
+		
 	}
 	
 	private boolean checkCollision(PVCircle circle, int maxIndx, int indx)
 	{
 		boolean collision = false;
 		//assuming bounding box from point (-0.2, -0.2) to (2.2, 3.2)
-		if((circle.getX() - circle.getRadius()) < -0.2 || (circle.getX() + circle.getRadius()) > 4.2)
+		if((circle.getX() - circle.getRadius()) < -0.02 || (circle.getX() + circle.getRadius()) > ar_x + 0.02)
 			collision = true;
-		else if((circle.getY() - circle.getRadius()) < 0.2 || (circle.getY() + circle.getRadius()) > 6.2)
+		else if((circle.getY() - circle.getRadius()) < 0.02 || (circle.getY() + circle.getRadius()) > ar_y + 0.02)
 			collision = true;
 		else
 		{
@@ -375,12 +382,12 @@ public class PreferenceVisualizer {
 		while (it.hasNext())
 		{	
 			PVCircle currCircle = it.next();
-			currCircle.setRadius((double) currCircle.getWeight() / maxCount);
+			currCircle.setRadius(MAX_RADIUS * (double) currCircle.getWeight() / maxCount);
 			boolean collision = true;
 			int loopCount = 0;
 			while(collision && loopCount < 100)
 			{
-				currCircle.setPosition(4.0*rng.nextDouble(), 6.0*rng.nextDouble());
+				currCircle.setPosition(ar_x*rng.nextDouble(), ar_y*rng.nextDouble());
 				collision = checkCollision(currCircle, indx, indx);
 				loopCount++;
 			}

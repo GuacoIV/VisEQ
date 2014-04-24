@@ -140,9 +140,14 @@ public class SearchPartyActivity extends Activity {
     {
     	String name = "Dummy";
     	myapp.myName = name;
-    	String zipcode = getZipcode();
-    	myapp.zipcode = zipcode;
-    	new ContactServerTask().execute(name, zipcode);
+    	if(myapp.zipcode.isEmpty())
+    		myapp.zipcode = "00000";///getZipcode();
+    	if(myapp.zipcode.equals("00000"))
+    	{
+    		noLocationNotification();
+    	}
+    	else
+    		new ContactServerTask().execute(name, myapp.zipcode);
     }
 	
 	public void searchForParties(View view)
@@ -182,6 +187,7 @@ public class SearchPartyActivity extends Activity {
 		
 		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
 		LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
+		
 		
 		for(int i=0; i<partyNames.size(); i++)
 		{
@@ -294,12 +300,30 @@ public class SearchPartyActivity extends Activity {
 	{
 		Log.d("Contact Server", "no location");
 		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
-		builder.setMessage("Couldn't find your location").setCancelable(false)
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout alertLayout = new LinearLayout(this);
+		TextView message = new TextView(this);
+		message.setText("Couldn't find your location. Please manually enter your zipcode: ");
+		final EditText zipin = new EditText(this);
+		
+		alertLayout.setOrientation(1);
+		alertLayout.addView(message, params);
+		alertLayout.addView(zipin, params);
+		builder.setView(alertLayout).setCancelable(true)
 		.setPositiveButton("ok", new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int id)
 			{
-
+				String zipcode = zipin.getText().toString();
+				myapp.zipcode = zipcode;
+			}
+		})
+		.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() 
+		{	
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) 
+			{
+				
 			}
 		});
 		AlertDialog alert = builder.create();
@@ -653,7 +677,7 @@ public class SearchPartyActivity extends Activity {
 			List<Address> addresses = geocoder.getFromLocation(currLocation.getLatitude(), currLocation.getLongitude(), 1);
 			zipcode = addresses.get(0).getPostalCode();
 			
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
