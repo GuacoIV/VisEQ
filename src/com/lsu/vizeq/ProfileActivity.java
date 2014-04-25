@@ -177,7 +177,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	
 	    ts = tabhost.newTabSpec("tab02"); 
 	    ts.setContent(R.id.tab02);
-	    ts.setIndicator("Playlist"); 
+	    ts.setIndicator("My Requests"); 
 	    tabhost.addTab(ts);
 	    
 	    ts = tabhost.newTabSpec("tab03");

@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class PreferenceVisualizationActivity extends Activity {
 
@@ -71,27 +72,41 @@ public class PreferenceVisualizationActivity extends Activity {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				final List<PVCircle> circles;
-				viz.init();
-				viz.sortByArtist();
-				currentSort = "artist";
-				Log.d("viz", "packing circles");
-				viz.packCircles2();
-				circles = viz.getCircles();
-				Log.d("viz", "circles obtained");
-				runOnUiThread(new Runnable()
+				final List<PVCircle> circles; 
+				if (viz.getCircles().isEmpty()==false)
 				{
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						Log.d("viz", "running on ui thread - viewCircles");
-						viewCircles(circles);
-					}
-					
-				});
+					viz.init();
+					viz.sortByArtist();
+					currentSort = "artist";
+					Log.d("viz", "packing circles");
+					viz.packCircles2();
+					circles = viz.getCircles();
+					Log.d("viz", "circles obtained");
 				
+					runOnUiThread(new Runnable()
+					{
+	
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							Log.d("viz", "running on ui thread - viewCircles");
+							viewCircles(circles);
+							
+						}
+						
+					});
+				}
+				else 
+				{
+					runOnUiThread(new Runnable()
+					{
+						@Override
+						public void run() {
+							Toast.makeText(PreferenceVisualizationActivity.this, "There are no requests from the crowd", Toast.LENGTH_LONG).show();
+						}
+					});
 				
+				}
 			}
 			
 		}).start();
