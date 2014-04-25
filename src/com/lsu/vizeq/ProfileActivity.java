@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Random;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,6 +47,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	
 	public String mColor;
+	Spinner spinner;
 	LinearLayout customSearchLayout;
 	OnClickListener submitListener;
 	ActionBar actionBar;
@@ -55,6 +57,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	
 	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // An item was selected. You can retrieve the selected item using parent.getItemAtPosition(pos)
+		spinner.setSelection(pos);
 		SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
 		mColor = (String) parent.getItemAtPosition(pos);
 		SharedPreferences.Editor saver = memory.edit();
@@ -64,30 +67,32 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 				
 		actionBar = getActionBar();
 		int posi = memory.getInt("colorPos", -1);
-		if (posi != -1) VizEQ.numRand = posi;	
-		switch (VizEQ.numRand)
+		if (posi != -1) 
 		{
-			case 0:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
-				break;
-			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
-				break;
-			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
-				break;
-			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
-				break;
-			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
-				break;
-			case 5:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
-				break;
-			case 6:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
-				break;			
+			VizEQ.numRand = posi;	
+			if (VizEQ.numRand == 0){
+				Random r = new Random();
+				VizEQ.numRand = r.nextInt(5) + 1;
+			}			
+			
+			switch (VizEQ.numRand)
+			{
+				case 1:
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+					break;
+				case 2:
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
+					break;
+				case 3:
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+					break;
+				case 4:
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
+					break;
+				case 5:
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+					break;		
+			}
 		}
     }
 
@@ -96,30 +101,28 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
     	actionBar = getActionBar();
     	SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
-		if (posi != -1) VizEQ.numRand = posi;	
-		switch (VizEQ.numRand)
+		spinner.setSelection(posi);
+		if (posi > 0) 
 		{
-			case 0:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
-				break;
-			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
-				break;
-			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
-				break;
-			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
-				break;
-			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
-				break;
-			case 5:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
-				break;
-			case 6:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
-				break;			
+			VizEQ.numRand = posi;	
+			switch (VizEQ.numRand)
+			{				
+				case 1:
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+					break;
+				case 2:
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
+					break;
+				case 3:
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+					break;
+				case 4:
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
+					break;
+				case 5:
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+					break;		
+			}
 		}
     }    
 	
@@ -140,30 +143,25 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
-		if (posi != -1) VizEQ.numRand = posi;		
+		if (posi > 0) VizEQ.numRand = posi;	
+		
 		switch (VizEQ.numRand)
 		{
-			case 0:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
-				break;
 			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
 				break;
 			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
 				break;
 			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
 				break;
 			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
-				break;
-			case 6:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
-				break;			
+				break;					
 		}		
 		
 		customSearchLayout = (LinearLayout) findViewById(R.id.customSearchLayout);
@@ -192,11 +190,13 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	    //Animation an = new Animation();	   
 	    
 	    // Color Spinner
-	    Spinner spinner = (Spinner) findViewById(R.id.colorspinner);
+	    spinner = (Spinner) findViewById(R.id.colorspinner);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.color_spinner, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);	
 		spinner.setOnItemSelectedListener(this);
-		spinner.setAdapter(adapter);	    	    	    
+		spinner.setAdapter(adapter);
+		if (posi == -1) posi = 0;
+		spinner.setSelection(posi);
 		
 		rowTap = new OnTouchListener()
 		{
@@ -505,23 +505,23 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 		int endColor = 0;
 		switch (VizEQ.numRand)
 		{
-			case 0:;
+			case 1:
 				startColor = getResources().getColor(R.color.Red); //203, 32, 38
 				endColor = Color.rgb(203+50, 32+90, 38+90);
 				break;
-			case 1:
+			case 2:
 				startColor = getResources().getColor(R.color.Green);//100, 153, 64
 				endColor = Color.rgb(100+90, 153+90, 64+90);
 				break;
-			case 2:
+			case 3:
 				startColor = getResources().getColor(R.color.Blue); //0, 153, 204
 				endColor = Color.rgb(0+90, 153+90, 204+50);
 				break;
-			case 3:
+			case 4:
 				startColor = getResources().getColor(R.color.Purple); //155, 105, 172
 				endColor = Color.rgb(155+70, 105+70, 172+70);
 				break;
-			case 4:
+			case 5:
 				startColor = getResources().getColor(R.color.Orange); //245, 146, 30
 				endColor = Color.rgb(245, 146+90, 30+90);
 				break;

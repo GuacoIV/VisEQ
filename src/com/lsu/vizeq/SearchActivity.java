@@ -59,30 +59,24 @@ public class SearchActivity extends Activity
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
-		if (posi != -1) VizEQ.numRand = posi;		
+		if (posi > 0) VizEQ.numRand = posi;		
 		switch (VizEQ.numRand)
 		{
-			case 0:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
-				break;
 			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
 				break;
 			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
 				break;
 			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
 				break;
 			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
-				break;
-			case 6:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
-				break;			
+				break;		
 		}
 	}
 	
@@ -98,23 +92,23 @@ public class SearchActivity extends Activity
 		int endColor = 0;
 		switch (VizEQ.numRand)
 		{
-			case 0:;
+			case 1:
 				startColor = getResources().getColor(R.color.Red); //203, 32, 38
 				endColor = Color.rgb(203+50, 32+90, 38+90);
 				break;
-			case 1:
+			case 2:
 				startColor = getResources().getColor(R.color.Green);//100, 153, 64
 				endColor = Color.rgb(100+90, 153+90, 64+90);
 				break;
-			case 2:
+			case 3:
 				startColor = getResources().getColor(R.color.Blue); //0, 153, 204
 				endColor = Color.rgb(0+90, 153+90, 204+50);
 				break;
-			case 3:
+			case 4:
 				startColor = getResources().getColor(R.color.Purple); //155, 105, 172
 				endColor = Color.rgb(155+70, 105+70, 172+70);
 				break;
-			case 4:
+			case 5:
 				startColor = getResources().getColor(R.color.Orange); //245, 146, 30
 				endColor = Color.rgb(245, 146+90, 30+90);
 				break;

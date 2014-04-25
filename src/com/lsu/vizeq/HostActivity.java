@@ -60,15 +60,12 @@ public class HostActivity extends Activity
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.hostBackground);
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
-		if (posi != -1) VizEQ.numRand = posi;		
+		if (posi > 0) VizEQ.numRand = posi;		
 		switch (VizEQ.numRand)
 		{
-			case 0:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.black)));
-				break;
 			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
-				rl.setBackground(getResources().getDrawable(R.drawable.blue));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+				rl.setBackground(getResources().getDrawable(R.drawable.red));
 				//r1.setBackgroundDrawable(getResources().getDrawable(R.drawable.blue));
 				break;
 			case 2:
@@ -76,19 +73,16 @@ public class HostActivity extends Activity
 				rl.setBackground(getResources().getDrawable(R.drawable.green));
 				break;
 			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
-				rl.setBackground(getResources().getDrawable(R.drawable.red));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				rl.setBackground(getResources().getDrawable(R.drawable.blue));
 				break;
 			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Grey85)));
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				rl.setBackground(getResources().getDrawable(R.drawable.purple));
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				rl.setBackground(getResources().getDrawable(R.drawable.orange));
-				break;
-			case 6:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
-				rl.setBackground(getResources().getDrawable(R.drawable.purple));
 				break;			
 		}
 	}
@@ -112,7 +106,7 @@ public class HostActivity extends Activity
 			{
 				//String name = getName();
 				
-				if(myapp.zipcode.isEmpty() || myapp.zipcode.equals("00000"))
+				if(myapp.zipcode == null || myapp.zipcode.equals("00000"))
 		    		myapp.zipcode = getZipcode();
 		    	if(myapp.zipcode.equals("00000"))
 		    	{
