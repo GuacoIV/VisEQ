@@ -90,6 +90,9 @@ public class SearchActivity extends Activity
 		//Calculate start and end colors
 		int startColor = 0;
 		int endColor = 0;
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		if (posi > 0) VizEQ.numRand = posi;	
 		switch (VizEQ.numRand)
 		{
 			case 1:
@@ -179,10 +182,10 @@ public class SearchActivity extends Activity
 	    ts.setContent(R.id.tab2);
 	    ts.setIndicator("Queue");  
 	    tabhost.addTab(ts);
-	    ts= tabhost.newTabSpec("tag3");
-	    ts.setContent(R.id.tab3);
-	    ts.setIndicator("Third Tab");
-	    tabhost.addTab(ts);
+	    //ts= tabhost.newTabSpec("tag3");
+	    //ts.setContent(R.id.tab3);
+	    //ts.setIndicator("Third Tab");
+	    //tabhost.addTab(ts);
 	    //for (int i = 0; i < tabhost.getTabWidget().getChildCount(); i++)
 		//{
 			//tabhost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.LightGreen));
@@ -392,25 +395,28 @@ public class SearchActivity extends Activity
 							//Calculate start and end colors
 							int startColor = 0;
 							int endColor = 0;
+							SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+							int posi = memory.getInt("colorPos", -1);
+							if (posi > 0) VizEQ.numRand = posi;	
 							switch (VizEQ.numRand)
 							{
-								case 0:;
+								case 1:
 									startColor = getResources().getColor(R.color.Red); //203, 32, 38
 									endColor = Color.rgb(203+50, 32+90, 38+90);
 									break;
-								case 1:
+								case 2:
 									startColor = getResources().getColor(R.color.Green);//100, 153, 64
 									endColor = Color.rgb(100+90, 153+90, 64+90);
 									break;
-								case 2:
+								case 3:
 									startColor = getResources().getColor(R.color.Blue); //0, 153, 204
 									endColor = Color.rgb(0+90, 153+90, 204+50);
 									break;
-								case 3:
+								case 4:
 									startColor = getResources().getColor(R.color.Purple); //155, 105, 172
 									endColor = Color.rgb(155+70, 105+70, 172+70);
 									break;
-								case 4:
+								case 5:
 									startColor = getResources().getColor(R.color.Orange); //245, 146, 30
 									endColor = Color.rgb(245, 146+90, 30+90);
 									break;
@@ -481,19 +487,7 @@ public class SearchActivity extends Activity
 											}	
 										}
 									});
-									//coverThread.start();
-															
 
-								/*if (i % 2 == 0) 
-								{
-									tableRowToAdd.setBackgroundColor(TrackRow.color1);
-									tableRowToAdd.originalColor = TrackRow.color1;
-								}
-								else
-								{
-									tableRowToAdd.setBackgroundColor(TrackRow.color2);
-									tableRowToAdd.originalColor = TrackRow.color2;
-								}*/
 								tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
 								tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
 								if (redStart + addRed < 255 && i < 16) redStart += addRed;

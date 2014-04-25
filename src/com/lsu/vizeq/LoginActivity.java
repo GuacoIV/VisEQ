@@ -129,18 +129,28 @@ public class LoginActivity extends Activity {
 		{
 			case 1:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+				signInButton.setBackgroundColor(getResources().getColor(R.color.Red));
+				skipButton.setBackgroundColor(getResources().getColor(R.color.Red));
 				break;
 			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));		
+				signInButton.setBackgroundColor(getResources().getColor(R.color.Green));
+				skipButton.setBackgroundColor(getResources().getColor(R.color.Green));
 				break;
 			case 3:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				signInButton.setBackgroundColor(getResources().getColor(R.color.Blue));
+				skipButton.setBackgroundColor(getResources().getColor(R.color.Blue));
 				break;
 			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				signInButton.setBackgroundColor(getResources().getColor(R.color.Purple));
+				skipButton.setBackgroundColor(getResources().getColor(R.color.Purple));
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				signInButton.setBackgroundColor(getResources().getColor(R.color.Orange));
+				skipButton.setBackgroundColor(getResources().getColor(R.color.Orange));
 				break;		
 		}
 		

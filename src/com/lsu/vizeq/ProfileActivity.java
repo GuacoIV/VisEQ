@@ -306,6 +306,47 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 						try {
 							JSONArray tracks = response.getJSONArray("tracks");
 							//JSONObject track = tracks.getJSONObject(0);
+							//Calculate start and end colors
+							int startColor = 0;
+							int endColor = 0;
+							SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+							int posi = memory.getInt("colorPos", -1);
+							if (posi > 0) VizEQ.numRand = posi;	
+							switch (VizEQ.numRand)
+							{
+								case 0:;
+									startColor = getResources().getColor(R.color.Red); //203, 32, 38
+									endColor = Color.rgb(203+50, 32+90, 38+90);
+									break;
+								case 1:
+									startColor = getResources().getColor(R.color.Green);//100, 153, 64
+									endColor = Color.rgb(100+90, 153+90, 64+90);
+									break;
+								case 2:
+									startColor = getResources().getColor(R.color.Blue); //0, 153, 204
+									endColor = Color.rgb(0+90, 153+90, 204+50);
+									break;
+								case 3:
+									startColor = getResources().getColor(R.color.Purple); //155, 105, 172
+									endColor = Color.rgb(155+70, 105+70, 172+70);
+									break;
+								case 4:
+									startColor = getResources().getColor(R.color.Orange); //245, 146, 30
+									endColor = Color.rgb(245, 146+90, 30+90);
+									break;
+							}
+							
+							int redStart = Color.red(startColor);
+							int redEnd = Color.red(endColor);
+							int addRed = (redEnd - redStart)/15;
+							
+							int greenStart = Color.green(startColor);
+							int greenEnd = Color.green(endColor);
+							int addGreen = (greenEnd - greenStart)/15;
+							
+							int blueStart = Color.blue(startColor);
+							int blueEnd = Color.blue(endColor);
+							int addBlue = (blueEnd - blueStart)/15;
 							for (int i = 0; i < tracks.length(); i++)
 							{
 								String trackName = tracks.getJSONObject(i).getString("name");
@@ -320,16 +361,11 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 								tableRowToAdd.mArtist = trackArtist;
 								tableRowToAdd.mAlbum = trackAlbum;
 								tableRowToAdd.mUri = uri;
-								if (i % 2 == 0) 
-								{
-									tableRowToAdd.setBackgroundColor(TrackRow.color1);
-									tableRowToAdd.originalColor = TrackRow.color1;
-								}
-								else
-								{
-									tableRowToAdd.setBackgroundColor(TrackRow.color2);
-									tableRowToAdd.originalColor = TrackRow.color2;
-								}
+								tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
+								tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+								if (redStart + addRed < 255 && i < 16) redStart += addRed;
+								if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
+								if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
 								textViewToAdd.setText(trackName);
 								textTwoViewToAdd.setText(trackArtist);
 								textViewToAdd.setTextSize(20);
@@ -503,6 +539,9 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 		//Calculate start and end colors
 		int startColor = 0;
 		int endColor = 0;
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		if (posi > 0) VizEQ.numRand = posi;	
 		switch (VizEQ.numRand)
 		{
 			case 1:
