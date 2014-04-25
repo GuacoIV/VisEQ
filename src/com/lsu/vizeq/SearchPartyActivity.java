@@ -310,7 +310,7 @@ public class SearchPartyActivity extends Activity {
 		alertLayout.addView(message, params);
 		alertLayout.addView(zipin, params);
 		builder.setView(alertLayout).setCancelable(true)
-		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		.setPositiveButton("Ok", new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int id)
 			{
