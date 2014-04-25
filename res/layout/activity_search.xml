@@ -55,8 +55,7 @@
 					        android:layout_height="wrap_content"
 					        android:ems="10"
 					        android:hint="Search"
-					        android:layout_gravity="center"
-					        android:textSize="25sp"
+					        android:textSize="20sp"
 					        android:alpha="0.8"
 					        android:singleLine="true" />
                         </LinearLayout>

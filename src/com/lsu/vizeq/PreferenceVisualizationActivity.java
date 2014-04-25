@@ -21,7 +21,7 @@ public class PreferenceVisualizationActivity extends Activity {
 
 	public MyApplication myapp;
 	public PreferenceVisualizer viz;
-	private String currentSort;
+	private String currentSort = "";
 	private ActionBar actionBar;
 	
 	@Override
@@ -123,24 +123,38 @@ public class PreferenceVisualizationActivity extends Activity {
 				{
 					// TODO Auto-generated method stub
 					final List<PVCircle> circles;
-					viz.init();
-					viz.sortByArtist();
-					currentSort = "artist";
-					Log.d("viz", "packing circles");
-					viz.packCircles2();
-					circles = viz.getCircles();
-					Log.d("viz", "circles obtained");
-					runOnUiThread(new Runnable()
+					if (viz.getCircles().isEmpty()==false)
 					{
-
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							Log.d("viz", "running on ui thread - viewCircles");
-							viewCircles(circles);
-						}
-						
-					});
+						viz.init();
+						viz.sortByArtist();
+						currentSort = "artist";
+						Log.d("viz", "packing circles");
+						viz.packCircles2();
+						circles = viz.getCircles();
+						Log.d("viz", "circles obtained");
+						runOnUiThread(new Runnable()
+						{
+	
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								Log.d("viz", "running on ui thread - viewCircles");
+								viewCircles(circles);
+							}
+							
+						});
+					}
+					else 
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run() {
+								Toast.makeText(PreferenceVisualizationActivity.this, "There are no requests from the crowd", Toast.LENGTH_LONG).show();
+							}
+						});
+					
+					}
 				}
 			}).start();
 		}
@@ -154,26 +168,39 @@ public class PreferenceVisualizationActivity extends Activity {
 			{
 				public void run()
 				{
-					// TODO Auto-generated method stub
 					final List<PVCircle> circles;
-					viz.init();
-					viz.sortByAlbum();
-					currentSort = "album";
-					Log.d("viz", "packing circles");
-					viz.packCircles2();
-					circles = viz.getCircles();
-					Log.d("viz", "circles obtained");
-					runOnUiThread(new Runnable()
+					if (viz.getCircles().isEmpty()==false)
 					{
-
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							Log.d("viz", "running on ui thread - viewCircles");
-							viewCircles(circles);
-						}
-						
-					});
+						viz.init();
+						viz.sortByAlbum();
+						currentSort = "album";
+						Log.d("viz", "packing circles");
+						viz.packCircles2();
+						circles = viz.getCircles();
+						Log.d("viz", "circles obtained");
+						runOnUiThread(new Runnable()
+						{
+	
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								Log.d("viz", "running on ui thread - viewCircles");
+								viewCircles(circles);
+							}
+							
+						});
+					}
+					else 
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run() {
+								Toast.makeText(PreferenceVisualizationActivity.this, "There are no requests from the crowd", Toast.LENGTH_LONG).show();
+							}
+						});
+					
+					}
 				}
 			}).start();
 		}
@@ -189,24 +216,38 @@ public class PreferenceVisualizationActivity extends Activity {
 				{
 					// TODO Auto-generated method stub
 					final List<PVCircle> circles;
-					viz.init();
-					viz.sortByTrack();
-					currentSort = "track";
-					Log.d("viz", "packing circles");
-					viz.packCircles2();
-					circles = viz.getCircles();
-					Log.d("viz", "circles obtained");
-					runOnUiThread(new Runnable()
+					if (viz.getCircles().isEmpty()==false)
 					{
-
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							Log.d("viz", "running on ui thread - viewCircles");
-							viewCircles(circles);
-						}
-						
-					});
+						viz.init();
+						viz.sortByTrack();
+						currentSort = "track";
+						Log.d("viz", "packing circles");
+						viz.packCircles2();
+						circles = viz.getCircles();
+						Log.d("viz", "circles obtained");
+						runOnUiThread(new Runnable()
+						{
+	
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								Log.d("viz", "running on ui thread - viewCircles");
+								viewCircles(circles);
+							}
+							
+						});
+					}
+					else 
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run() {
+								Toast.makeText(PreferenceVisualizationActivity.this, "There are no requests from the crowd", Toast.LENGTH_LONG).show();
+							}
+						});
+					
+					}
 				}
 			}).start();
 		}
