@@ -7,6 +7,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -80,7 +81,10 @@ public class VizEQ extends Activity
 			 public void run() { 
 					 try
 					 {
-						sleep(2000); //2 seconds
+						MediaPlayer mediaPlayer = MediaPlayer.create(VizEQ.this, R.raw.vizeqintro);
+						AudioManager audio = (AudioManager) VizEQ.this.getSystemService(VizEQ.this.AUDIO_SERVICE);
+						if (audio.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) mediaPlayer.start(); // no need to call prepare(); create() does that for you
+						sleep(mediaPlayer.getDuration()); //length of track
 			        	startActivity(new Intent("com.lsu.viseq.LOGIN"));
 					 }
 					 catch (Exception e)
