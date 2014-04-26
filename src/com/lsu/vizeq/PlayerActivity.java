@@ -97,8 +97,8 @@ public class PlayerActivity extends Activity {
 
 	private MediaPlayer mSilentPlayer;
 	
-	private String mAlbumUri;
-	private int mIndex = 0;
+	private String mAlbumUri; //KEEP IT.  Ignore warning.
+	public static int mIndex = 0;
 	MyApplication myapp;
 	public static Camera cam;
 	private static MyApplication MyApp;

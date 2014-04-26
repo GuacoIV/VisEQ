@@ -103,7 +103,7 @@ public class SearchActivity extends Activity
 		
 		/*---queue stuff---*/
 		
-		for(int i=0; i<myapp.queue.size(); i++)
+		for(int i=PlayerActivity.mIndex; i<myapp.queue.size(); i++)
 		{
 			TrackRow queueRow = new TrackRow(this.getBaseContext(), myapp.queue.get(i).mTrack, myapp.queue.get(i).mAlbum, myapp.queue.get(i).mArtist, myapp.queue.get(i).mUri);
 			queueRow.setOnTouchListener(null);
