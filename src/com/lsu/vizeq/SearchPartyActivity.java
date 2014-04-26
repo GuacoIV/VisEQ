@@ -58,33 +58,8 @@ public class SearchPartyActivity extends Activity {
 		
 		EditText et = (EditText) findViewById(R.id.username_box);
 		et.setText(myapp.myName);
-		
-		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
-		int posi = memory.getInt("colorPos", -1);
-		if (posi > 0) VizEQ.numRand = posi;		
-		switch (VizEQ.numRand)
-		{
-			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
-				break;
-			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
-				break;
-			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
-				break;
-			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
-				break;
-			case 5:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
-				break;		
-		}
 		thisActivity = this;
-		
-		
-		
-		
+
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 		
@@ -631,7 +606,27 @@ public class SearchPartyActivity extends Activity {
 	private void setupActionBar() {
 
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		if (posi > 0) VizEQ.numRand = posi;		
+		switch (VizEQ.numRand)
+		{
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
+				break;
+			case 5:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;		
+		}
 	}
 
 	@Override

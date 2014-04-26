@@ -429,7 +429,7 @@ public class PlayerActivity extends Activity {
 		        new NotificationCompat.Builder(this)
 		        .setSmallIcon(R.drawable.launch)
 		        .setContentTitle("VizEQ")
-		        .setContentText("Now Playing " + mTracks.get(mIndex).getTrackName() + " by " + mTracks.get(mIndex).mArtist);
+		        .setContentText("Now Playing " + (mTracks.size() > 0 ? mTracks.get(mIndex).getTrackName() + " by " + mTracks.get(mIndex).mArtist : ""));
 		Intent resultIntent = new Intent(this, PlayerActivity.class);
 
 		// The stack builder object will contain an artificial back stack for the

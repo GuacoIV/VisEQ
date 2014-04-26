@@ -30,9 +30,7 @@
  */
 package com.lsu.vizeq;
 
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
+import javax.crypto.Cipher;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -61,14 +59,10 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-import javax.security.*;
-import javax.crypto.*;
 
-import com.lsu.vizeq.R;
-import com.lsu.vizeq.R.color;
 import com.lsu.vizeq.ServiceBinder.ServiceBinderDelegate;
 import com.lsu.vizeq.SpotifyService.LoginDelegate;
 
@@ -154,8 +148,8 @@ public class LoginActivity extends Activity {
 				break;		
 		}
 		
-		LinearLayout loginFormContainer = (LinearLayout) findViewById(R.id.LoginFormContainer);
-		loginFormContainer.setOnTouchListener(new OnTouchListener(){
+		ScrollView loginForm = (ScrollView) findViewById(R.id.login_form);
+		loginForm.setOnTouchListener(new OnTouchListener(){
 
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1) {
