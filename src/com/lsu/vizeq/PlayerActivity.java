@@ -45,6 +45,9 @@ import java.util.Map;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -62,6 +65,7 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Process;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -83,6 +87,9 @@ public class PlayerActivity extends Activity {
 	boolean isPlaying = false;
 	boolean AudioFocus = false;
 	String LOGTAG = "Audio focus";
+	
+	private NotificationManager mNotificationManager;
+	private static int NOTIFICATION = 29213;
 	
 	AudioManager am;
 	AudioManager.OnAudioFocusChangeListener afChangeListener;
@@ -412,12 +419,43 @@ public class PlayerActivity extends Activity {
 	Visualizer mVisualizer;
 	int captureRate;
 	
-	
+	private void showNotification() {
+		//Notification notification = new Notification(R.drawable.player_next_album, "VizEQ is playing...", System.currentTimeMillis());
+		//Intent notificationIntent = new Intent(this, PlayerActivity.class);
+		//PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		//notification.setLatestEventInfo(this, "VizEQ", "Party!", pendingIntent);
+		//startForeground(NOTIFICATION, notification);
+		NotificationCompat.Builder mBuilder =
+		        new NotificationCompat.Builder(this)
+		        .setSmallIcon(R.drawable.launch)
+		        .setContentTitle("VizEQ")
+		        .setContentText("Now Playing " + mTracks.get(mIndex).getTrackName() + " by " + mTracks.get(mIndex).mArtist);
+		Intent resultIntent = new Intent(this, PlayerActivity.class);
+
+		// The stack builder object will contain an artificial back stack for the
+		// started Activity.
+		// This ensures that navigating backward from the Activity leads out of
+		// your application to the Home screen.
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		// Adds the back stack for the Intent (but not the Intent itself)
+		stackBuilder.addParentStack(PlayerActivity.class);
+		// Adds the Intent that starts the Activity to the top of the stack
+		stackBuilder.addNextIntent(resultIntent);
+		PendingIntent resultPendingIntent =
+		        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+		mBuilder.setContentIntent(resultPendingIntent);
+		NotificationManager mNotificationManager =
+			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			// mId allows you to update the notification later on.
+		int mId = 1;
+			mNotificationManager.notify(mId, mBuilder.build());
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_player);
+		
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
 		
@@ -519,8 +557,7 @@ public class PlayerActivity extends Activity {
 		};
 		
 		mVisualizer.setDataCaptureListener(captureListener, captureRate, false, true);
-		mVisualizer.setEnabled(true);
-		
+		mVisualizer.setEnabled(true);	
 		
 		//Makes volume buttons control music stream even when nothing playing
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
@@ -663,7 +700,8 @@ public class PlayerActivity extends Activity {
 		Log.e("", "Your login id is " + Installation.id(this));
 		mWebservice = new WebService(Installation.id(this));
 		checkTheQueue();
-
+		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		showNotification();
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
 			@Override
@@ -758,6 +796,8 @@ public class PlayerActivity extends Activity {
 	@Override
 	public void finish() {
 		mBinder.getService().destroy();
+		// Cancel the persistent notification.
+		mNotificationManager.cancel(NOTIFICATION);
 		super.finish();
 	}
 

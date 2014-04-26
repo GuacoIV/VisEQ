@@ -52,8 +52,6 @@ import android.widget.Toast;
 import com.lsu.vizeq.R;
 
 public class SpotifyService extends Service {
-	private NotificationManager mNotificationManager;
-	private static int NOTIFICATION = 29213;
 	private final IBinder mBinder = new LocalBinder();
 	private WifiLock mWifiLock;
 	private static boolean libLoaded = false;
@@ -92,7 +90,6 @@ public class SpotifyService extends Service {
 		System.loadLibrary("spotify");
 		System.loadLibrary("spotifywrapper");
 
-
 		
 		if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
 			throw new RuntimeException("Storage card not available");
@@ -102,12 +99,6 @@ public class SpotifyService extends Service {
 			LibSpotifyWrapper.init(LibSpotifyWrapper.class.getClassLoader(), Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.lsu.vizeq");
 			libLoaded = true;
 		}
-
-		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-		// Display a notification about us starting. We put an icon in the
-		// status bar.
-		showNotification();
 		
 		mWifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE)).createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
 		mWifiLock.acquire();
@@ -122,9 +113,6 @@ public class SpotifyService extends Service {
 
 	@Override
 	public void onDestroy() {
-		// Cancel the persistent notification.
-		mNotificationManager.cancel(NOTIFICATION);
-		
 		mWifiLock.release();
 
 		// Tell the user we stopped.
@@ -137,37 +125,7 @@ public class SpotifyService extends Service {
 		return mBinder;
 	}
 
-	private void showNotification() {
-		//Notification notification = new Notification(R.drawable.player_next_album, "VizEQ is playing...", System.currentTimeMillis());
-		//Intent notificationIntent = new Intent(this, PlayerActivity.class);
-		//PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-		//notification.setLatestEventInfo(this, "VizEQ", "Party!", pendingIntent);
-		//startForeground(NOTIFICATION, notification);
-		NotificationCompat.Builder mBuilder =
-		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.launch)
-		        .setContentTitle("VizEQ")
-		        .setContentText("VizEQ");
-		Intent resultIntent = new Intent(this, PlayerActivity.class);
-
-		// The stack builder object will contain an artificial back stack for the
-		// started Activity.
-		// This ensures that navigating backward from the Activity leads out of
-		// your application to the Home screen.
-		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-		// Adds the back stack for the Intent (but not the Intent itself)
-		stackBuilder.addParentStack(PlayerActivity.class);
-		// Adds the Intent that starts the Activity to the top of the stack
-		stackBuilder.addNextIntent(resultIntent);
-		PendingIntent resultPendingIntent =
-		        stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-		mBuilder.setContentIntent(resultPendingIntent);
-		NotificationManager mNotificationManager =
-			    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			// mId allows you to update the notification later on.
-		int mId = 1;
-			mNotificationManager.notify(mId, mBuilder.build());
-	}
+	
 
 	public void login(String email, String password, LoginDelegate loginDelegate) {
 		LibSpotifyWrapper.loginUser(email, password, loginDelegate);

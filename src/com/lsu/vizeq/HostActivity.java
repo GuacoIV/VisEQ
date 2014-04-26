@@ -43,7 +43,6 @@ import android.widget.TextView;
 
 public class HostActivity extends Activity
 {
-
 	public LocationManager locationManager;
 	ActionBar actionBar;
 	String myName, zipcode, externalIp;

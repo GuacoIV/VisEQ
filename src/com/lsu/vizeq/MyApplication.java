@@ -23,6 +23,7 @@ public class MyApplication extends Application {
 	@Override
 	public void onTerminate()
 	{
+		Log.d("Jedis", "Disconnecting Jedis");
 		HostActivity.jedis.disconnect();
 		super.onTerminate();
 	}
