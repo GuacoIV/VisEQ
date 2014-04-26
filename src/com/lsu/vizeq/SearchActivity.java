@@ -242,7 +242,8 @@ public class SearchActivity extends Activity
 											e.printStackTrace();
 										}	
 		
-					                	   myapp.queue.add(0, tempTrack);
+					                	   if (PlayerActivity.mIndex > 0) myapp.queue.add(PlayerActivity.mIndex + 1, tempTrack);
+					                	   else myapp.queue.add(PlayerActivity.mIndex, tempTrack);
 					                	   /*
 					                	   TrackRow queueRow = row;
 					                	   queueRow.setOnTouchListener(null);
