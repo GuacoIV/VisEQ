@@ -105,35 +105,6 @@ public class PlayerActivity extends Activity {
 	static RelativeLayout playerBackground;
 	static int flash = 0;
 	ActionBar actionBar;
-	
-	@Override
-	protected void onStart(){
-		super.onStart();
-		actionBar = getActionBar();
-		
-		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
-		int posi = memory.getInt("colorPos", -1);
-		if (posi > 0) VizEQ.numRand = posi;		
-		switch (VizEQ.numRand)
-		{
-			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
-				break;
-			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
-				break;
-			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
-				break;
-			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
-				break;
-			case 5:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
-				break;			
-		}
-	}
-	
 
 	
     public InetAddress getBroadcastAddress() throws IOException
@@ -449,6 +420,28 @@ public class PlayerActivity extends Activity {
 		setContentView(R.layout.activity_player);
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
+		
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		if (posi > 0) VizEQ.numRand = posi;		
+		switch (VizEQ.numRand)
+		{
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
+				break;
+			case 5:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;			
+		}
 
 		if (LoginActivity.logCheck == false) {
 			Toast.makeText(PlayerActivity.this, "You must log in to Spotify Premium first!", Toast.LENGTH_LONG).show();
@@ -841,7 +834,7 @@ public class PlayerActivity extends Activity {
 				mTracks = tracks;
 				mAlbumUri = albumUri;
 				// Set the data of the first track
-				mIndex = 0;
+				//mIndex = 0;
 				updateTrackState();
 					Thread coverThread = new Thread(new Runnable()
 					{

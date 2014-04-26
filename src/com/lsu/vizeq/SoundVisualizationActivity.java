@@ -62,10 +62,23 @@ public class SoundVisualizationActivity extends Activity
 	
 	ActionBar actionBar;
 	
+
+	private VisualizerView vizView;
+	
 	@Override
-	protected void onStart(){
-		super.onStart();
+	protected void onDestroy() {
+		super.onDestroy();
+		rct.cancel(true);
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+
+		setContentView(R.layout.activity_sound_visualization);
 		actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -88,24 +101,6 @@ public class SoundVisualizationActivity extends Activity
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				break;		
 		}
-	}
-	
-	private VisualizerView vizView;
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		rct.cancel(true);
-	}
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_sound_visualization);
-		actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 		actionBar.hide();
 		
 		textViewNowPlaying = (TextView)findViewById(R.id.track_info_visualizer);

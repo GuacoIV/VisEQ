@@ -31,8 +31,10 @@ public class RoleActivity extends Activity
 	ActionBar actionBar;
 	
 	@Override
-	protected void onStart(){
-		super.onStart();
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_role);
 		actionBar = getActionBar();
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
@@ -56,13 +58,6 @@ public class RoleActivity extends Activity
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				break;		
 		}
-	}
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_role);
 		Typeface font = Typeface.createFromAsset(getAssets(), "Mohave.otf");
 		Typeface orFont = Typeface.createFromAsset(getAssets(), "Mission Gothic Bold.otf");
 		TextView DJText = (TextView) findViewById(R.id.DJText);

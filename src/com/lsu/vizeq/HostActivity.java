@@ -50,11 +50,14 @@ public class HostActivity extends Activity
 	MyApplication myapp;
 	Location currLocation = null;
 	
+
 	@Override
-	@SuppressWarnings(value = { })
-	protected void onStart(){
-		super.onStart();
-		actionBar = getActionBar();
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_host);
+		ActionBar actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
 		
 		myapp = (MyApplication) this.getApplicationContext();
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.hostBackground);
@@ -85,15 +88,6 @@ public class HostActivity extends Activity
 				rl.setBackground(getResources().getDrawable(R.drawable.orange));
 				break;			
 		}
-	}
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_host);
-		ActionBar actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));		
 		
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);

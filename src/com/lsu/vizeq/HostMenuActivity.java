@@ -35,35 +35,6 @@ public class HostMenuActivity extends Activity
 	MyApplication myapp;
 	ActionBar actionBar;
 	
-	@Override
-	protected void onStart(){
-		super.onStart();
-		actionBar = getActionBar();
-		
-		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
-		int posi = memory.getInt("colorPos", -1);
-		if (posi > 0) VizEQ.numRand = posi;		
-		switch (VizEQ.numRand)
-		{
-			case 1:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
-				break;
-			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
-				break;
-			case 3:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
-				break;
-			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
-				break;
-			case 5:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
-				break;			
-		}
-	}
-	
-	
 	public String getIpString()
 	{
 		WifiManager wifi = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
@@ -116,8 +87,31 @@ public class HostMenuActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_host_menu);
+		Log.d("Flow", "onCreate HostMenu");
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		Log.d("Flow", "onStart HostMenu");
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		if (posi > 0) VizEQ.numRand = posi;		
+		switch (VizEQ.numRand)
+		{
+			case 1:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+				break;
+			case 2:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
+				break;
+			case 3:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				break;
+			case 4:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
+				break;
+			case 5:
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				break;			
+		}
 		myapp = (MyApplication) this.getApplicationContext();		
 		
 		heartbeat();

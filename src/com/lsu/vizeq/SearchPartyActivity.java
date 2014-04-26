@@ -48,9 +48,12 @@ public class SearchPartyActivity extends Activity {
 	ActionBar actionBar;
 	Location currLocation = null;
 	
+
 	@Override
-	protected void onStart(){
-		super.onStart();
+	protected void onCreate(Bundle savedInstanceState) {
+		myapp = (MyApplication) this.getApplicationContext();
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_search_party);
 		actionBar = getActionBar();
 		
 		EditText et = (EditText) findViewById(R.id.username_box);
@@ -77,14 +80,8 @@ public class SearchPartyActivity extends Activity {
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				break;		
 		}
-	}
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		myapp = (MyApplication) this.getApplicationContext();
-		super.onCreate(savedInstanceState);
 		thisActivity = this;
-		setContentView(R.layout.activity_search_party);
+		
 		
 		
 		
