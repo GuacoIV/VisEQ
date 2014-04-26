@@ -49,6 +49,7 @@ public class HostActivity extends Activity
 	String myName, zipcode, externalIp;
 	MyApplication myapp;
 	Location currLocation = null;
+	public static Jedis jedis;
 	
 
 	@Override
@@ -341,7 +342,7 @@ public class HostActivity extends Activity
 		protected Integer doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			Integer result = 2;
-			Jedis jedis = new Jedis(Redis.host, Redis.port);
+			jedis = new Jedis(Redis.host, Redis.port);
 			jedis.auth(Redis.auth);
 			partyName = getName();
 			zipcode = params[0];

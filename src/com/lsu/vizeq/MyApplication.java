@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 import android.app.Application;
+import android.util.Log;
 
 public class MyApplication extends Application {
 	public Map<String, InetAddress> connectedUsers = new HashMap<String,InetAddress>();
@@ -17,5 +20,13 @@ public class MyApplication extends Application {
 	public String myIp;
 	public boolean joined = false;
 	public boolean hosting = false;
+	@Override
+	public void onTerminate()
+	{
+		HostActivity.jedis.disconnect();
+		super.onTerminate();
+	}
+	
+	
 
 }
