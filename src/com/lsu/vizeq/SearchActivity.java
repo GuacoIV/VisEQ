@@ -244,31 +244,6 @@ public class SearchActivity extends Activity
 		
 					                	   if (PlayerActivity.mIndex > 0) myapp.queue.add(PlayerActivity.mIndex + 1, tempTrack);
 					                	   else myapp.queue.add(PlayerActivity.mIndex, tempTrack);
-					                	   /*
-					                	   TrackRow queueRow = row;
-					                	   queueRow.setOnTouchListener(null);
-					                	   
-					                	   
-					                	   queueTab.addView(queueRow, 0);
-											if (queueTab.getChildCount() > 1)
-											{
-						                		    if (((TrackRow)(queueTab.getChildAt(1))).originalColor == TrackRow.color1)
-						                		    {
-						                		    	queueRow.setBackgroundColor(TrackRow.color2);
-						                		    	queueRow.originalColor = TrackRow.color2;
-						                		    }
-						                		    else 
-						                		    {
-						                		    	queueRow.setBackgroundColor(TrackRow.color1);
-						                		    	queueRow.originalColor = TrackRow.color1;
-						                		    }
-											}
-											else
-											{
-												queueRow.setBackgroundColor(TrackRow.color1);
-						                	    queueRow.originalColor = TrackRow.color1;
-											}
-					                	   */
 										}
 									});
 			                	   coverThread.start();
@@ -320,26 +295,6 @@ public class SearchActivity extends Activity
 												e.printStackTrace();
 											}	
 					                	   myapp.queue.add(tempTrack);
-					                	   /*
-					                	   TrackRow queueRow = row;
-					                	   queueRow.setOnTouchListener(null);
-					                	   searchLayout.removeView(queueRow);
-					                	   queueTab.addView(queueRow);
-					                	   if (queueTab.getChildCount() > 0)
-											{
-						                		    if (((TrackRow)(queueTab.getChildAt(queueTab.getChildCount() - 1))).originalColor == TrackRow.color1)
-						                		    	queueRow.setBackgroundColor(TrackRow.color2);
-						                		    else 
-						                		    {
-						                		    	queueRow.setBackgroundColor(TrackRow.color1);
-						                		    	queueRow.originalColor = TrackRow.color1;
-						                		    }
-											}
-											else
-											{
-												queueRow.setBackgroundColor(TrackRow.color1);
-						                	    queueRow.originalColor = TrackRow.color1;
-											}*/
 										}
 									});		
 			                	   coverThread.start();

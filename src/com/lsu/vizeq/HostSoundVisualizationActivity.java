@@ -16,6 +16,7 @@ public class HostSoundVisualizationActivity extends Activity {
 	private VisualizerView vizView;
 
 	public static boolean dirty = false;
+	public static boolean flash = false;
 	public static String[] data = new String[VisualizerView.NUM_BANDS];
 	
 	AsyncTask<Void,String,String> my_task;
@@ -48,6 +49,13 @@ public class HostSoundVisualizationActivity extends Activity {
 						vizView.SetCircleStates(data);
 						dirty = false;
 					}
+					if (flash)
+					{
+						vizView.flash = true;
+						flash = false;
+					}
+					else
+						vizView.flash = false;
 				}
 				return "hostsoundvisualization asynctask canceled";
 			}

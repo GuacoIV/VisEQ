@@ -8,7 +8,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.audiofx.Visualizer;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.view.animation.Interpolator;
 
 
 public class VisualizerView extends View {
-
 	private class FrequencyCircle {
 		private float prevEnergy;
 		private float energy;
@@ -68,6 +66,8 @@ public class VisualizerView extends View {
 	private int captureRate;
 	private FrequencyCircle[] circles = new FrequencyCircle[NUM_BANDS];
 	
+	public boolean flash = false;
+	
 	public VisualizerView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
@@ -110,14 +110,15 @@ public class VisualizerView extends View {
 		Log.d("setting energy", " ");
 	}
 	
+	
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		this.setBackgroundColor(Color.BLACK);
+		if (flash == false) this.setBackgroundColor(Color.BLACK);
+		else this.setBackgroundColor(Color.WHITE);
 		for (int i = 0; i < circles.length; i++) {
 			if (circles[i] != null) {
 				circles[i].render(canvas);
 			}
 		}
 	}
-
 }

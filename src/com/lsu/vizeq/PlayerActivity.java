@@ -111,6 +111,9 @@ public class PlayerActivity extends Activity {
 	private static MyApplication MyApp;
 	static RelativeLayout playerBackground;
 	static int flash = 0;
+	static int BAND_TO_FLASH = 0;
+	int flashEnergyHistory[] = new int[10];
+	int flashHistoryIndex = 0;
 	ActionBar actionBar;
 
 	
@@ -337,11 +340,9 @@ public class PlayerActivity extends Activity {
 		final MyApplication myapp = MyApp;
 		new Thread(new Runnable()
 		{
-
 			@Override
 			public void run() 
 			{
-
 					try
 					{
 						byte[] sendData = new byte[200];
@@ -381,11 +382,9 @@ public class PlayerActivity extends Activity {
 		final MyApplication myapp = MyApp;
 		new Thread(new Runnable()
 		{
-
 			@Override
 			public void run() 
 			{
-
 					try
 					{
 						byte[] sendData = new byte[200];
@@ -508,12 +507,53 @@ public class PlayerActivity extends Activity {
 			public void onWaveFormDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
 				// TODO Auto-generated method stub
 			}
+			/*Old code
+			 * 	foundBeat = false;
+
+	int startBand = 0;
+	int endBand = NUM_BANDS;
+
+	for (int j = startBand; j < endBand; j++) {
+		double instant_energy = 0;
+
+		for (int i = 0; i < band_width; i++) {
+			instant_energy += freqMagn_l[j*band_width + i];
+		}
+		instant_energy /= 1000.;
+		band_energy_history_l[history_pos][j] = instant_energy;
+		double local_avg_energy = 0;
+		for (int i = 0; i < HISTORY_LENGTH; i++) {
+			local_avg_energy += band_energy_history_l[i][j];
+		}
+		local_avg_energy /= (double)HISTORY_LENGTH;
+
+		if (instant_energy > C * local_avg_energy && j < (startBand-endBand)/3) {
+			foundBeat = true;
+		}
+	}
+
+	for (int j = startBand; j < endBand; j++) {
+		double instant_energy = 0;
+
+		for (int i = 0; i < band_width; i++) {
+			instant_energy += freqMagn_r[j*band_width + i];
+		}
+		instant_energy /= 1000.;
+		band_energy_history_r[history_pos][j] = instant_energy;
+		double local_avg_energy = 0;
+		for (int i = 0; i < HISTORY_LENGTH; i++) {
+			local_avg_energy += band_energy_history_r[i][j];
+		}
+		local_avg_energy /= (double)HISTORY_LENGTH;
+
+	}*/
 
 			private float threshold = 1.1f;
 			
 			@Override
 			public void onFftDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
 				int bandWidth = arg1.length/VisualizerView.NUM_BANDS;
+				int flashBandEnergy = 0;
 				boolean needToSend = false;
 				String[] sendValues = new String[VisualizerView.NUM_BANDS];
 				for (int i = 0; i < sendValues.length; i++) {
@@ -552,6 +592,34 @@ public class PlayerActivity extends Activity {
 				
 				if (needToSend) {
 					SendBeat(sendValues);
+				}
+				
+				//Flashing background
+				bandWidth = arg1.length/8; //8 bands
+				for (int i = bandWidth*BAND_TO_FLASH; i < bandWidth*(BAND_TO_FLASH+1); i++) 
+				{
+					flashBandEnergy += Math.abs(arg1[i]);
+				}
+				
+				flashBandEnergy /= bandWidth;
+				
+				//Compare to average of history
+				int averageLocalEnergy = 0;
+				for (int i = 0; i < 10; i++)
+					averageLocalEnergy += flashEnergyHistory[i];
+				averageLocalEnergy /= 10;
+				
+				if (flashBandEnergy >= averageLocalEnergy) HostSoundVisualizationActivity.flash = true;
+				
+				//Let the history "warmup"
+				if (flashHistoryIndex < 10) flashEnergyHistory[flashHistoryIndex++] = flashBandEnergy;
+				else if (flashHistoryIndex == 10)
+				{
+					//Shift everything
+					for (int i = 0; i < 10 - 1; i++)
+						flashEnergyHistory[i] = flashEnergyHistory[i+1];
+					//Then fill the last slot
+					flashEnergyHistory[9] = flashBandEnergy;
 				}
 			}
 		};

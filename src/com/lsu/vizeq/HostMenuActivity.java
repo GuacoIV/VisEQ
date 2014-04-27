@@ -13,9 +13,11 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
@@ -25,7 +27,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class HostMenuActivity extends Activity
@@ -125,6 +135,45 @@ public class HostMenuActivity extends Activity
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				break;			
 		}
+		SeekBar freqSlider = new SeekBar(this);
+		RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		params.setMargins(3,3,3,3);
+		freqSlider.setLayoutParams(params);
+		freqSlider.setMax(7);
+		freqSlider.setProgress(0);
+		((ViewGroup) findViewById(R.id.HostMenuView)).addView(freqSlider);
+		
+		final Dialog dialog = new Dialog(HostMenuActivity.this);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.setContentView(R.layout.activity_host_sound_visualization);
+		final Window window = dialog.getWindow();
+		window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+		
+		freqSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
+			
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                PlayerActivity.BAND_TO_FLASH = progress - 1;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {;
+                
+               
+               // dialog.show();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            	//dialog.dismiss();
+            	//dialog.hide();
+            }
+
+        });
+		
 		myapp = (MyApplication) this.getApplicationContext();		
 		
 		heartbeat();
