@@ -242,7 +242,11 @@ public class SearchActivity extends Activity
 											e.printStackTrace();
 										}	
 		
-					                	   if (PlayerActivity.mIndex > 0) myapp.queue.add(PlayerActivity.mIndex + 1, tempTrack);
+					                	   if (PlayerActivity.mIndex > 0) 
+					                	   {
+					                		   myapp.queue.add(PlayerActivity.mIndex + 1, tempTrack);
+					                		   //PlayerActivity.mTracks
+					                	   }
 					                	   else myapp.queue.add(PlayerActivity.mIndex, tempTrack);
 										}
 									});

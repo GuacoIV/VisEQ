@@ -1,5 +1,8 @@
 package com.lsu.vizeq;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Activity;
@@ -114,7 +117,21 @@ public class VisualizerView extends View {
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
 		if (flash == false) this.setBackgroundColor(Color.BLACK);
-		else this.setBackgroundColor(Color.WHITE);
+		else 
+		{
+			this.setBackgroundColor(Color.WHITE);
+			//Time it
+			Timer persistFlash = new Timer();
+			persistFlash.schedule(new TimerTask(){
+
+				@Override
+				public void run()
+				{
+					flash = false;
+				}
+				
+			}, 40);
+		}
 		for (int i = 0; i < circles.length; i++) {
 			if (circles[i] != null) {
 				circles[i].render(canvas);

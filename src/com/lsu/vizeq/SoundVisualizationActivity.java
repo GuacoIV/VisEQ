@@ -263,6 +263,10 @@ public class SoundVisualizationActivity extends Activity
 						//publishProgress(color);
 						//Log.d("UDP","Received!"+color);
 					}
+					else if (PacketParser.getHeader(receivePacket).equals("flash"))
+					{
+						vizView.flash = true;
+					}
 					else if (PacketParser.getHeader(receivePacket).equals("track_info")) {
 						Handler mainHandler = new Handler(SoundVisualizationActivity.this.getMainLooper());
 						Runnable myRunnable = new Runnable() {

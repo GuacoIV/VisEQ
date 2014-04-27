@@ -54,10 +54,10 @@ public class HostSoundVisualizationActivity extends Activity {
 						vizView.flash = true;
 						flash = false;
 					}
-					if (flashTime == 1)
-						vizView.flash = false;
+					//if (flashTime == 1)
+						//vizView.flash = false;
 					
-					flashTime = ++flashTime % 2;
+					//flashTime = ++flashTime % 2;
 				}
 				return "hostsoundvisualization asynctask canceled";
 			}

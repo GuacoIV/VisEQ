@@ -336,7 +336,7 @@ public class PlayerActivity extends Activity {
 	private float[] prevEnergies = new float[VisualizerView.NUM_BANDS];
 	private boolean[] isOnLastFrame = new boolean[VisualizerView.NUM_BANDS];
 	
-	public static void SendBeat(final String[] datas) {
+	public static void SendBeat(final String[] datas, final String sendFlash) {
 		final MyApplication myapp = MyApp;
 		new Thread(new Runnable()
 		{
@@ -368,6 +368,26 @@ public class PlayerActivity extends Activity {
 							sendSocket.send(sendPacket);
 						}
 						sendSocket.close();
+						if (sendFlash.equals("yes"))
+						{
+							DatagramSocket sendSocket2 = new DatagramSocket();
+							byte[] sendData2 = new byte[200];
+							data = "flash\n" + "junk\n" + "junk";
+							sendData2 = data.getBytes();
+							Iterator it2 = MyApp.connectedUsers.entrySet().iterator();
+							while (it2.hasNext())
+							{
+								Log.d("Send circl data", "flash");
+								Map.Entry pairs= (Map.Entry) it2.next();
+								InetAddress IPAddress = (InetAddress) pairs.getValue();
+								String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
+								Log.d("UDP",test);
+								DatagramPacket sendPacket2 = new DatagramPacket(sendData2, sendData2.length, IPAddress, 7770);
+								sendSocket2.send(sendPacket2);
+							}
+							sendSocket2.close();
+						}
+						
 						
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -589,10 +609,7 @@ public class PlayerActivity extends Activity {
 					}
 					prevEnergies[j] = thisEnergy;
 				}
-				
-				if (needToSend) {
-					SendBeat(sendValues);
-				}
+
 				
 				//Flashing background
 				bandWidth = arg1.length/8; //8 bands
@@ -612,7 +629,12 @@ public class PlayerActivity extends Activity {
 					averageLocalEnergy += flashEnergyHistory[i];
 				averageLocalEnergy /= 10;
 				
-				if (flashBandEnergy >= averageLocalEnergy) HostSoundVisualizationActivity.flash = true;
+				if (flashBandEnergy >= averageLocalEnergy)
+				{
+					HostSoundVisualizationActivity.flash = true;
+					SendBeat(sendValues, "yes");
+				}
+				else if (needToSend) SendBeat(sendValues, "no");
 				
 				//Let the history "warmup"
 				if (flashHistoryIndex < 10) flashEnergyHistory[flashHistoryIndex++] = flashBandEnergy;
