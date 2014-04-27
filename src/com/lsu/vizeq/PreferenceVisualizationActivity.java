@@ -21,7 +21,7 @@ public class PreferenceVisualizationActivity extends Activity {
 
 	public MyApplication myapp;
 	public PreferenceVisualizer viz;
-	private String currentSort = "";
+	private String currentSort = "none";
 	private ActionBar actionBar;
 	
 	@Override
@@ -63,8 +63,8 @@ public class PreferenceVisualizationActivity extends Activity {
 		
 		RelativeLayout vizlayout = (RelativeLayout) findViewById(R.id.vizlayout);
 		
-		int res_x = vizlayout.getWidth();
-		int res_y = vizlayout.getHeight();
+		int res_x = this.getResources().getDisplayMetrics().widthPixels;
+		int res_y = this.getResources().getDisplayMetrics().heightPixels;
 		viz = new PreferenceVisualizer(myapp.requests, res_x, res_y);
 		new Thread(new Runnable()
 		{
@@ -72,15 +72,16 @@ public class PreferenceVisualizationActivity extends Activity {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				final List<PVCircle> circles; 
-				if (viz.getCircles().isEmpty()==false)
+				viz.init();
+				viz.sortByArtist();
+				currentSort = "artist";
+				Log.d("viz", "packing circles...");
+				//viz.packCircles2();
+				Log.d("viz","circles packed");
+				final List<PVCircle> circles = viz.getCircles();
+				
+				if (circles.isEmpty()==false)
 				{
-					viz.init();
-					viz.sortByArtist();
-					currentSort = "artist";
-					Log.d("viz", "packing circles");
-					viz.packCircles2();
-					circles = viz.getCircles();
 					Log.d("viz", "circles obtained");
 				
 					runOnUiThread(new Runnable()
@@ -122,15 +123,17 @@ public class PreferenceVisualizationActivity extends Activity {
 				public void run()
 				{
 					// TODO Auto-generated method stub
-					final List<PVCircle> circles;
-					if (viz.getCircles().isEmpty()==false)
+					viz.init();
+					viz.sortByArtist();
+					currentSort = "artist";
+					Log.d("viz", "packing circles...");
+					//viz.packCircles2();
+					Log.d("viz","circles packed");
+					final List<PVCircle> circles = viz.getCircles();
+					
+					if (circles.isEmpty()==false)
 					{
-						viz.init();
-						viz.sortByArtist();
-						currentSort = "artist";
-						Log.d("viz", "packing circles");
-						viz.packCircles2();
-						circles = viz.getCircles();
+						
 						Log.d("viz", "circles obtained");
 						runOnUiThread(new Runnable()
 						{
@@ -168,15 +171,16 @@ public class PreferenceVisualizationActivity extends Activity {
 			{
 				public void run()
 				{
-					final List<PVCircle> circles;
-					if (viz.getCircles().isEmpty()==false)
+					viz.init();
+					viz.sortByAlbum();
+					currentSort = "album";
+					Log.d("viz", "packing circles...");
+					//viz.packCircles2();
+					Log.d("viz","circles packed");
+					final List<PVCircle> circles = viz.getCircles();
+					
+					if (circles.isEmpty()==false)
 					{
-						viz.init();
-						viz.sortByAlbum();
-						currentSort = "album";
-						Log.d("viz", "packing circles");
-						viz.packCircles2();
-						circles = viz.getCircles();
 						Log.d("viz", "circles obtained");
 						runOnUiThread(new Runnable()
 						{
@@ -215,15 +219,14 @@ public class PreferenceVisualizationActivity extends Activity {
 				public void run()
 				{
 					// TODO Auto-generated method stub
-					final List<PVCircle> circles;
+					viz.init();
+					viz.sortByTrack();
+					currentSort = "track";
+					//viz.packCircles2();
+					Log.d("viz","circles packed");
+					final List<PVCircle> circles = viz.getCircles();
 					if (viz.getCircles().isEmpty()==false)
 					{
-						viz.init();
-						viz.sortByTrack();
-						currentSort = "track";
-						Log.d("viz", "packing circles");
-						viz.packCircles2();
-						circles = viz.getCircles();
 						Log.d("viz", "circles obtained");
 						runOnUiThread(new Runnable()
 						{
@@ -270,7 +273,7 @@ public class PreferenceVisualizationActivity extends Activity {
 			PVCircle currCircle = circles.get(i);
 			Log.d("viewCircles", "currCircle.getRadius = " + currCircle.getRadius());
 			Log.d("viewCircles", "currCircle.getRadius * 300 = " + (currCircle.getRadius()*225));
-			PreferenceCircle pCircle = new PreferenceCircle(this, (int) (currCircle.getX()*225), (int) (currCircle.getY()*225), (int) (currCircle.getRadius()*225), currCircle.getName(), currCircle.getTrackList());
+			PreferenceCircle pCircle = new PreferenceCircle(this, (int) (currCircle.getX()*currCircle.getScale()), (int) (currCircle.getY()*currCircle.getScale()), (int) (currCircle.getRadius()*currCircle.getScale()), currCircle.getName(), currCircle.getTrackList());
 			Log.d("viewCircles", "pCircle.getRadius = " + pCircle.radius);
 			pCircle.color = currCircle.getColor();
 			pCircles.add(pCircle);

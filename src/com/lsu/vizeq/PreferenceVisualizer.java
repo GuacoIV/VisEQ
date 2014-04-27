@@ -37,10 +37,10 @@ public class PreferenceVisualizer {
 	{
 		this.requests = requests;
 		this.res_x = res_y;
-		this.res_y = res_y;
-		this.ar_x = (double) res_x / res_y;
+		this.res_y = res_y-200;
+		this.ar_x = (double) res_x / this.res_y;
 		this.ar_y = 1.0;
-		this.MAX_RADIUS = ar_x / 3.0;
+		this.MAX_RADIUS = ar_x / 6.0;
 		artists = new HashMap<String, Integer>();
 		albums = new HashMap<String, Integer>();
 		tracks = new HashMap<String, Integer>();
@@ -145,10 +145,9 @@ public class PreferenceVisualizer {
 	private boolean checkCollision(PVCircle circle, int maxIndx, int indx)
 	{
 		boolean collision = false;
-		//assuming bounding box from point (-0.2, -0.2) to (2.2, 3.2)
-		if((circle.getX() - circle.getRadius()) < -0.02 || (circle.getX() + circle.getRadius()) > ar_x + 0.02)
+		if((circle.getX() - circle.getRadius()) < -0.002 || (circle.getX() + circle.getRadius()) > ar_x + 0.002)
 			collision = true;
-		else if((circle.getY() - circle.getRadius()) < 0.02 || (circle.getY() + circle.getRadius()) > ar_y + 0.02)
+		else if((circle.getY() - circle.getRadius()) < 0.002 || (circle.getY() + circle.getRadius()) > ar_y + 0.002)
 			collision = true;
 		else
 		{
@@ -291,6 +290,8 @@ public class PreferenceVisualizer {
 	//problem: circles tend to form a line. still better than method 1
 	public void packCircles2()
 	{
+		//if no circles, then screw it
+		if(circles.isEmpty()) return;
 		//find center-most circle
 		PVCircle mid = new PVCircle();
 		mid.setPosition(2.0, 4.0);
@@ -359,6 +360,7 @@ public class PreferenceVisualizer {
 				maxCount = count;
 			PVCircle circle = new PVCircle();
 			circle.setWeight(count);
+			circle.setScale(res_y);
 			circle.setName(circleNames.get(i));
 			//randomly set color
 			switch(rng.nextInt(5))

@@ -10,6 +10,7 @@ public class PVCircle {
 	private double radius;
 	private double x, y;
 	private int color;
+	private double scale;
 
 	public PVCircle() {
 		trackList = new ArrayList<Track>();
@@ -66,6 +67,16 @@ public class PVCircle {
 
 	public double getY() {
 		return y;
+	}
+	
+	public void setScale(double scale)
+	{
+		this.scale = scale;
+	}
+	
+	public double getScale()
+	{
+		return scale;
 	}
 
 
