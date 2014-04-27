@@ -629,7 +629,7 @@ public class PlayerActivity extends Activity {
 					averageLocalEnergy += flashEnergyHistory[i];
 				averageLocalEnergy /= 10;
 				
-				if (flashBandEnergy >= averageLocalEnergy)
+				if (flashBandEnergy > averageLocalEnergy)
 				{
 					HostSoundVisualizationActivity.flash = true;
 					SendBeat(sendValues, "yes");

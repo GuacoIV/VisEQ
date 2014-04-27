@@ -68,6 +68,8 @@ public class SoundVisualizationActivity extends Activity
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		VisualizerView.cam.release();
+		VisualizerView.cam = null;
 		rct.cancel(true);
 	}
 	
