@@ -1,18 +1,16 @@
 package com.lsu.vizeq;
 
-import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 
 import redis.clients.jedis.Jedis;
-
+import redis.clients.jedis.exceptions.JedisConnectionException;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -62,21 +60,36 @@ public class HostMenuActivity extends Activity
 			@Override
 			public void run() 
 			{
-				Jedis jedis = new Jedis(Redis.host, Redis.port);
-				jedis.auth(Redis.auth);
 				while(myapp.hosting)
 				{
+					Jedis jedis = myapp.jedisPool.getResource();
 					try
 					{
+						jedis.auth(Redis.auth);
 						Log.d("heartbeat", "sending heartbeat");
 						jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
 						jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
 						Thread.sleep(3000L);
-					} catch (Exception e) {
+					} 
+					catch (JedisConnectionException e)
+					{
+						e.printStackTrace();
+						if(jedis != null)
+						{
+							myapp.jedisPool.returnBrokenResource(jedis);
+							jedis = null;
+						}
+					}
+					catch (InterruptedException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					finally
+					{
+						if(jedis != null)
+							myapp.jedisPool.returnResource(jedis);
+					}
 				}
-				jedis.close();
 			}
 			
 		}).start();

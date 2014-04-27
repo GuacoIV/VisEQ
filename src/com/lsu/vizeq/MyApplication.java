@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import redis.clients.jedis.Jedis;
-
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 import android.app.Application;
 import android.util.Log;
 
@@ -20,14 +20,14 @@ public class MyApplication extends Application {
 	public String myIp;
 	public boolean joined = false;
 	public boolean hosting = false;
-	public Jedis jedis;
+	public JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), Redis.host, Redis.port);
 	
 	
 	@Override
 	public void onTerminate()
 	{
 		Log.d("Jedis", "Disconnecting Jedis");
-		jedis.disconnect();
+		jedisPool.destroy();
 		super.onTerminate();
 	}
 	

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -309,33 +310,47 @@ public class SearchPartyActivity extends Activity {
 			String partyName = params[0];
 			String zipcode = params[1];
 			Integer result = 2;
-			
-			Jedis jedis = new Jedis(Redis.host, Redis.port);
-			jedis.auth(Redis.auth);
-			Set<String> names = jedis.smembers(zipcode);
 			ArrayList<String> partyNames = new ArrayList<String>();
-			
-			//Check if they all have valid ips
-			Iterator<String> it = names.iterator();
-			
-			while(it.hasNext())
+			Jedis jedis = myapp.jedisPool.getResource();
+			try
 			{
-				String name = it.next();
-				boolean check = jedis.exists(zipcode + ":" + name);
-				if(!check)
+				jedis.auth(Redis.auth);
+				Set<String> names = jedis.smembers(zipcode);
+				
+				//Check if they all have valid ips
+				Iterator<String> it = names.iterator();
+				
+				while(it.hasNext())
 				{
-					jedis.srem(zipcode, name);
-					it.remove();
+					String name = it.next();
+					boolean check = jedis.exists(zipcode + ":" + name);
+					if(!check)
+					{
+						jedis.srem(zipcode, name);
+						it.remove();
+					}
+					else partyNames.add(name);
 				}
-				else partyNames.add(name);
+				
+				if (partyNames.size() <= 0) result = 1;
+				else result = 0;
+				if (zipcode.equals("00000")) result = 3;
+				publishProgress(result);
 			}
-			
-			if (partyNames.size() <= 0) result = 1;
-			else result = 0;
-			if (zipcode.equals("00000")) result = 3;
-			publishProgress(result);
-			jedis.close();
-			
+			catch (JedisConnectionException e)
+			{
+				e.printStackTrace();
+				if(jedis != null)
+				{
+					myapp.jedisPool.returnBrokenResource(jedis);
+					jedis = null;
+				}
+			}
+			finally
+			{
+				if(jedis != null)
+					myapp.jedisPool.returnResource(jedis);
+			}
 			return partyNames;
 		}
 
@@ -448,8 +463,28 @@ public class SearchPartyActivity extends Activity {
 		protected String doInBackground(String... params) {
 			//check if not entered username
 			if(!checkIfNameEntered()) return "Must enter name first";
-			Jedis jedis = new Jedis(Redis.host, Redis.port);
-			jedis.auth(Redis.auth);
+			String ip = "0.0.0.0";
+			Jedis jedis = myapp.jedisPool.getResource();
+			try
+			{
+				jedis.auth(Redis.auth);
+				ip = jedis.get(params[0]);
+			}
+			catch (JedisConnectionException e)
+			{
+				e.printStackTrace();
+				if(jedis != null)
+				{
+					myapp.jedisPool.returnBrokenResource(jedis);
+					jedis = null;
+				}
+				return "Error connecting to server";
+			}
+			finally
+			{
+				if(jedis != null)
+					myapp.jedisPool.returnResource(jedis);
+			}
 		
 			DatagramSocket sendSocket;
 			DatagramSocket listenSocket;
@@ -465,7 +500,7 @@ public class SearchPartyActivity extends Activity {
 				String searchString = "join\n"+myapp.myName;
 				sendData = searchString.getBytes();
 				
-				String ip = jedis.get(params[0]);
+				
 				Log.d("join thru server", "host ip: "+ip);
 				
 				InetAddress ipaddress = InetAddress.getByName(ip);
@@ -510,7 +545,7 @@ public class SearchPartyActivity extends Activity {
 			{
 				public void onClick(DialogInterface dialog, int id)
 				{
-					if(!s.equals("Must enter name first"))
+					if(s.equals("Joined!"))
 					{	
 						Intent nextIntent = new Intent(SearchPartyActivity.this, SoundVisualizationActivity.class);
 						startActivity(nextIntent);

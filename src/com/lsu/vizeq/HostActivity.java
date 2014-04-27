@@ -13,10 +13,10 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -340,23 +340,41 @@ public class HostActivity extends Activity
 		protected Integer doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			Integer result = 2;
-			myapp.jedis = new Jedis(Redis.host, Redis.port);
-			myapp.jedis.auth(Redis.auth);
+			
 			partyName = getName();
 			zipcode = params[0];
-			
 			ip = getPrivateIp();
 			
-			long reply = myapp.jedis.setnx(zipcode + ":" + partyName, ip);
-			if(reply == 0)
-				result = 1;
-			else
-			{
-				result = 0;
-				myapp.jedis.expire(zipcode + ":" + partyName, 500);
-				myapp.jedis.sadd(zipcode, partyName);
+			
+			Jedis jedis = myapp.jedisPool.getResource();
+			try{
+				jedis.auth(Redis.auth);
+				
+				
+				long reply = jedis.setnx(zipcode + ":" + partyName, ip);
+				if(reply == 0)
+					result = 1;
+				else
+				{
+					result = 0;
+					jedis.expire(zipcode + ":" + partyName, 500);
+					jedis.sadd(zipcode, partyName);
+				}
 			}
-			myapp.jedis.close();
+			catch (JedisConnectionException e)
+			{
+				if(jedis != null)
+				{
+					myapp.jedisPool.returnBrokenResource(jedis);
+					jedis = null;
+				}
+			}
+			finally
+			{
+				if(jedis != null)
+					myapp.jedisPool.returnResource(jedis);
+			}
+			
 			return result;
 		}
 
