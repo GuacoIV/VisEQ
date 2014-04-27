@@ -35,7 +35,7 @@ public class HostSoundVisualizationActivity extends Activity {
 		setContentView(R.layout.activity_host_sound_visualization);
 		
 		my_task = new AsyncTask<Void,String,String>() {
-
+			int flashTime = 0;
 			@Override
 			protected String doInBackground(Void... params) {
 				while (!isCancelled()) {
@@ -54,8 +54,10 @@ public class HostSoundVisualizationActivity extends Activity {
 						vizView.flash = true;
 						flash = false;
 					}
-					else
+					if (flashTime == 1)
 						vizView.flash = false;
+					
+					flashTime = ++flashTime % 2;
 				}
 				return "hostsoundvisualization asynctask canceled";
 			}

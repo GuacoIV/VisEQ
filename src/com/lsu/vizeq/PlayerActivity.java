@@ -596,12 +596,15 @@ public class PlayerActivity extends Activity {
 				
 				//Flashing background
 				bandWidth = arg1.length/8; //8 bands
-				for (int i = bandWidth*BAND_TO_FLASH; i < bandWidth*(BAND_TO_FLASH+1); i++) 
+				if (bandWidth > 0)
 				{
-					flashBandEnergy += Math.abs(arg1[i]);
+					for (int i = bandWidth*BAND_TO_FLASH; i < bandWidth*(BAND_TO_FLASH+1); i++) 
+					{
+						flashBandEnergy += Math.abs(arg1[i]);
+					}
+					
+					flashBandEnergy /= bandWidth;
 				}
-				
-				flashBandEnergy /= bandWidth;
 				
 				//Compare to average of history
 				int averageLocalEnergy = 0;

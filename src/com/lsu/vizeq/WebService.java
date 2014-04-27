@@ -108,7 +108,7 @@ public class WebService {
 								trackToAdd = myapp.queue.get(i);							
 								fakeQueue.add(trackToAdd);
 							}
-							mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), myapp.queue.get(0).mThumbnail); //last is image
+							mTracksLoadedDelegate.onTracksLoaded(fakeQueue, trackToAdd.getAlbumInfo(), myapp.queue.get(PlayerActivity.mIndex).mThumbnail); //last is image
 						}
 					}
 					//mAlbumUri = album.getString("spotify");

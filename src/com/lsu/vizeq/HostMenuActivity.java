@@ -147,7 +147,7 @@ public class HostMenuActivity extends Activity
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.activity_host_sound_visualization);
 		final Window window = dialog.getWindow();
-		window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+		window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		
