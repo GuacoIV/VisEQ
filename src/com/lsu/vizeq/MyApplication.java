@@ -20,11 +20,14 @@ public class MyApplication extends Application {
 	public String myIp;
 	public boolean joined = false;
 	public boolean hosting = false;
+	public Jedis jedis;
+	
+	
 	@Override
 	public void onTerminate()
 	{
 		Log.d("Jedis", "Disconnecting Jedis");
-		HostActivity.jedis.disconnect();
+		jedis.disconnect();
 		super.onTerminate();
 	}
 	

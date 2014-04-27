@@ -48,8 +48,7 @@ public class HostActivity extends Activity
 	String myName, zipcode, externalIp;
 	MyApplication myapp;
 	Location currLocation = null;
-	public static Jedis jedis;
-	
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -341,23 +340,23 @@ public class HostActivity extends Activity
 		protected Integer doInBackground(String... params) {
 			// TODO Auto-generated method stub
 			Integer result = 2;
-			jedis = new Jedis(Redis.host, Redis.port);
-			jedis.auth(Redis.auth);
+			myapp.jedis = new Jedis(Redis.host, Redis.port);
+			myapp.jedis.auth(Redis.auth);
 			partyName = getName();
 			zipcode = params[0];
 			
 			ip = getPrivateIp();
 			
-			long reply = jedis.setnx(zipcode + ":" + partyName, ip);
+			long reply = myapp.jedis.setnx(zipcode + ":" + partyName, ip);
 			if(reply == 0)
 				result = 1;
 			else
 			{
 				result = 0;
-				jedis.expire(zipcode + ":" + partyName, 500);
-				jedis.sadd(zipcode, partyName);
+				myapp.jedis.expire(zipcode + ":" + partyName, 500);
+				myapp.jedis.sadd(zipcode, partyName);
 			}
-			jedis.close();
+			myapp.jedis.close();
 			return result;
 		}
 
