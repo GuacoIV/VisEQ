@@ -141,12 +141,12 @@ public class HostMenuActivity extends Activity
 								Entry<String, InetAddress> currEntry = it.next();
 								InetAddress currIp = currEntry.getValue();
 								final String guestName = currEntry.getKey();
-								DatagramPacket pingPacket = new DatagramPacket(ping, ping.length, currIp, 7771);
+								DatagramPacket pingPacket = new DatagramPacket(ping, ping.length, currIp, 7772);
 								DatagramPacket ackPacket = new DatagramPacket(ack, ack.length);
 								try
 								{
 									sendSocket.send(pingPacket);
-									listenSocket.setSoTimeout(2000);
+									listenSocket.setSoTimeout(5000);
 									listenSocket.receive(ackPacket);
 								}
 								catch(InterruptedIOException e)

@@ -83,8 +83,8 @@ public class SoundVisualizationActivity extends Activity
 				try {
 					listenSocket = new DatagramSocket(7772);
 					sendSocket = new DatagramSocket();
-				
-					while(myapp.hosting)
+					boolean guesting = true;
+					while(guesting)
 					{
 						byte [] ping = new byte[1024];
 						byte [] ack = new byte[1024];
@@ -92,9 +92,10 @@ public class SoundVisualizationActivity extends Activity
 
 						DatagramPacket pingPacket = new DatagramPacket(ping, ping.length);
 						listenSocket.receive(pingPacket);
-						DatagramPacket ackPacket = new DatagramPacket(ack, ack.length, pingPacket.getAddress(), pingPacket.getPort());
+						DatagramPacket ackPacket = new DatagramPacket(ack, ack.length, pingPacket.getAddress(), 7772);
 						try
 						{
+							Log.d("heartbeat", "sending ack");
 							sendSocket.send(ackPacket);
 						}
 						catch(Exception e)
@@ -132,6 +133,7 @@ public class SoundVisualizationActivity extends Activity
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 		
 		myapp = (MyApplication) this.getApplicationContext();
+		serverHeartbeat();
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
