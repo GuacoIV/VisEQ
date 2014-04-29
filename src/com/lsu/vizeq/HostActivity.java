@@ -165,8 +165,8 @@ public class HostActivity extends Activity
 			List<Address> addresses = geocoder.getFromLocation(currLocation.getLatitude(), currLocation.getLongitude(), 1);
 			zipcode = addresses.get(0).getPostalCode();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
+			Log.d("zipcode", "Failed to get zipcode");
 		}
 		Log.d("zipcode", zipcode);
 		locationManager.removeUpdates(locationListener);
