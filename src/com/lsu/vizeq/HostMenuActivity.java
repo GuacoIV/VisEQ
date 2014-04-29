@@ -1,6 +1,5 @@
 package com.lsu.vizeq;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -8,6 +7,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
@@ -28,11 +28,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -61,7 +59,7 @@ public class HostMenuActivity extends Activity
 		return ipString;
 	}
 	
-	public void heartbeat()
+	public void serverHeartbeat()
 	{
 		final MyApplication myapp = (MyApplication) this.getApplicationContext();
 		new Thread(new Runnable()
@@ -72,42 +70,60 @@ public class HostMenuActivity extends Activity
 			{
 				while(myapp.hosting)
 				{
-					Jedis jedis = myapp.jedisPool.getResource();
-					try
+					long test = 0;
+					while(test != 1)
 					{
-						jedis.auth(Redis.auth);
-						Log.d("heartbeat", "sending heartbeat");
-						//jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
-						long test = jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
-						while(test != 1)
+						Jedis jedis = myapp.jedisPool.getResource();
+						try
 						{
-							jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
+							jedis.auth(Redis.auth);
+							Log.d("heartbeat", "sending heartbeat");
+							//jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
 							test = jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
-						}
-						Thread.sleep(3000L);
-					} 
-					catch (JedisConnectionException e)
-					{
-						e.printStackTrace();
-						if(jedis != null)
+							while(test != 1)
+							{
+								jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
+								test = jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
+							}
+						} 
+						catch (JedisConnectionException e)
 						{
-							myapp.jedisPool.returnBrokenResource(jedis);
-							jedis = null;
+							e.printStackTrace();
+							if(jedis != null)
+							{
+								myapp.jedisPool.returnBrokenResource(jedis);
+								jedis = null;
+							}
+						}
+						finally
+						{
+							if(jedis != null)
+								myapp.jedisPool.returnResource(jedis);
+							
 						}
 					}
-					catch (InterruptedException e) {
+					try {
+						Thread.sleep(3000L);
+					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
-					finally
-					{
-						if(jedis != null)
-							myapp.jedisPool.returnResource(jedis);
 					}
 				}
 			}
 			
 		}).start();
+	}
+	
+	
+	public void userHeartbeat()
+	{
+		Iterator< Entry<String, InetAddress> > it = myapp.connectedUsers.entrySet().iterator();
+		while(it.hasNext())
+		{
+			Entry<String, InetAddress> currEntry = it.next();
+			InetAddress currIp = currEntry.getValue();
+		}
+		
 	}
 
 	@Override
@@ -181,7 +197,7 @@ public class HostMenuActivity extends Activity
 		
 		myapp = (MyApplication) this.getApplicationContext();		
 		
-		heartbeat();
+		serverHeartbeat();
 		
 		new Thread( new Runnable()
 		{
@@ -426,4 +442,5 @@ public class HostMenuActivity extends Activity
 		}
 		return true;
 	}
+	
 }
