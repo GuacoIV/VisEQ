@@ -48,7 +48,7 @@ public class VizEQ extends Activity
 		// Code is really jank, sorry guys! Basically posi gets the savedPreference value of the index of the color from the string-array color_spinner in colors.xml and uses the old numRand method to assigning those colors
 		// BUG#1 Changing colors only effects screens during onCreate (which is only called when the screen is pulled up again)
 		if (posi != -1) numRand = posi;
-		if (posi == 0) numRand = r.nextInt(5) + 1;
+		if (posi <= 0) numRand = r.nextInt(5) + 1;
 
 		switch (numRand)
 		{

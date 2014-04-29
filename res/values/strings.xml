@@ -34,8 +34,10 @@
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="username">Enter Your Name</string>
     <string name="usernameTitle">User Name:</string>
-    <string name="host_volunteer">Host Queue</string>
-    <string name="volunteer_description">Do you wish to become host if the current host leaves?</string>
+    <string name="cam_strobe">Camera Strobe</string>
+    <string name="bg_strobe">Background Strobe</string>
+    <string name="cam_description">Use camera flash?</string>
+    <string name="bg_description">Use background flash?</string>
     <string name="color_pick">Pick your Color</string>
     <string name="uppercaseVIZEQ">VIZEQ</string>
     <string name="title_activity_request_details">RequestDetailsActivity</string>

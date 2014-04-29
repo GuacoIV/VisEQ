@@ -132,16 +132,28 @@
 	                    </LinearLayout>
                         
                         <TextView
-					        android:id="@+id/HostQueue"
+					        android:id="@+id/CameraFlash"
 					        android:layout_width="wrap_content"
 					        android:layout_height="wrap_content"
-					        android:text="@string/host_volunteer" />
-                        <CheckBox
-                            android:id="@+id/HostQueueCheck"
+					        android:text="@string/cam_strobe" />
+
+                        <Switch
+                            android:id="@+id/CamFlash"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cam_description" />
+                        
+                        <TextView
+					        android:id="@+id/BgFlash"
+					        android:layout_width="wrap_content"
+					        android:layout_height="wrap_content"
+					        android:text="@string/bg_strobe" />
+                        <Switch
+                            android:id="@+id/BGFlash"
 					        android:layout_width="wrap_content"
 					        android:layout_height="wrap_content"
 					        android:defaultValue="false"
-					        android:text="@string/volunteer_description" />
+					        android:text="@string/bg_description" />
                         
                        	<LinearLayout
                             android:layout_width="match_parent"

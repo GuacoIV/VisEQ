@@ -129,19 +129,20 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{				
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.activity_profile);		
 		actionBar = getActionBar();
 		
 		myapp = (MyApplication) this.getApplicationContext();
 		
 		EditText et = (EditText) this.findViewById(R.id.ProfileUsername);
-		if(myapp.myName.equals("")) et.setText("Enter username");
-		else et.setText(myapp.myName);
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		String userName = memory.getString("username", "");
+		if(userName.equals("")) et.setText("Enter username");
+		else et.setText(userName);
 		
 		refreshQueue();
-		
-		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+				
 		int posi = memory.getInt("colorPos", -1);
 		if (posi > 0) VizEQ.numRand = posi;	
 		
@@ -422,6 +423,10 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	{
 		EditText et = (EditText) findViewById(R.id.ProfileUsername);
 		myapp.myName = et.getText().toString();
+		SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);		
+		SharedPreferences.Editor saver = memory.edit();
+		saver.putString("username", et.getText().toString());
+		saver.commit();
 	}
 	
 	public void noNetworkNotification()
