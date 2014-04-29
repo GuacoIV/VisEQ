@@ -1,7 +1,11 @@
 package com.lsu.vizeq;
 
+import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -64,6 +68,51 @@ public class SoundVisualizationActivity extends Activity
 	
 
 	private VisualizerView vizView;
+	private MyApplication myapp;
+	
+	
+	public void serverHeartbeat()
+	{
+		new Thread( new Runnable()
+		{
+			public void run()
+			{
+				
+				DatagramSocket listenSocket, sendSocket;
+				
+				try {
+					listenSocket = new DatagramSocket(7772);
+					sendSocket = new DatagramSocket();
+				
+					while(myapp.hosting)
+					{
+						byte [] ping = new byte[1024];
+						byte [] ack = new byte[1024];
+						ack = "ack".getBytes();
+
+						DatagramPacket pingPacket = new DatagramPacket(ping, ping.length);
+						listenSocket.receive(pingPacket);
+						DatagramPacket ackPacket = new DatagramPacket(ack, ack.length, pingPacket.getAddress(), pingPacket.getPort());
+						try
+						{
+							sendSocket.send(ackPacket);
+						}
+						catch(Exception e)
+						{
+							e.printStackTrace();
+						}
+						
+					}
+					sendSocket.close();
+					listenSocket.close();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}).start();
+	}
 	
 	@Override
 	protected void onDestroy() {
@@ -81,6 +130,8 @@ public class SoundVisualizationActivity extends Activity
 		setContentView(R.layout.activity_sound_visualization);
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		
+		myapp = (MyApplication) this.getApplicationContext();
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);

@@ -1,8 +1,10 @@
 package com.lsu.vizeq;
 
+import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
@@ -117,13 +119,69 @@ public class HostMenuActivity extends Activity
 	
 	public void userHeartbeat()
 	{
-		Iterator< Entry<String, InetAddress> > it = myapp.connectedUsers.entrySet().iterator();
-		while(it.hasNext())
-		{
-			Entry<String, InetAddress> currEntry = it.next();
-			InetAddress currIp = currEntry.getValue();
-		}
-		
+		new Thread(new Runnable()
+			{
+				@Override
+				public void run() {
+					DatagramSocket listenSocket, sendSocket;
+	
+					try {
+						listenSocket = new DatagramSocket(7772);
+						sendSocket = new DatagramSocket();
+					
+						while(myapp.hosting)
+						{
+							Iterator< Entry<String, InetAddress> > it = myapp.connectedUsers.entrySet().iterator();
+							byte [] ping = new byte[1024];
+							byte [] ack = new byte[1024];
+							ping = "ping".getBytes();
+							
+							while(it.hasNext())
+							{
+								Entry<String, InetAddress> currEntry = it.next();
+								InetAddress currIp = currEntry.getValue();
+								final String guestName = currEntry.getKey();
+								DatagramPacket pingPacket = new DatagramPacket(ping, ping.length, currIp, 7771);
+								DatagramPacket ackPacket = new DatagramPacket(ack, ack.length);
+								try
+								{
+									sendSocket.send(pingPacket);
+									listenSocket.setSoTimeout(2000);
+									listenSocket.receive(ackPacket);
+								}
+								catch(InterruptedIOException e)
+								{
+									it.remove();
+									//remove user from party
+									runOnUiThread(new Runnable()
+									{
+
+										@Override
+										public void run() {
+											// TODO Auto-generated method stub
+											Log.d("Removing Guest ", guestName);
+											refreshLists();
+										}
+										
+									});
+									
+								}
+								catch(Exception e)
+								{
+									e.printStackTrace();
+								}
+							}
+							Thread.sleep(3000L);
+						}
+						sendSocket.close();
+						listenSocket.close();
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+			}).start();		
 	}
 
 	@Override
@@ -198,6 +256,7 @@ public class HostMenuActivity extends Activity
 		myapp = (MyApplication) this.getApplicationContext();		
 		
 		serverHeartbeat();
+		userHeartbeat();
 		
 		new Thread( new Runnable()
 		{
