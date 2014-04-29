@@ -256,7 +256,7 @@ public class HostMenuActivity extends Activity
 		myapp = (MyApplication) this.getApplicationContext();		
 		
 		serverHeartbeat();
-		userHeartbeat();
+		//userHeartbeat();
 		
 		new Thread( new Runnable()
 		{

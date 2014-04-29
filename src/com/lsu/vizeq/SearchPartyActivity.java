@@ -704,7 +704,7 @@ public class SearchPartyActivity extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Log.d("zipcode", zipcode);
+		//Log.d("zipcode", zipcode);
 		locationManager.removeUpdates(locationListener);
 		return zipcode;
 	}

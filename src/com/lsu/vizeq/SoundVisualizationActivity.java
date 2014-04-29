@@ -133,7 +133,7 @@ public class SoundVisualizationActivity extends Activity
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 		
 		myapp = (MyApplication) this.getApplicationContext();
-		serverHeartbeat();
+		//serverHeartbeat();
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
