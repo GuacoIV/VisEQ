@@ -129,10 +129,17 @@ public class VisualizerView extends View {
 		{
 			if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) 
 	        {
-	            cam = Camera.open();
-	            p = cam.getParameters();
-	            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-	            cam.setParameters(p);
+				try
+				{
+		            cam = Camera.open();
+		            p = cam.getParameters();
+		            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
+		            cam.setParameters(p);
+				}
+				catch( Exception e)
+				{
+					
+				}
 	            
 	        }
 			while (true)
