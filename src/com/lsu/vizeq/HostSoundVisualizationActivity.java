@@ -68,7 +68,6 @@ public class HostSoundVisualizationActivity extends Activity {
 		else
 		    my_task.execute((Void[])null);
 		
-		
 		vizView = (VisualizerView)findViewById(R.id.visualizer);
 		
 		vizView.init(this);
@@ -87,6 +86,8 @@ public class HostSoundVisualizationActivity extends Activity {
 	public void onDestroy() {
 		super.onDestroy();
 		my_task.cancel(true);
+		VisualizerView.cam.release();
+		VisualizerView.cam = null;
 	}
 
 	

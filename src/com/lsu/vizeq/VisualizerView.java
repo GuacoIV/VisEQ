@@ -98,6 +98,11 @@ public class VisualizerView extends View {
 		}
 	}
 
+	public void uninit() {
+		flashThread.interrupt();
+		flashThread = null;
+	}
+	
 	public void SetCircleStates(final String[] states) {
 		mActivity.runOnUiThread(new Runnable() {
             @Override
