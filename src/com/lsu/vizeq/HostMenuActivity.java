@@ -77,8 +77,13 @@ public class HostMenuActivity extends Activity
 					{
 						jedis.auth(Redis.auth);
 						Log.d("heartbeat", "sending heartbeat");
-						jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
-						jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
+						//jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
+						long test = jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
+						while(test != 1)
+						{
+							jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
+							test = jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
+						}
 						Thread.sleep(3000L);
 					} 
 					catch (JedisConnectionException e)
