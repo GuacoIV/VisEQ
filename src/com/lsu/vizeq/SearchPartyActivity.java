@@ -56,9 +56,12 @@ public class SearchPartyActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_party);
 		actionBar = getActionBar();
-		
+				
 		EditText et = (EditText) findViewById(R.id.username_box);
-		et.setText(myapp.myName);
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		String userName = memory.getString("username", "");
+		if(userName.equals("")) et.setText("Enter username");
+		else et.setText(userName);
 		thisActivity = this;
 
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
