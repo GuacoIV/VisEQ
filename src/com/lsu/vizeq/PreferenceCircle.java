@@ -53,21 +53,21 @@ import android.view.View;
 		{
 			//Color paintColor = new Color();
 			super.onDraw(canvas);
-			switch (r.nextInt(5))
+			switch (r.nextInt(5) + 1)
 			{
-				case 0:
+				case 1:
 					paint.setColor(getResources().getColor(R.color.Red));
 					break;
-				case 1:
+				case 2:
 					paint.setColor(getResources().getColor(R.color.Green));
 					break;
-				case 2:
+				case 3:
 					paint.setColor(getResources().getColor(R.color.Blue));
 					break;
-				case 3:
+				case 4:
 					paint.setColor(getResources().getColor(R.color.Purple));
 					break;
-				case 4:
+				case 5:
 					paint.setColor(getResources().getColor(R.color.Orange));
 					break;
 			}
