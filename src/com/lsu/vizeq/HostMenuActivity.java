@@ -234,7 +234,7 @@ public class HostMenuActivity extends Activity
 			
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                PlayerActivity.BAND_TO_FLASH = progress - 1;
+                PlayerActivity.BAND_TO_FLASH = progress;
             }
 
             @Override
