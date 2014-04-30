@@ -60,7 +60,7 @@ public class SearchPartyActivity extends Activity {
 		EditText et = (EditText) findViewById(R.id.username_box);
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		String userName = memory.getString("username", "");
-		if(userName.equals("")) et.setText("Enter username");
+		if(userName.equals("")) et.setHint("Enter username");
 		else et.setText(userName);
 		thisActivity = this;
 
