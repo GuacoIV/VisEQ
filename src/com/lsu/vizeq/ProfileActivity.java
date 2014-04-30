@@ -138,7 +138,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 		EditText et = (EditText) this.findViewById(R.id.ProfileUsername);
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		String userName = memory.getString("username", "");
-		if(userName.equals("")) et.setText("Enter username");
+		if(userName.equals("")) et.setHint("Enter username");
 		else et.setText(userName);
 		
 		refreshQueue();
@@ -423,10 +423,13 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 	{
 		EditText et = (EditText) findViewById(R.id.ProfileUsername);
 		myapp.myName = et.getText().toString();
-		SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);		
-		SharedPreferences.Editor saver = memory.edit();
-		saver.putString("username", et.getText().toString());
-		saver.commit();
+		if (!et.getText().toString().equals("Enter username")){
+			System.out.print(et.getText().toString());
+			SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);		
+			SharedPreferences.Editor saver = memory.edit();
+			saver.putString("username", et.getText().toString());
+			saver.commit();
+		}
 	}
 	
 	public void noNetworkNotification()
