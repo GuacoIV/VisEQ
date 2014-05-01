@@ -127,6 +127,13 @@ public class SoundVisualizationActivity extends Activity
 	}
 	
 	@Override
+	protected void onStart() {
+		super.onStart();
+		rct = new ReceiveColorTask();
+		rct.execute();
+	}
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
@@ -137,6 +144,8 @@ public class SoundVisualizationActivity extends Activity
 		
 		myapp = (MyApplication) this.getApplicationContext();
 		//serverHeartbeat();
+		
+		Log.d("oncreate", "soundviz");
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -167,8 +176,7 @@ public class SoundVisualizationActivity extends Activity
 		
 		final View controlsView = findViewById(R.id.fullscreen_content_controls);
 		vizView = (VisualizerView)findViewById(R.id.visualizer_view);
-		rct = new ReceiveColorTask();
-		rct.execute();
+		
 		
 		((VisualizerView)vizView).init(this);
 		
@@ -241,6 +249,14 @@ public class SoundVisualizationActivity extends Activity
 		findViewById(R.id.search_request).setOnTouchListener(mDelayHideTouchListener);
 	}
 
+	@Override
+	protected void onStop() {
+		super.onStop();
+		if (rct != null) rct.cancel(true);
+	}
+	
+	
+	
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState)
 	{
