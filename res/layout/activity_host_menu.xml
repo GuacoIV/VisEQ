@@ -7,51 +7,77 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".HostMenuActivity"
-    android:id="@+id/HostMenuView" >
-
-    <Button
-        android:id="@+id/Scope"
+    android:id="@+id/HostMenuView"
+    android:background="@drawable/backgroundhostscreen" >
+<TableLayout
+    android:id="@+id/tableLayout"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <TableRow
+        android:id="@+id/tableRow1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Search"
-        android:layout_centerHorizontal="true"
-        android:text="@string/ScopeThisCrowd" 
-        android:layout_margin="10dp"/>
-
+        android:padding="5dip">
+        <LinearLayout
+        android:background="@color/Green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+   
+     <Button
+        android:id="@+id/Search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/searchnqueue_button"/>
+     </LinearLayout>
+     <LinearLayout
+        android:background="@color/Green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+     <Button
+        android:id="@+id/Scope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:layout_margin="10dp"
+        android:background="@drawable/scope_button"/>
+     </LinearLayout>
+     </TableRow>
+     
+     <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip">
+     <LinearLayout
+        android:background="@color/Green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <Button
         android:id="@+id/NowPlaying"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Scope"
-        android:layout_centerHorizontal="true"
-        android:text="@string/NowPlaying"
-        android:layout_margin="10dp" />
-
-    <Button
-        android:id="@+id/Search"
+        android:layout_margin="10dp" 
+        android:background="@drawable/nowplaying_button"/>
+		</LinearLayout>
+   
+        <LinearLayout
+        android:background="@color/Green"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="@string/HostSearch"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="10dp"/>
-        
+        android:layout_height="wrap_content">
      <Button
         android:id="@+id/sound_viz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-		android:text="@string/SoundVisualizer"
 		android:layout_margin="10dp"
-		android:layout_below="@id/NowPlaying"/>
-
+		android:background="@drawable/visualizer_button"/>
+     </LinearLayout>
+     </TableRow>
+</TableLayout>
     <EditText
         android:id="@+id/name_field"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
-        android:layout_alignRight="@+id/Search"
-        android:layout_below="@+id/NowPlaying"
         android:layout_marginTop="17dp"
         android:ems="10"
         android:hint="@string/HostName"
@@ -77,7 +103,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/ip_field"
-        android:layout_toRightOf="@+id/Scope"
         android:text="@string/AddClient"
         android:onClick="addUserToList"
         android:visibility="gone" />
@@ -95,7 +120,6 @@
         android:id="@+id/ip_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/NowPlaying"
         android:layout_alignTop="@+id/name_list"
         android:width="100dp" />
 
