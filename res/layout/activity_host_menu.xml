@@ -15,14 +15,16 @@
     android:layout_width="match_parent">
     <TableRow
         android:id="@+id/tableRow1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dip">
+        android:gravity="center_horizontal" 
+        android:padding="10dp">
         <LinearLayout
         android:background="@color/Green"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-   
+        android:layout_height="wrap_content"
+        android:id="@+id/SearchWrap"
+        android:layout_marginRight="10dp">   
      <Button
         android:id="@+id/Search"
         android:layout_width="wrap_content"
@@ -33,7 +35,9 @@
      <LinearLayout
         android:background="@color/Green"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/ScopeWrap"
+        android:layout_marginLeft="10dp">
      <Button
         android:id="@+id/Scope"
         android:layout_width="wrap_content"
@@ -44,14 +48,17 @@
      </TableRow>
      
      <TableRow
-        android:id="@+id/tableRow1"
-        android:layout_width="wrap_content"
+        android:id="@+id/tableRow2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dip">
+        android:padding="10dp"
+        android:gravity="center_horizontal" >
      <LinearLayout
         android:background="@color/Green"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/NowPlayingWrap"
+        android:layout_marginRight="10dp">
     <Button
         android:id="@+id/NowPlaying"
         android:layout_width="wrap_content"
@@ -63,7 +70,9 @@
         <LinearLayout
         android:background="@color/Green"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/SoundVizWrap"
+        android:layout_marginLeft="10dp">
      <Button
         android:id="@+id/sound_viz"
         android:layout_width="wrap_content"

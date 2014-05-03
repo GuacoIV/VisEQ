@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -192,6 +193,14 @@ public class HostMenuActivity extends Activity
 //		Log.d("Flow", "onCreate HostMenu");
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		LinearLayout search = (LinearLayout)findViewById(R.id.SearchWrap);
+		LinearLayout scope = (LinearLayout)findViewById(R.id.ScopeWrap);
+		LinearLayout playing = (LinearLayout)findViewById(R.id.NowPlayingWrap);
+		LinearLayout visualizer = (LinearLayout)findViewById(R.id.SoundVizWrap);
+		scope.setAlpha(0.7f);
+		search.setAlpha(0.7f);
+		playing.setAlpha(0.7f);
+		visualizer.setAlpha(0.7f);
 //		Log.d("Flow", "onStart HostMenu");
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -200,18 +209,38 @@ public class HostMenuActivity extends Activity
 		{
 			case 1:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+				scope.setBackgroundColor(getResources().getColor(R.color.Red));
+				search.setBackgroundColor(getResources().getColor(R.color.Red));
+				playing.setBackgroundColor(getResources().getColor(R.color.Red));
+				visualizer.setBackgroundColor(getResources().getColor(R.color.Red));
 				break;
 			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));	
+				scope.setBackgroundColor(getResources().getColor(R.color.Green));
+				search.setBackgroundColor(getResources().getColor(R.color.Green));
+				playing.setBackgroundColor(getResources().getColor(R.color.Green));
+				visualizer.setBackgroundColor(getResources().getColor(R.color.Green));
 				break;
 			case 3:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				scope.setBackgroundColor(getResources().getColor(R.color.Blue));
+				search.setBackgroundColor(getResources().getColor(R.color.Blue));
+				playing.setBackgroundColor(getResources().getColor(R.color.Blue));
+				visualizer.setBackgroundColor(getResources().getColor(R.color.Blue));
 				break;
 			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				scope.setBackgroundColor(getResources().getColor(R.color.Purple));
+				search.setBackgroundColor(getResources().getColor(R.color.Purple));
+				playing.setBackgroundColor(getResources().getColor(R.color.Purple));
+				visualizer.setBackgroundColor(getResources().getColor(R.color.Purple));
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				scope.setBackgroundColor(getResources().getColor(R.color.Orange));
+				search.setBackgroundColor(getResources().getColor(R.color.Orange));
+				playing.setBackgroundColor(getResources().getColor(R.color.Orange));
+				visualizer.setBackgroundColor(getResources().getColor(R.color.Orange));
 				break;			
 		}
 		SeekBar freqSlider = new SeekBar(this);
