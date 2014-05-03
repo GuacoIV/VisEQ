@@ -306,6 +306,8 @@ public class PreferenceVisualizationActivity extends BackableActivity {
 			Intent nextIntent2  = new Intent(PreferenceVisualizationActivity.this, AboutActivity.class);
 			startActivity(nextIntent2);
 			break;
+		default:
+			super.onOptionsItemSelected(item);
 		}
 		return true;
 	}

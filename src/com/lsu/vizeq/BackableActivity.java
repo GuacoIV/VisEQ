@@ -18,6 +18,7 @@ public class BackableActivity extends Activity {
 	    Typeface titleFont = Typeface.createFromAsset(getAssets(), "Mohave-SemiBold.otf");
 	    yourTextView.setTypeface(titleFont);
 	    yourTextView.setTextSize(22);
+	    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
     }
 	
 	@Override

@@ -64,6 +64,8 @@ public class SearchPartyActivity extends BackableActivity {
 		else et.setText(userName);
 		thisActivity = this;
 
+		
+		
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 		
