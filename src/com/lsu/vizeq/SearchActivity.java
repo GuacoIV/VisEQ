@@ -203,7 +203,7 @@ public class SearchActivity extends BackableActivity
 				if (arg1.getAction() == MotionEvent.ACTION_DOWN)
 				{
 					TableRow row = (TableRow)arg0;
-					row.setBackgroundColor(Color.BLUE);
+					row.setBackgroundColor(Color.WHITE);
 					return true;
 				}
 				else if (arg1.getAction() == MotionEvent.ACTION_UP)
