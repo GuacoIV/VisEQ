@@ -25,7 +25,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class RoleActivity extends BackableActivity
+public class RoleActivity extends Activity
 {
 	public static MyApplication myapp;
 	ActionBar actionBar;
@@ -98,7 +98,7 @@ public class RoleActivity extends BackableActivity
 					DJButton.setImageResource(R.drawable.hostbutton_325x325);
 					if (event.getAction() == MotionEvent.ACTION_UP && isInCircle)
 					{
-						Intent nextIntent = new Intent(RoleActivity.this, HostActivity.class);
+						Intent nextIntent = new Intent(RoleActivity.this, LoginActivity.class);
 						startActivity(nextIntent);
 					}
 				}

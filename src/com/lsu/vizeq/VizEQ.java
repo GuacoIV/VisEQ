@@ -86,7 +86,6 @@ public class VizEQ extends Activity
 						if (audio.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) mediaPlayer.start(); // no need to call prepare(); create() does that for you
 						sleep(mediaPlayer.getDuration()); //length of track
 						mediaPlayer.release();
-			        	startActivity(new Intent("com.lsu.viseq.LOGIN"));
 					 }
 					 catch (Exception e)
 					 {
@@ -96,7 +95,7 @@ public class VizEQ extends Activity
 					 {
 						 
 						 finish();
-						 Intent nextIntent = new Intent(VizEQ.this, LoginActivity.class);
+						 Intent nextIntent = new Intent(VizEQ.this, RoleActivity.class);
 						startActivity(nextIntent);	
 					 }
 		        }
