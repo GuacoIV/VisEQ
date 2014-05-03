@@ -44,7 +44,7 @@ import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-public class SearchActivity extends Activity
+public class SearchActivity extends BackableActivity
 {
 	LinearLayout searchLayout;
 	MyApplication myapp;

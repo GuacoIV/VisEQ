@@ -41,7 +41,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class HostActivity extends Activity
+public class HostActivity extends BackableActivity
 {
 	public LocationManager locationManager;
 	ActionBar actionBar;
