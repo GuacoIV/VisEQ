@@ -7,7 +7,6 @@ import java.util.Set;
 
 public class PVCircle {
 	private List<Track> trackList;
-	private Set<String> requesters;
 	private String name;
 	private int weight;
 	private double radius;
@@ -17,7 +16,6 @@ public class PVCircle {
 
 	public PVCircle() {
 		trackList = new ArrayList<Track>();
-		requesters = new HashSet<String>();
 	}
 
 	public List<Track> getTrackList() {
@@ -83,33 +81,7 @@ public class PVCircle {
 		return scale;
 	}
 	
-	public Set<String> getRequesters()
-	{
-		return requesters;
-	}
 	
-	public void addTrack(Track track)
-	{
-		//add requesters either way
-		if (!track.requesters.contains(track.mRequester))
-			track.requesters.add(track.mRequester);
-		
-		boolean found = false;
-		for(int i=0; i<trackList.size(); i++)
-		{
-			//if same song - check uri
-			if(track.mUri.equals(trackList.get(i).mUri))
-			{
-				//don't add to list
-				found = true;
-			}
-		}
-		if(!found)
-		{	
-			trackList.add(track);
-		}
-		
-	}
 
 
 }

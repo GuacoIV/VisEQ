@@ -417,15 +417,15 @@ public class PreferenceVisualizer {
 			{
 				if(sortType.equals("artist") && circles.get(j).getName().equals(artistName))
 				{
-					circles.get(i).addTrack(track);
+					circles.get(j).getTrackList().add(track);
 				}
 				else if(sortType.equals("album") && circles.get(j).getName().equals(albumName))
 				{
-					circles.get(i).addTrack(track);
+					circles.get(j).getTrackList().add(track);
 				}
 				else if(sortType.equals("track") && circles.get(j).getName().equals(trackName))
 				{
-					circles.get(i).addTrack(track);
+					circles.get(j).getTrackList().add(track);
 				}
 			}
 			

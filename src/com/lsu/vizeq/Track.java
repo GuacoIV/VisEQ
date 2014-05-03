@@ -54,6 +54,7 @@ class Track implements Parcelable
 	
 	public Track(Parcel source)
 	{
+		requesters = new ArrayList<String>();
 		mTrack = source.readString();
 		mAlbum = source.readString();
 		mArtist = source.readString();
@@ -83,7 +84,7 @@ class Track implements Parcelable
 	
 	public Track()
 	{
-		
+		requesters = new ArrayList<String>();
 	}
 
 	public String getSpotifyUri() {

@@ -37,7 +37,6 @@ public class RequestDetailsActivity extends Activity
 	private String requestName;
 	private List<Track> tracks;
 	private int color;
-	private int numRequesters;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -51,9 +50,8 @@ public class RequestDetailsActivity extends Activity
 		if (extras != null) 
 		{
 			tracks = extras.getParcelableArrayList("tracks");
-			requestName = extras.getString("requestname");
+			requestName = extras.getString("requestName");
 			color = extras.getInt("color");
-			numRequesters = extras.getInt("numRequesters");
 		}
 		//artist = thisCircle.name;
 		// Show the Up button in the action bar.
@@ -78,7 +76,7 @@ public class RequestDetailsActivity extends Activity
 		Set<String> uniqueRequesters = new HashSet<String>();
 		for(int i=0; i<tracks.size(); i++)
 		{
-			for(int j=0; j<tracks.get(i).requesters.size(); i++)
+			for(int j=0; j<tracks.get(i).requesters.size(); j++)
 			{
 				uniqueRequesters.add(tracks.get(i).requesters.get(j));
 			}
@@ -86,9 +84,12 @@ public class RequestDetailsActivity extends Activity
 		
 		int numTracks = tracks.size();
 		int numRequesters = uniqueRequesters.size();
+		String trackString = (numTracks == 1) ? " track request by " : " track requests by ";
+		String requesterString = (numRequesters == 1) ? " person." : " people.";
 		
-		info.setText(numTracks + " track requests by " + numRequesters + " different people.");
+		info.setText(numTracks + trackString + numRequesters + requesterString);
 		list = (LinearLayout) findViewById(R.id.trackRequests);
+		
 		list.removeAllViews();
 		//list.setBackgroundColor(thisCircle.color);
 
@@ -261,8 +262,8 @@ public class RequestDetailsActivity extends Activity
 				public void onClick(DialogInterface arg0, int arg1) {
 //					Log.d("addToQueue", "Adding " + track.mTrack + " to top");
 					myapp.queue.add(0, track);	
+					removeRequest(track);
 					refreshList();
-					myapp.requests.remove(row.getTrack());
 					getTrackCoverThread.start();
 				}
         		
@@ -273,17 +274,38 @@ public class RequestDetailsActivity extends Activity
 				public void onClick(DialogInterface dialog, int which) {
 //					Log.d("addToQueue","Adding " + track.mTrack + " to bottom");
 					myapp.queue.add(track);
+					removeRequest(track);
 					refreshList();
-					myapp.requests.remove(row.getTrack());
 					getTrackCoverThread.start();
 				}
 				
         	});
         
         builder.show();
-        
-
         	
+	}
+	
+	private void removeRequest(Track track)
+	{
+		//remove from myapp request list
+		for(int i=0; i<myapp.requests.size(); i++)
+		{
+			if(myapp.requests.get(i).mUri.equals(track.mUri))
+			{
+				myapp.requests.remove(i);
+				break;
+			}
+		}
+		
+		//remove from our list
+		for(int i=0; i<tracks.size(); i++)
+		{
+			if(tracks.get(i).mUri.equals(track.mUri))
+			{
+				tracks.remove(i);
+				break;
+			}
+		}
 	}
 
 }
