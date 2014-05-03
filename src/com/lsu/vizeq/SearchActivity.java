@@ -3,6 +3,7 @@ package com.lsu.vizeq;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -51,10 +52,10 @@ public class SearchActivity extends Activity
 	AsyncHttpClient searchClient = new AsyncHttpClient();
 	AsyncHttpClient artworkClient = new AsyncHttpClient();
 	ActionBar actionBar;
-	
+	LinearLayout queueTab;
 	public void refreshQueue()
 	{
-		LinearLayout queueTab = (LinearLayout) findViewById(R.id.host_queue);
+		queueTab = (LinearLayout) findViewById(R.id.host_queue);
 		queueTab.removeAllViews();	//remove everything that's there
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		
@@ -482,6 +483,20 @@ public class SearchActivity extends Activity
 						}
 					}
 				});
+			}
+		});
+		
+		findViewById(R.id.SaveAsPlaylist).setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View arg0)
+			{
+				
+				ArrayList<TrackRow> playlist = new ArrayList<TrackRow>();
+				for (int i = 0; i < queueTab.getChildCount(); i++)
+				{
+					playlist.add(((TrackRow) queueTab.getChildAt(0)));
+				}
 			}
 		});
 	}
