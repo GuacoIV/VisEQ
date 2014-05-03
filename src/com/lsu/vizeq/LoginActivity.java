@@ -111,7 +111,6 @@ public class LoginActivity extends BackableActivity {
 		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Regular.otf");
 		TextView loginExplain = (TextView) findViewById(R.id.ExplainSignIn);
 		Button signInButton = (Button) findViewById(R.id.sign_in_button);
-		Button skipButton = (Button) findViewById(R.id.Skip);
 		loginExplain.setTypeface(font);
 		loginExplain.setTextSize(20); //40 pt 153, 153, 153
 		loginExplain.setTextColor(getResources().getColor(R.color.Grey85));
@@ -124,27 +123,22 @@ public class LoginActivity extends BackableActivity {
 			case 1:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
 				signInButton.setBackgroundColor(getResources().getColor(R.color.Red));
-				skipButton.setBackgroundColor(getResources().getColor(R.color.Red));
 				break;
 			case 2:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));		
 				signInButton.setBackgroundColor(getResources().getColor(R.color.Green));
-				skipButton.setBackgroundColor(getResources().getColor(R.color.Green));
 				break;
 			case 3:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
 				signInButton.setBackgroundColor(getResources().getColor(R.color.Blue));
-				skipButton.setBackgroundColor(getResources().getColor(R.color.Blue));
 				break;
 			case 4:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
 				signInButton.setBackgroundColor(getResources().getColor(R.color.Purple));
-				skipButton.setBackgroundColor(getResources().getColor(R.color.Purple));
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				signInButton.setBackgroundColor(getResources().getColor(R.color.Orange));
-				skipButton.setBackgroundColor(getResources().getColor(R.color.Orange));
 				break;		
 		}
 		
@@ -196,17 +190,6 @@ public class LoginActivity extends BackableActivity {
 			}
 		});
 		
-		findViewById(R.id.Skip).setOnClickListener(new View.OnClickListener() 
-		{
-			
-			@Override
-			public void onClick(View v)
-			{
-				Intent nextIntent = new Intent(LoginActivity.this, RoleActivity.class);
-				startActivity(nextIntent);
-				
-			}
-		});
 
 		binder = new ServiceBinder(this);
 		binder.bindService(new ServiceBinderDelegate() {
