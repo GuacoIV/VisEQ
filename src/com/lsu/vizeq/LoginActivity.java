@@ -304,7 +304,7 @@ public class LoginActivity extends BackableActivity {
 						Intent goToPlayer = new Intent(LoginActivity.this, PlayerActivity.class);
 						startActivity(goToPlayer);
 					}
-					Intent roleIntent = new Intent(LoginActivity.this, RoleActivity.class);
+					Intent roleIntent = new Intent(LoginActivity.this, HostActivity.class);
 					startActivity(roleIntent);
 
 				}
@@ -398,6 +398,8 @@ public class LoginActivity extends BackableActivity {
 	               });
 	        builder.show();
 	               break;
+	     default:
+	    	 super.onOptionsItemSelected(item);
 		}
 		return true;
 	}
