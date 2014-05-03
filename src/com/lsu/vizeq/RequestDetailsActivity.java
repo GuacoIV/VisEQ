@@ -44,7 +44,6 @@ public class RequestDetailsActivity extends BackableActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_request_details);
-		missionGothic = Typeface.createFromAsset(getAssets(), "Mission Gothic.otf");
 		myapp = (MyApplication) this.getApplicationContext();
 
 		Bundle extras = getIntent().getExtras();
