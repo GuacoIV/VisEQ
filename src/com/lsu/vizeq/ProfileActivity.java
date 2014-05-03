@@ -44,7 +44,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 
 
-public class ProfileActivity extends Activity implements OnItemSelectedListener{
+public class ProfileActivity extends BackableActivity implements OnItemSelectedListener{
 	
 	public String mColor;
 	Spinner spinner;

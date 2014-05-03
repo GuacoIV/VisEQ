@@ -25,7 +25,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class RoleActivity extends Activity
+public class RoleActivity extends BackableActivity
 {
 	public static MyApplication myapp;
 	ActionBar actionBar;
@@ -166,6 +166,8 @@ public class RoleActivity extends Activity
 			Intent nextIntent2  = new Intent(RoleActivity.this, AboutActivity.class);
 			startActivity(nextIntent2);
 			break;
+		default:
+			super.onOptionsItemSelected(item);
 		}
 		return true;
 	}	

@@ -44,7 +44,7 @@ import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-public class SearchActivity extends Activity
+public class SearchActivity extends BackableActivity
 {
 	LinearLayout searchLayout;
 	MyApplication myapp;
@@ -526,6 +526,8 @@ public class SearchActivity extends Activity
 			imm1.hideSoftInputFromWindow(searchLayout.getWindowToken(), 0);
 			startActivity(nextIntent2);
 			break;
+		default:
+			super.onOptionsItemSelected(item);
 		}
 		return true;
 	}

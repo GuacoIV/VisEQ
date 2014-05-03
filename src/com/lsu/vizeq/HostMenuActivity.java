@@ -4,7 +4,6 @@ import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
@@ -14,7 +13,6 @@ import java.util.Map.Entry;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,9 +23,9 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -39,7 +37,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-public class HostMenuActivity extends Activity
+public class HostMenuActivity extends BackableActivity
 {
 	MyApplication myapp;
 	ActionBar actionBar;
@@ -201,7 +199,8 @@ public class HostMenuActivity extends Activity
 		search.setAlpha(0.7f);
 		playing.setAlpha(0.7f);
 		visualizer.setAlpha(0.7f);
-//		Log.d("Flow", "onStart HostMenu");
+		
+		//		Log.d("Flow", "onStart HostMenu");
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
 		if (posi > 0) VizEQ.numRand = posi;		
@@ -385,6 +384,25 @@ public class HostMenuActivity extends Activity
 		
 		new ListenForJoinRequestTask().execute();
 		
+		View.OnTouchListener touchListener = new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent e){
+				if (e.getAction() == MotionEvent.ACTION_DOWN) {
+					v.setAlpha(1);
+				}
+				else if (e.getAction() == MotionEvent.ACTION_UP) {
+					v.setAlpha(.7f);
+				}
+				return false;
+			}
+		};
+		
+		findViewById(R.id.NowPlaying).setOnTouchListener(touchListener);
+		findViewById(R.id.Scope).setOnTouchListener(touchListener);
+		findViewById(R.id.Search).setOnTouchListener(touchListener);
+		findViewById(R.id.sound_viz).setOnTouchListener(touchListener);
+		
 		findViewById(R.id.NowPlaying).setOnClickListener(new View.OnClickListener()
 		{
 
@@ -550,6 +568,8 @@ public class HostMenuActivity extends Activity
 			Intent nextIntent2  = new Intent(HostMenuActivity.this, AboutActivity.class);
 			startActivity(nextIntent2);
 			break;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 		return true;
 	}

@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-public class PreferenceVisualizationActivity extends Activity {
+public class PreferenceVisualizationActivity extends BackableActivity {
 
 	public MyApplication myapp;
 	public PreferenceVisualizer viz;

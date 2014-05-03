@@ -21,7 +21,7 @@ import android.widget.TabHost;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.TabHost.TabSpec;
 
-public class HostProfileActivity extends Activity implements OnItemSelectedListener{
+public class HostProfileActivity extends BackableActivity implements OnItemSelectedListener{
 	public String mColor;
 	Spinner spinner;
 	LinearLayout customSearchLayout;

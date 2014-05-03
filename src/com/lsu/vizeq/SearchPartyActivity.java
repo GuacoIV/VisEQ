@@ -41,7 +41,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SearchPartyActivity extends Activity {
+public class SearchPartyActivity extends BackableActivity {
 	
 	public LocationManager locationManager;
 	MyApplication myapp;
@@ -685,6 +685,8 @@ public class SearchPartyActivity extends Activity {
 			Intent nextIntent2  = new Intent(SearchPartyActivity.this, AboutActivity.class);
 			startActivity(nextIntent2);
 			break;
+		default:
+			super.onOptionsItemSelected(item);
 		}
 		return true;
 	}

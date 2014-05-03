@@ -41,7 +41,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class HostActivity extends Activity
+public class HostActivity extends BackableActivity
 {
 	public LocationManager locationManager;
 	ActionBar actionBar;
@@ -146,6 +146,8 @@ public class HostActivity extends Activity
 			imm1.hideSoftInputFromWindow(findViewById(R.id.hostBackground).getWindowToken(), 0);
 			startActivity(nextIntent2);
 			break;
+		default:
+			super.onOptionsItemSelected(item);
 		}
 		return true;
 	}
