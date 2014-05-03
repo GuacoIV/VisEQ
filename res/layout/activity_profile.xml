@@ -121,39 +121,45 @@
 						        android:selectAllOnFocus="true"
 						        android:singleLine="true"
 						        android:title="@string/usernameTitle" 
-						        android:layout_weight=".7" />
+						        android:layout_weight=".7"
+						        android:layout_marginBottom="10dp" />
 	                        <Button
 	                            android:id="@+id/changeNameBtn"
 	                            android:layout_width="wrap_content"
 	                            android:layout_height="wrap_content"
 	                            android:onClick="updateName"
 	                            android:text="Update" 
-	                            android:layout_weight=".3"/>
+	                            android:layout_weight=".3"
+	                            android:layout_marginBottom="10dp"/>
 	                    </LinearLayout>
                         
                         <TextView
 					        android:id="@+id/CameraFlash"
 					        android:layout_width="wrap_content"
 					        android:layout_height="wrap_content"
-					        android:text="@string/cam_strobe" />
+					        android:text="@string/cam_strobe"
+					        android:layout_marginBottom="10dp" />
 
                         <Switch
                             android:id="@+id/CamFlash"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/cam_description" />
+                            android:text="@string/cam_description"
+                            android:layout_marginBottom="10dp" />
                         
                         <TextView
 					        android:id="@+id/BgFlash"
 					        android:layout_width="wrap_content"
 					        android:layout_height="wrap_content"
-					        android:text="@string/bg_strobe" />
+					        android:text="@string/bg_strobe"
+					        android:layout_marginBottom="10dp" />
                         <Switch
                             android:id="@+id/BGFlash"
 					        android:layout_width="wrap_content"
 					        android:layout_height="wrap_content"
 					        android:defaultValue="false"
-					        android:text="@string/bg_description" />
+					        android:text="@string/bg_description"
+					        android:layout_marginBottom="10dp" />
                         
                        	<LinearLayout
                             android:layout_width="match_parent"
