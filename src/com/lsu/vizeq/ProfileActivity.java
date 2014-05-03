@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -221,58 +222,14 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 			                   public void onClick(DialogInterface dialog, int id) {
 			                	   myapp.queue.add(0, row.getTrack());
 			                	   refreshQueue();
-			                	   customSearchLayout.removeView(row);
-			                	   /*TrackRow customListRow = row;
-			                	   customListRow.setOnTouchListener(null);
-			                	   customSearchLayout.removeView(customListRow);
-			                	   
-			                	   customListTab.addView(customListRow, 0);
-								if (customListTab.getChildCount() > 1)
-								{
-			                		    if (((TrackRow)(customListTab.getChildAt(1))).originalColor == TrackRow.color1)
-			                		    {
-			                		    	customListRow.setBackgroundColor(TrackRow.color2);
-			                		    	customListRow.originalColor = TrackRow.color2;
-			                		    }
-			                		    else 
-			                		    {
-			                		    	customListRow.setBackgroundColor(TrackRow.color1);
-			                		    	customListRow.originalColor = TrackRow.color1;
-			                		    }
-								}
-								else
-								{
-									customListRow.setBackgroundColor(TrackRow.color1);
-			                	    customListRow.originalColor = TrackRow.color1;
-								}*/
-			                	   
+			                	   customSearchLayout.removeView(row);			                	   
 			                   }
 			               })
 			               .setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
 			                	   myapp.queue.add(row.getTrack());
 			                	   refreshQueue();
-			                	   customSearchLayout.removeView(row);
-			                	   /*TrackRow customListRow = row;
-			                	   customListRow.setOnTouchListener(null);
-			                	   customSearchLayout.removeView(customListRow);
-			                	   customListTab.addView(customListRow);
-			                	   if (customListTab.getChildCount() > 0)
-									{
-				                		    if (((TrackRow)(customListTab.getChildAt(customListTab.getChildCount() - 1))).originalColor == TrackRow.color1)
-				                		    	customListRow.setBackgroundColor(TrackRow.color2);
-				                		    else 
-				                		    {
-				                		    	customListRow.setBackgroundColor(TrackRow.color1);
-				                		    	customListRow.originalColor = TrackRow.color1;
-				                		    }
-									}
-									else
-									{
-										customListRow.setBackgroundColor(TrackRow.color1);
-				                	    customListRow.originalColor = TrackRow.color1;
-									}*/
-			                	   
+			                	   customSearchLayout.removeView(row);             	   
 			                   }
 			               });
 			        //builder.create();
@@ -355,19 +312,20 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 								String uri = tracks.getJSONObject(i).getString("href");
 								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
 								//Log.d("Search", trackName + ": " + trackArtist);
-								TrackRow tableRowToAdd = new TrackRow(ProfileActivity.this);
-								TextView textViewToAdd = new TextView(ProfileActivity.this);
+								TrackRow tableRowToAdd = new TrackRow(ProfileActivity.this, trackName, trackAlbum, trackArtist, uri);//Context context, String track, String album, String artist, String uri
+								/*TextView textViewToAdd = new TextView(ProfileActivity.this);
 								TextView textTwoViewToAdd = new TextView(ProfileActivity.this);
 								tableRowToAdd.mTrack = trackName;
 								tableRowToAdd.mArtist = trackArtist;
 								tableRowToAdd.mAlbum = trackAlbum;
-								tableRowToAdd.mUri = uri;
+								tableRowToAdd.mUri = uri;*/
 								tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
 								tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+								tableRowToAdd.setOnTouchListener(rowTap);
 								if (redStart + addRed < 255 && i < 16) redStart += addRed;
 								if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
 								if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
-								textViewToAdd.setText(trackName);
+								/*textViewToAdd.setText(trackName);
 								textTwoViewToAdd.setText(trackArtist);
 								textViewToAdd.setTextSize(20);
 								textTwoViewToAdd.setTextColor(Color.DKGRAY);
@@ -376,7 +334,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 								linearLayoutToAdd.addView(textViewToAdd);
 								linearLayoutToAdd.addView(textTwoViewToAdd);
 								tableRowToAdd.setOnTouchListener(rowTap);
-								tableRowToAdd.addView(linearLayoutToAdd);
+								tableRowToAdd.addView(linearLayoutToAdd);*/
 								customSearchLayout.addView(tableRowToAdd);
 							}
 							

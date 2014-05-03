@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -34,8 +35,11 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -56,6 +60,29 @@ public class HostActivity extends BackableActivity
 		setContentView(R.layout.activity_host);
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
+		
+		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Bold.otf");
+		TextView nameThisSession = (TextView)findViewById(R.id.textView1);
+		nameThisSession.setTypeface(font);
+		
+		Button letsParty = (Button) findViewById(R.id.OK);
+		letsParty.setTypeface(font);
+		letsParty.setAlpha(1f);
+		
+		letsParty.setOnTouchListener(new OnTouchListener()
+		{
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				if (event.getAction() == MotionEvent.ACTION_DOWN)
+					v.setAlpha(0.7f);
+				else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
+					v.setAlpha(1f);
+				return true;
+			}
+			
+		});
 		
 		myapp = (MyApplication) this.getApplicationContext();
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.hostBackground);
@@ -179,7 +206,6 @@ public class HostActivity extends BackableActivity
 	
 	public LocationListener locationListener = new LocationListener()
 	{
-
 		@Override
 		public void onLocationChanged(Location arg0) {
 			// TODO Auto-generated method stub
