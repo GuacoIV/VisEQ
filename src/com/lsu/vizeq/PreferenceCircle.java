@@ -2,6 +2,7 @@ package com.lsu.vizeq;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -20,6 +21,7 @@ import android.view.View;
 			// TODO Auto-generated constructor stub
 		}
 		public List<Track> tracks;
+		public Set<String> requesters;
 		String text;
 		int x;
 		int y;
@@ -80,10 +82,11 @@ import android.view.View;
 		    canvas.drawText(text, x, y, paint);
 		}
 
-		public PreferenceCircle(Context context, int x, int y, int radius, String a, List<Track> tracks)
+		public PreferenceCircle(Context context, int x, int y, int radius, String a, List<Track> tracks, Set<String> requesters)
 		{
 			super(context);
 			this.tracks = tracks;
+			this.requesters = requesters;
 			//super.setX(x);
 			//super.setY(y);
 			this.name = a;

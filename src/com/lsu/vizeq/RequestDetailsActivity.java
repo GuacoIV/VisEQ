@@ -36,6 +36,8 @@ public class RequestDetailsActivity extends Activity
 	private String requestName;
 	private List<Track> tracks;
 	private int color;
+	private int numRequesters;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -50,12 +52,15 @@ public class RequestDetailsActivity extends Activity
 		    tracks = extras.getParcelableArrayList("tracks");
 		    requestName = extras.getString("requestname");
 		    color = extras.getInt("color");
+		    numRequesters = extras.getInt("numRequesters");
 		    //artist = thisCircle.name;
 		    // Show the Up button in the action bar.
 		    setupActionBar();
 		    TextView info = ((TextView) findViewById(R.id.requestInfo));
 		   // info.setText(artist.mNumTrackRequests + " track requests by " + artist.mNumPeopleRequestingArtist + " different people.");
-		    info.setText(3 + " track requests by " + 3 + " different people.");
+		    
+		    
+		    info.setText(tracks.size() + " track requests by " + numRequesters + " different people.");
 		    list = (LinearLayout) findViewById(R.id.trackRequests);
 		    //list.setBackgroundColor(thisCircle.color);
 		    

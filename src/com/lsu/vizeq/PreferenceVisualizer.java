@@ -408,6 +408,7 @@ public class PreferenceVisualizer {
 			String artistName = requests.get(i).mArtist;
 			String trackName = requests.get(i).mTrack;
 			String albumName = requests.get(i).mAlbum;
+			String requester = requests.get(i).mRequester;
 			
 			Track track = requests.get(i);
 			
@@ -416,17 +417,26 @@ public class PreferenceVisualizer {
 				if(sortType.equals("artist") && circles.get(j).getName().equals(artistName))
 				{
 					if(!circles.get(j).getTrackList().contains(track))
+					{
 						circles.get(j).getTrackList().add(track);
+						circles.get(j).getRequesters().add(requester);
+					}
 				}
 				else if(sortType.equals("album") && circles.get(j).getName().equals(albumName))
 				{
 					if(!circles.get(j).getTrackList().contains(track))
+					{
 						circles.get(j).getTrackList().add(track);
+						circles.get(j).getRequesters().add(requester);
+					}
 				}
 				else if(sortType.equals("track") && circles.get(j).getName().equals(trackName))
 				{
 					if(!circles.get(j).getTrackList().contains(track))
+					{
 						circles.get(j).getTrackList().add(track);
+						circles.get(j).getRequesters().add(requester);
+					}
 				}
 			}
 			

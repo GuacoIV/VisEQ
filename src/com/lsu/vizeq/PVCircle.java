@@ -1,10 +1,13 @@
 package com.lsu.vizeq;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PVCircle {
 	private List<Track> trackList;
+	private Set<String> requesters;
 	private String name;
 	private int weight;
 	private double radius;
@@ -14,6 +17,7 @@ public class PVCircle {
 
 	public PVCircle() {
 		trackList = new ArrayList<Track>();
+		requesters = new HashSet<String>();
 	}
 
 	public List<Track> getTrackList() {
@@ -77,6 +81,11 @@ public class PVCircle {
 	public double getScale()
 	{
 		return scale;
+	}
+	
+	public Set<String> getRequesters()
+	{
+		return requesters;
 	}
 
 
