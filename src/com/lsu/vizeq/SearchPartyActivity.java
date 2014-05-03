@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -74,7 +75,11 @@ public class SearchPartyActivity extends BackableActivity {
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 		setupActionBar();
 		
-		findViewById(R.id.button1).setOnTouchListener(new OnTouchListener()
+		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Regular.otf");
+		Button searchParties = (Button) findViewById(R.id.button1);
+		searchParties.setTypeface(font);
+		
+		searchParties.setOnTouchListener(new OnTouchListener()
 		{
 
 			@Override
