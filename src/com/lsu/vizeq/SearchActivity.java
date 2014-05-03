@@ -177,6 +177,10 @@ public class SearchActivity extends Activity
 	    ts.setContent(R.id.tab2);
 	    ts.setIndicator("Queue");  
 	    tabhost.addTab(ts);
+	    ts = tabhost.newTabSpec("tag3");
+	    ts.setContent(R.id.tab3);
+	    ts.setIndicator("Playlists");
+	    tabhost.addTab(ts);
 	    //ts= tabhost.newTabSpec("tag3");
 	    //ts.setContent(R.id.tab3);
 	    //ts.setIndicator("Third Tab");
