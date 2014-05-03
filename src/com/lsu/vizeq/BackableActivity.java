@@ -18,8 +18,20 @@ public class BackableActivity extends Activity {
 	    Typeface titleFont = Typeface.createFromAsset(getAssets(), "Mohave-SemiBold.otf");
 	    yourTextView.setTypeface(titleFont);
 	    yourTextView.setTextSize(22);
-	    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+	    ApplyTransition(false);
     }
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		ApplyTransition(false);
+	}	
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		ApplyTransition(true);
+	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -31,5 +43,12 @@ public class BackableActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 		return true;
+	}
+	
+	protected void ApplyTransition(boolean isOut) {
+		if (isOut)
+		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);	
+		else 
+		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);	
 	}
 }
