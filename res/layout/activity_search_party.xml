@@ -30,10 +30,13 @@
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginTop="36dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:onClick="searchForPartiesServer"
-        android:text="Search for Parties" />
+        android:text="Search for Parties" 
+        android:background="#FFFFFF"/>
 
     <TextView
         android:id="@+id/resultText"

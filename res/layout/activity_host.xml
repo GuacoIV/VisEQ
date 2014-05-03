@@ -19,7 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="NAME YOUR SESSION:"
-        android:textSize="22sp"
+        android:textSize="32sp"
+        android:textColor="#FFFFFF"
         android:gravity="center"/>
 
     <LinearLayout
@@ -55,7 +56,8 @@
         android:text="@string/startSession" 
         android:gravity="center"
         android:layout_gravity="center_horizontal"
-        android:alpha="1"/>
+        android:alpha="1"
+        android:background="#FFFFFF"/>
     </LinearLayout>
 	</LinearLayout>
 </RelativeLayout>
