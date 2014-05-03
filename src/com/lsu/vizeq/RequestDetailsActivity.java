@@ -1,7 +1,9 @@
 package com.lsu.vizeq;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -21,7 +23,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -38,7 +39,6 @@ public class RequestDetailsActivity extends BackableActivity
 	private List<Track> tracks;
 	private int color;
 	private int numRequesters;
-	Typeface missionGothic;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -46,86 +46,116 @@ public class RequestDetailsActivity extends BackableActivity
 		setContentView(R.layout.activity_request_details);
 		missionGothic = Typeface.createFromAsset(getAssets(), "Mission Gothic.otf");
 		myapp = (MyApplication) this.getApplicationContext();
-			
+
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) 
 		{
-		    tracks = extras.getParcelableArrayList("tracks");
-		    requestName = extras.getString("requestname");
-		    color = extras.getInt("color");
-		    numRequesters = extras.getInt("numRequesters");
-		    //artist = thisCircle.name;
-		    // Show the Up button in the action bar.
-		    setupActionBar();
-		    TextView info = ((TextView) findViewById(R.id.requestInfo));
-		   // info.setText(artist.mNumTrackRequests + " track requests by " + artist.mNumPeopleRequestingArtist + " different people.");
-		    
-		    
-		    info.setText(tracks.size() + " track requests by " + numRequesters + " different people.");
-		    list = (LinearLayout) findViewById(R.id.trackRequests);
-		    //list.setBackgroundColor(thisCircle.color);
-		    
-		    OnTouchListener rowTap = new OnTouchListener()
-			{
+			tracks = extras.getParcelableArrayList("tracks");
+			requestName = extras.getString("requestName");
+			color = extras.getInt("color");
+		}
+		//artist = thisCircle.name;
+		// Show the Up button in the action bar.
+		setupActionBar();
+		sortTracks();
+		refreshList();
+	}
+	
+	//sort tracks by most unique requests
+	private void sortTracks()
+	{
+		
+	}
 
-				@Override
-				public boolean onTouch(View arg0, MotionEvent arg1)
+	
+	//create/refresh the list
+	
+	private void refreshList()
+	{
+		TextView info = ((TextView) findViewById(R.id.requestInfo));
+		//get info on number of tracks and requesters
+		Set<String> uniqueRequesters = new HashSet<String>();
+		for(int i=0; i<tracks.size(); i++)
+		{
+			for(int j=0; j<tracks.get(i).requesters.size(); j++)
+			{
+				uniqueRequesters.add(tracks.get(i).requesters.get(j));
+			}
+		}
+		
+		int numTracks = tracks.size();
+		int numRequesters = uniqueRequesters.size();
+		String trackString = (numTracks == 1) ? " track request by " : " track requests by ";
+		String requesterString = (numRequesters == 1) ? " person." : " people.";
+		
+		info.setText(numTracks + trackString + numRequesters + requesterString);
+		list = (LinearLayout) findViewById(R.id.trackRequests);
+		
+		list.removeAllViews();
+		//list.setBackgroundColor(thisCircle.color);
+
+		OnTouchListener rowTap = new OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1)
+			{
+				if (arg1.getAction() == MotionEvent.ACTION_DOWN)
 				{
-					if (arg1.getAction() == MotionEvent.ACTION_DOWN)
-					{
-						TrackRow row = (TrackRow)arg0;
-						row.setBackgroundColor(Color.BLUE);
-						addToQueue(row);
-						
-						return true;
-					}
-					else if (arg1.getAction() == MotionEvent.ACTION_UP)
-					{		
-					}
+					TrackRow row = (TrackRow)arg0;
+					row.setBackgroundColor(Color.BLUE);
+					addToQueue(row);
+
 					return true;
 				}
-			};
-			int startColor = color;
-			int redStart = Color.red(startColor);
-			int greenStart = Color.green(startColor);
-			int blueStart = Color.blue(startColor);
-			
-			int redEnd = Color.red(startColor);
-			int addRed = (redEnd - redStart)/15;
-			
-			int greenEnd = Color.green(startColor);
-			int addGreen = (greenEnd - greenStart)/15;
-			
-			int blueEnd = Color.blue(startColor);
-			int addBlue = (blueEnd - blueStart)/15;
-		    for (int i = 0; i < tracks.size(); i++)
-		    {
-				String trackName = tracks.get(i).mTrack;
-				String trackArtist = tracks.get(i).mArtist;
-				String trackAlbum = tracks.get(i).mAlbum;
-				String trackUri = tracks.get(i).mUri;
-				
-				if (redStart + addRed < 255 && i < 16) redStart += addRed;
-				if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
-				if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
-				
-				TrackRow trackRowToAdd = new TrackRow(this, trackName, trackAlbum, trackArtist, trackUri);
-				
-				trackRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
-				trackRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
-				
-				
-				//textViewToAdd.setText(artist.mTrackRequests.get(i).mTrack);
-				//textTwoViewToAdd.setText(artist.mTrackRequests.get(i).mArtist);
-				//textViewToAdd.setTextSize(20);
-				//textTwoViewToAdd.setTextColor(Color.DKGRAY);
-				trackRowToAdd.setOnTouchListener(rowTap);
-				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-				params.setMargins(0, 2, 0, 2);
-				list.addView(trackRowToAdd, params);
-		    }
+				else if (arg1.getAction() == MotionEvent.ACTION_UP)
+				{		
+				}
+				return true;
+			}
+		};
+		int startColor = color;
+		int redStart = Color.red(startColor);
+		int greenStart = Color.green(startColor);
+		int blueStart = Color.blue(startColor);
+
+		int redEnd = Color.red(startColor);
+		int addRed = (redEnd - redStart)/15;
+
+		int greenEnd = Color.green(startColor);
+		int addGreen = (greenEnd - greenStart)/15;
+
+		int blueEnd = Color.blue(startColor);
+		int addBlue = (blueEnd - blueStart)/15;
+		for (int i = 0; i < tracks.size(); i++)
+		{
+			String trackName = tracks.get(i).mTrack;
+			String trackArtist = tracks.get(i).mArtist;
+			String trackAlbum = tracks.get(i).mAlbum;
+			String trackUri = tracks.get(i).mUri;
+
+			if (redStart + addRed < 255 && i < 16) redStart += addRed;
+			if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
+			if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
+
+			TrackRow trackRowToAdd = new TrackRow(this, trackName, trackAlbum, trackArtist, trackUri);
+
+			trackRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
+			trackRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+
+
+			//textViewToAdd.setText(artist.mTrackRequests.get(i).mTrack);
+			//textTwoViewToAdd.setText(artist.mTrackRequests.get(i).mArtist);
+			//textViewToAdd.setTextSize(20);
+			//textTwoViewToAdd.setTextColor(Color.DKGRAY);
+			trackRowToAdd.setOnTouchListener(rowTap);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.setMargins(0, 2, 0, 2);
+			list.addView(trackRowToAdd, params);
 		}
 	}
+	
+	
+	
 
 	/**
 	 * Set up the {@link android.app.ActionBar}.
@@ -233,8 +263,8 @@ public class RequestDetailsActivity extends BackableActivity
 				public void onClick(DialogInterface arg0, int arg1) {
 //					Log.d("addToQueue", "Adding " + track.mTrack + " to top");
 					myapp.queue.add(0, track);	
-					list.removeView(row);
-					myapp.requests.remove(row.getTrack());
+					removeRequest(track);
+					refreshList();
 					getTrackCoverThread.start();
 				}
         		
@@ -245,17 +275,38 @@ public class RequestDetailsActivity extends BackableActivity
 				public void onClick(DialogInterface dialog, int which) {
 //					Log.d("addToQueue","Adding " + track.mTrack + " to bottom");
 					myapp.queue.add(track);
-					list.removeView(row);
-					myapp.requests.remove(row.getTrack());
+					removeRequest(track);
+					refreshList();
 					getTrackCoverThread.start();
 				}
 				
         	});
         
         builder.show();
-        
-
         	
+	}
+	
+	private void removeRequest(Track track)
+	{
+		//remove from myapp request list
+		for(int i=0; i<myapp.requests.size(); i++)
+		{
+			if(myapp.requests.get(i).mUri.equals(track.mUri))
+			{
+				myapp.requests.remove(i);
+				break;
+			}
+		}
+		
+		//remove from our list
+		for(int i=0; i<tracks.size(); i++)
+		{
+			if(tracks.get(i).mUri.equals(track.mUri))
+			{
+				tracks.remove(i);
+				break;
+			}
+		}
 	}
 
 }

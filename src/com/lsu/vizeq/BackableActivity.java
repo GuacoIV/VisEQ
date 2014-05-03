@@ -8,7 +8,6 @@ public class BackableActivity extends Activity {
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // etc...
         getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 	
@@ -18,7 +17,6 @@ public class BackableActivity extends Activity {
 		case android.R.id.home:
 			this.finish();
 			break;
-
 		default:
 			return super.onOptionsItemSelected(item);
 		}

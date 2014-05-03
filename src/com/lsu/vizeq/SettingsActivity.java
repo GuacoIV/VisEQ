@@ -1,6 +1,7 @@
 package com.lsu.vizeq;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.media.Ringtone;
@@ -16,6 +17,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.view.MenuItem;
 
 import java.util.List;
 
@@ -41,7 +43,10 @@ public class SettingsActivity extends PreferenceActivity
 
 		setupSimplePreferencesScreen();
 	}
-
+	protected void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+	    getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
 	/**
 	 * Shows the simplified settings UI if the device configuration if the device configuration dictates that a simplified, single-pane UI should be shown.
 	 */
@@ -207,6 +212,18 @@ public class SettingsActivity extends PreferenceActivity
 		}
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			this.finish();
+			break;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+		return true;
+	}
+	
 	/**
 	 * This fragment shows notification preferences only. It is used when the activity is showing a two-pane settings UI.
 	 */

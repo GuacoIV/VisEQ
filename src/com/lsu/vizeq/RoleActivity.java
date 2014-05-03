@@ -166,6 +166,8 @@ public class RoleActivity extends BackableActivity
 			Intent nextIntent2  = new Intent(RoleActivity.this, AboutActivity.class);
 			startActivity(nextIntent2);
 			break;
+		default:
+			super.onOptionsItemSelected(item);
 		}
 		return true;
 	}	
