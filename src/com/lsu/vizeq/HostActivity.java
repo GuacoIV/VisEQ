@@ -51,40 +51,14 @@ public class HostActivity extends BackableActivity
 	ActionBar actionBar;
 	String myName, zipcode, externalIp;
 	MyApplication myapp;
-	Location currLocation = null;
-
+	Location currLocation = null;	
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_host);
-		ActionBar actionBar = getActionBar();
-		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
-		
-		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Bold.otf");
-		TextView nameThisSession = (TextView)findViewById(R.id.textView1);
-		nameThisSession.setTypeface(font);
-		
-		Button letsParty = (Button) findViewById(R.id.OK);
-		letsParty.setTypeface(font);
-		letsParty.setAlpha(1f);
-		
-		letsParty.setOnTouchListener(new OnTouchListener()
-		{
+	protected void onStart(){
+		super.onStart();
+		actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 
-			@Override
-			public boolean onTouch(View v, MotionEvent event)
-			{
-				if (event.getAction() == MotionEvent.ACTION_DOWN)
-					v.setAlpha(0.7f);
-				else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
-					v.setAlpha(1f);
-				return true;
-			}
-			
-		});
-		
-		myapp = (MyApplication) this.getApplicationContext();
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.hostBackground);
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -114,6 +88,41 @@ public class HostActivity extends BackableActivity
 				break;			
 		}
 		
+	}
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_host);		
+		ActionBar actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
+		
+		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Bold.otf");
+		TextView nameThisSession = (TextView)findViewById(R.id.textView1);
+		nameThisSession.setTypeface(font);
+		
+		Button letsParty = (Button) findViewById(R.id.OK);
+		letsParty.setTypeface(font);
+		letsParty.setAlpha(1f);
+		
+		letsParty.setOnTouchListener(new OnTouchListener()
+		{
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event)
+			{
+				if (event.getAction() == MotionEvent.ACTION_DOWN)
+					v.setAlpha(0.7f);
+				else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
+					v.setAlpha(1f);
+				return true;
+			}
+			
+		});		
+		
+		myapp = (MyApplication) this.getApplicationContext();
+				
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 		

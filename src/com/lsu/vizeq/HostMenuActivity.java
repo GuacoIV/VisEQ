@@ -182,14 +182,11 @@ public class HostMenuActivity extends BackableActivity
 				}
 			}).start();		
 	}
-
+	
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_host_menu);
-//		Log.d("Flow", "onCreate HostMenu");
-		ActionBar actionBar = getActionBar();
+	protected void onStart(){
+		super.onStart();
+		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
 		LinearLayout search = (LinearLayout)findViewById(R.id.SearchWrap);
 		LinearLayout scope = (LinearLayout)findViewById(R.id.ScopeWrap);
@@ -200,7 +197,6 @@ public class HostMenuActivity extends BackableActivity
 		playing.setAlpha(0.7f);
 		visualizer.setAlpha(0.7f);
 		
-		//		Log.d("Flow", "onStart HostMenu");
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
 		if (posi > 0) VizEQ.numRand = posi;		
@@ -242,6 +238,27 @@ public class HostMenuActivity extends BackableActivity
 				visualizer.setBackgroundColor(getResources().getColor(R.color.Orange));
 				break;			
 		}
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_host_menu);
+//		Log.d("Flow", "onCreate HostMenu");
+		actionBar = getActionBar();
+		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
+		LinearLayout search = (LinearLayout)findViewById(R.id.SearchWrap);
+		LinearLayout scope = (LinearLayout)findViewById(R.id.ScopeWrap);
+		LinearLayout playing = (LinearLayout)findViewById(R.id.NowPlayingWrap);
+		LinearLayout visualizer = (LinearLayout)findViewById(R.id.SoundVizWrap);
+		scope.setAlpha(0.7f);
+		search.setAlpha(0.7f);
+		playing.setAlpha(0.7f);
+		visualizer.setAlpha(0.7f);
+		
+		//		Log.d("Flow", "onStart HostMenu");
+
 		SeekBar freqSlider = new SeekBar(this);
 		RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		params.setMargins(3,3,3,3);

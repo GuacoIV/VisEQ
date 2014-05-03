@@ -52,14 +52,18 @@ public class SearchPartyActivity extends BackableActivity {
 	ActionBar actionBar;
 	Location currLocation = null;
 	
+	@Override
+	protected void onStart(){
+		super.onStart();
+		setupActionBar();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		myapp = (MyApplication) this.getApplicationContext();
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_party);
-		actionBar = getActionBar();
-				
+		
 		EditText et = (EditText) findViewById(R.id.username_box);
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		String userName = memory.getString("username", "");
