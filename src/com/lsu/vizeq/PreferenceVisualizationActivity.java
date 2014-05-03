@@ -274,7 +274,7 @@ public class PreferenceVisualizationActivity extends BackableActivity {
 
 //			Log.d("viewCircles", "currCircle.getRadius = " + currCircle.getRadius());
 //			Log.d("viewCircles", "currCircle.getRadius * 300 = " + (currCircle.getRadius()*225));
-			PreferenceCircle pCircle = new PreferenceCircle(this, (int) (currCircle.getX()*currCircle.getScale()), (int) (currCircle.getY()*currCircle.getScale()), (int) (currCircle.getRadius()*currCircle.getScale()), currCircle.getName(), currCircle.getTrackList(), currCircle.getRequesters());
+			PreferenceCircle pCircle = new PreferenceCircle(this, (int) (currCircle.getX()*currCircle.getScale()), (int) (currCircle.getY()*currCircle.getScale()), (int) (currCircle.getRadius()*currCircle.getScale()), currCircle.getName(), currCircle.getTrackList());
 //			Log.d("viewCircles", "pCircle.getRadius = " + pCircle.radius);
 			pCircle.color = currCircle.getColor();
 			pCircles.add(pCircle);
@@ -291,7 +291,6 @@ public class PreferenceVisualizationActivity extends BackableActivity {
 		i.putParcelableArrayListExtra("tracks", (ArrayList<Track>) pCircle.tracks);
 		i.putExtra("requestName", pCircle.name);
 		i.putExtra("color", pCircle.color);
-		i.putExtra("numRequesters", pCircle.requesters.size());
 		context.startActivity(i);
 	}
 	

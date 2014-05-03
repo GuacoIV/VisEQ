@@ -7,7 +7,6 @@ import java.util.Set;
 
 public class PVCircle {
 	private List<Track> trackList;
-	private Set<String> requesters;
 	private String name;
 	private int weight;
 	private double radius;
@@ -17,7 +16,6 @@ public class PVCircle {
 
 	public PVCircle() {
 		trackList = new ArrayList<Track>();
-		requesters = new HashSet<String>();
 	}
 
 	public List<Track> getTrackList() {
@@ -83,10 +81,7 @@ public class PVCircle {
 		return scale;
 	}
 	
-	public Set<String> getRequesters()
-	{
-		return requesters;
-	}
+	
 
 
 }

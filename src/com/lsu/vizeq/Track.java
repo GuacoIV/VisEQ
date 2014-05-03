@@ -27,9 +27,11 @@
 
 package com.lsu.vizeq;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.os.ParcelableCompat;
 
 class Track implements Parcelable
 {
@@ -39,6 +41,7 @@ class Track implements Parcelable
 	public String mUri;
 	public String mThumbnail;
 	public String mRequester;
+	public List<String> requesters;
 	
 	public Track(String track, String album, String artist,	String uri, String thumbnail, int dummy) {
 		mTrack = track;
@@ -46,16 +49,19 @@ class Track implements Parcelable
 		mArtist = artist;
 		mUri = uri;
 		mThumbnail = thumbnail;
+		requesters = new ArrayList<String>();
 	}
 	
 	public Track(Parcel source)
 	{
+		requesters = new ArrayList<String>();
 		mTrack = source.readString();
 		mAlbum = source.readString();
 		mArtist = source.readString();
 		mUri = source.readString();
 		mThumbnail = source.readString();
 		mRequester = source.readString();
+		source.readStringList(requesters);
 	}
 	
 	public Track(String track, String album, String artist,	String uri, String requester) {
@@ -64,6 +70,7 @@ class Track implements Parcelable
 		mArtist = artist;
 		mUri = uri;
 		mRequester = requester;
+		requesters = new ArrayList<String>();
 	}
 	
 	public Track(String track, String album, String artist, String uri)
@@ -72,11 +79,12 @@ class Track implements Parcelable
 		mAlbum = album;
 		mArtist = artist;
 		mUri = uri;
+		requesters = new ArrayList<String>();
 	}
 	
 	public Track()
 	{
-		
+		requesters = new ArrayList<String>();
 	}
 
 	public String getSpotifyUri() {
@@ -110,6 +118,7 @@ class Track implements Parcelable
 		dest.writeString(mUri);
 		dest.writeString(mThumbnail);
 		dest.writeString(mRequester);
+		dest.writeStringList(requesters);
 	}
 	
 	public static final Parcelable.Creator CREATOR = new Parcelable.Creator()

@@ -21,7 +21,6 @@ import android.view.View;
 			// TODO Auto-generated constructor stub
 		}
 		public List<Track> tracks;
-		public Set<String> requesters;
 		String text;
 		int x;
 		int y;
@@ -82,11 +81,10 @@ import android.view.View;
 		    canvas.drawText(text, x, y, paint);
 		}
 
-		public PreferenceCircle(Context context, int x, int y, int radius, String a, List<Track> tracks, Set<String> requesters)
+		public PreferenceCircle(Context context, int x, int y, int radius, String a, List<Track> tracks)
 		{
 			super(context);
 			this.tracks = tracks;
-			this.requesters = requesters;
 			//super.setX(x);
 			//super.setY(y);
 			this.name = a;

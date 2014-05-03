@@ -336,13 +336,36 @@ public class HostMenuActivity extends BackableActivity
 										outputStream.write(uriBytes);
 										outputStream.write(backslashN);
 							 */
-							Track request = new Track();
-							request.mAlbum = PacketParser.getArgs(receivedPacket)[0];
-							request.mArtist = PacketParser.getArgs(receivedPacket)[1];
-							request.mRequester = PacketParser.getArgs(receivedPacket)[2];
-							request.mTrack = PacketParser.getArgs(receivedPacket)[3];
-							request.mUri = PacketParser.getArgs(receivedPacket)[4];
-							myapp.requests.add(request);
+
+							String album = PacketParser.getArgs(receivedPacket)[0];
+							String artist = PacketParser.getArgs(receivedPacket)[1];
+							String requester = PacketParser.getArgs(receivedPacket)[2];
+							String trackName = PacketParser.getArgs(receivedPacket)[3];
+							String uri = PacketParser.getArgs(receivedPacket)[4];
+							//check to see if already requested
+							boolean found = false;
+							for(int i = 0; i<myapp.requests.size(); i++)
+							{
+								if(myapp.requests.get(i).mUri.equals(uri))
+								{
+									//if not already requested by this person, add to requester list for track
+									if(!myapp.requests.get(i).requesters.contains(requester))
+										myapp.requests.get(i).requesters.add(requester);
+									found = true;
+								}
+							}
+							
+							if(!found)
+							{
+								Track request = new Track();
+								request.mAlbum = album;
+								request.mArtist = artist;
+								request.mTrack = trackName;
+								request.mUri = uri;
+								request.requesters.add(requester);
+								myapp.requests.add(request);
+							}
+							
 //							Log.d("listen thread", "Request added!");
 //							Log.d("listen thread", "request album = " + request.mAlbum);
 //							Log.d("listen thread", "request artist = " + request.mArtist);
