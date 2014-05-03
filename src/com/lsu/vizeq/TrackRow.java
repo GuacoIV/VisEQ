@@ -2,6 +2,7 @@ package com.lsu.vizeq;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ public class TrackRow extends TableRow
 	public LinearLayout trackRowLayout;
 	public TextView trackView;
 	public TextView artistView;
+	private Context context;
 	
 	public TrackRow(Context context, String track, String album, String artist, String uri) {
 		super(context);
@@ -32,15 +34,21 @@ public class TrackRow extends TableRow
 		trackView = new TextView(context);
 		artistView = new TextView(context);
 		trackRowLayout = new LinearLayout(context);
+		this.context = context;
+		this.setPadding(4, 4, 0, 4);
 		init();
 	}
 	
 	private void init()
 	{
+		Typeface font = Typeface.createFromAsset(context.getAssets(), "Mission Gothic Regular.otf");
+		trackView.setTypeface(font);
+		artistView.setTypeface(font);
 		trackRowLayout.setOrientation(LinearLayout.VERTICAL);
 		trackView.setText(mTrack);
 		artistView.setText(mArtist);
 		trackView.setTextSize(20);
+		trackView.setTextColor(Color.BLACK);
 		artistView.setTextColor(Color.DKGRAY);
 		trackRowLayout.addView(trackView);
 		trackRowLayout.addView(artistView);

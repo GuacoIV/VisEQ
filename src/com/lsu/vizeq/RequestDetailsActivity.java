@@ -17,6 +17,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -37,13 +38,13 @@ public class RequestDetailsActivity extends BackableActivity
 	private List<Track> tracks;
 	private int color;
 	private int numRequesters;
-	
+	Typeface missionGothic;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_request_details);
-		
+		missionGothic = Typeface.createFromAsset(getAssets(), "Mission Gothic.otf");
 		myapp = (MyApplication) this.getApplicationContext();
 			
 		Bundle extras = getIntent().getExtras();
