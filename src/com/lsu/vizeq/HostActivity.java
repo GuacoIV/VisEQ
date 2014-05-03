@@ -49,7 +49,6 @@ public class HostActivity extends Activity
 	MyApplication myapp;
 	Location currLocation = null;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
