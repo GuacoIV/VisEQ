@@ -75,14 +75,14 @@ public class PreferenceVisualizationActivity extends Activity {
 				viz.init();
 				viz.sortByArtist();
 				currentSort = "artist";
-				Log.d("viz", "packing circles...");
+//				Log.d("viz", "packing circles...");
 				//viz.packCircles2();
-				Log.d("viz","circles packed");
+//				Log.d("viz","circles packed");
 				final List<PVCircle> circles = viz.getCircles();
 				
 				if (circles.isEmpty()==false)
 				{
-					Log.d("viz", "circles obtained");
+//					Log.d("viz", "circles obtained");
 				
 					runOnUiThread(new Runnable()
 					{
@@ -90,7 +90,7 @@ public class PreferenceVisualizationActivity extends Activity {
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
-							Log.d("viz", "running on ui thread - viewCircles");
+//							Log.d("viz", "running on ui thread - viewCircles");
 							viewCircles(circles);
 							
 						}
@@ -126,22 +126,22 @@ public class PreferenceVisualizationActivity extends Activity {
 					viz.init();
 					viz.sortByArtist();
 					currentSort = "artist";
-					Log.d("viz", "packing circles...");
+//					Log.d("viz", "packing circles...");
 					//viz.packCircles2();
-					Log.d("viz","circles packed");
+//					Log.d("viz","circles packed");
 					final List<PVCircle> circles = viz.getCircles();
 					
 					if (circles.isEmpty()==false)
 					{
 						
-						Log.d("viz", "circles obtained");
+//						Log.d("viz", "circles obtained");
 						runOnUiThread(new Runnable()
 						{
 	
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								Log.d("viz", "running on ui thread - viewCircles");
+//								Log.d("viz", "running on ui thread - viewCircles");
 								viewCircles(circles);
 							}
 							
@@ -174,21 +174,21 @@ public class PreferenceVisualizationActivity extends Activity {
 					viz.init();
 					viz.sortByAlbum();
 					currentSort = "album";
-					Log.d("viz", "packing circles...");
+//					Log.d("viz", "packing circles...");
 					//viz.packCircles2();
-					Log.d("viz","circles packed");
+//					Log.d("viz","circles packed");
 					final List<PVCircle> circles = viz.getCircles();
 					
 					if (circles.isEmpty()==false)
 					{
-						Log.d("viz", "circles obtained");
+//						Log.d("viz", "circles obtained");
 						runOnUiThread(new Runnable()
 						{
 	
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								Log.d("viz", "running on ui thread - viewCircles");
+//								Log.d("viz", "running on ui thread - viewCircles");
 								viewCircles(circles);
 							}
 							
@@ -223,18 +223,18 @@ public class PreferenceVisualizationActivity extends Activity {
 					viz.sortByTrack();
 					currentSort = "track";
 					//viz.packCircles2();
-					Log.d("viz","circles packed");
+//					Log.d("viz","circles packed");
 					final List<PVCircle> circles = viz.getCircles();
 					if (viz.getCircles().isEmpty()==false)
 					{
-						Log.d("viz", "circles obtained");
+//						Log.d("viz", "circles obtained");
 						runOnUiThread(new Runnable()
 						{
 	
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								Log.d("viz", "running on ui thread - viewCircles");
+//								Log.d("viz", "running on ui thread - viewCircles");
 								viewCircles(circles);
 							}
 							
@@ -271,10 +271,10 @@ public class PreferenceVisualizationActivity extends Activity {
 		for(int i=0; i<circles.size(); i++)
 		{
 			PVCircle currCircle = circles.get(i);
-			Log.d("viewCircles", "currCircle.getRadius = " + currCircle.getRadius());
-			Log.d("viewCircles", "currCircle.getRadius * 300 = " + (currCircle.getRadius()*225));
+//			Log.d("viewCircles", "currCircle.getRadius = " + currCircle.getRadius());
+//			Log.d("viewCircles", "currCircle.getRadius * 300 = " + (currCircle.getRadius()*225));
 			PreferenceCircle pCircle = new PreferenceCircle(this, (int) (currCircle.getX()*currCircle.getScale()), (int) (currCircle.getY()*currCircle.getScale()), (int) (currCircle.getRadius()*currCircle.getScale()), currCircle.getName(), currCircle.getTrackList());
-			Log.d("viewCircles", "pCircle.getRadius = " + pCircle.radius);
+//			Log.d("viewCircles", "pCircle.getRadius = " + pCircle.radius);
 			pCircle.color = currCircle.getColor();
 			pCircles.add(pCircle);
 		}

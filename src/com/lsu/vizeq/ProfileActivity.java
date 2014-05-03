@@ -410,9 +410,9 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 				}
 				else
 				{
-					Log.d("yo", "yo");
+//					Log.d("yo", "yo");
 					sendRequest();
-					Log.d("lol","lol");
+//					Log.d("lol","lol");
 				}
 			}
 
@@ -487,7 +487,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 							//make a packet containing all elements with newlines between each
 							for (int j = 0; j < myapp.queue.size(); j++)
 							{
-								Log.d("SendRequestTask", "Sending: "+myapp.queue.get(j).mTrack);
+//								Log.d("SendRequestTask", "Sending: "+myapp.queue.get(j).mTrack);
 								byte[] requestHeader = "request\n".getBytes();
 								byte[] backslashN = "\n".getBytes();
 								byte[] albumBytes = myapp.queue.get(j).mAlbum.getBytes();
@@ -542,7 +542,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 		LinearLayout queueTab = (LinearLayout) findViewById(R.id.profile_queue);
 		queueTab.removeAllViews();	//remove everything that's there
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		Log.d("refreshQueue", "refreshing");
+//		Log.d("refreshQueue", "refreshing");
 		/*---color stuff---*/
 		//Calculate start and end colors
 		int startColor = 0;
@@ -609,7 +609,7 @@ public class ProfileActivity extends Activity implements OnItemSelectedListener{
 			queueRow.setBackgroundColor(Color.argb(255, r, g, b));
 			params.setMargins(0, 2, 0, 2);
 			queueTab.addView(queueRow, params);
-			Log.d("refresh queue", "adding row to tab");
+//			Log.d("refresh queue", "adding row to tab");
 		}
 	}
 

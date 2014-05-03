@@ -98,8 +98,8 @@ public class PreferenceVisualizer {
 		String n8 = circleNames.get(8);
 		String n9 = circleNames.get(9);
 		
-		Log.d("sorted", n0 + ", " + n1 + ", " + n2 + ", " + n3 + ", " + n4 + ", " + n5 + ", " + n6 + ", " + n7 + ", " + n8 + ", " + n9);
-		Log.d("sorted", countMap.get(n0) + ", " + countMap.get(n1) + ", " + countMap.get(n2) + ", " + countMap.get(n3) + ", " + countMap.get(n4) + ", " + countMap.get(n5) + ", " + countMap.get(n6) + ", " + countMap.get(n7) + ", " + countMap.get(n8) + ", " + countMap.get(n9));
+//		Log.d("sorted", n0 + ", " + n1 + ", " + n2 + ", " + n3 + ", " + n4 + ", " + n5 + ", " + n6 + ", " + n7 + ", " + n8 + ", " + n9);
+//		Log.d("sorted", countMap.get(n0) + ", " + countMap.get(n1) + ", " + countMap.get(n2) + ", " + countMap.get(n3) + ", " + countMap.get(n4) + ", " + countMap.get(n5) + ", " + countMap.get(n6) + ", " + countMap.get(n7) + ", " + countMap.get(n8) + ", " + countMap.get(n9));
 	}
 	
 	private void useMap(Map<String, Integer> countMap)
@@ -110,7 +110,7 @@ public class PreferenceVisualizer {
 		while(it.hasNext())
 		{
 			Entry<String, Integer> curr_entry = it.next();
-			Log.d("useMap", curr_entry.getKey());
+//			Log.d("useMap", curr_entry.getKey());
 			circleNames.add(curr_entry.getKey());
 		}
 		
@@ -347,12 +347,12 @@ public class PreferenceVisualizer {
 	
 	private void initCircles(Map<String, Integer> countMap)
 	{
-		Log.d("initCircles", "entering");
+//		Log.d("initCircles", "entering");
 		int maxCount = 0;
 		Random rng = new Random();
 
 		//pass #1 to set simple info and get maxCount
-		Log.d("initCircles", "pass 1");
+//		Log.d("initCircles", "pass 1");
 		for(int i=0; i<circleNames.size(); i++)
 		{
 			int count = countMap.get(circleNames.get(i));
@@ -376,7 +376,7 @@ public class PreferenceVisualizer {
 		}
 		
 		//pass #2 to normalize radii and set random position
-		Log.d("initCircles", "pass 2");
+//		Log.d("initCircles", "pass 2");
 		
 		//use iterator to be able to remove
 		Iterator<PVCircle> it = circles.iterator();
@@ -401,7 +401,7 @@ public class PreferenceVisualizer {
 		}
 		
 		//final pass to set tracks for each circle
-		Log.d("initCircles", "pass 3");
+//		Log.d("initCircles", "pass 3");
 		for(int i=0; i<requests.size(); i++)
 		{
 			//later

@@ -24,7 +24,7 @@ public class PacketParser {
 		String[] args;
 		String data = new String(packet.getData());
 		int numArgs = 0;
-		Log.d("packetparser", data);
+//		Log.d("packetparser", data);
 		
 		for(int i=0; i<data.length(); i++)
 		{

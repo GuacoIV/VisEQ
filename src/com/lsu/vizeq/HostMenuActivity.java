@@ -79,7 +79,7 @@ public class HostMenuActivity extends Activity
 						try
 						{
 							jedis.auth(Redis.auth);
-							Log.d("heartbeat", "sending heartbeat");
+//							Log.d("heartbeat", "sending heartbeat");
 							//jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
 							test = jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
 							while(test != 1)
@@ -159,7 +159,7 @@ public class HostMenuActivity extends Activity
 										@Override
 										public void run() {
 											// TODO Auto-generated method stub
-											Log.d("Removing Guest ", guestName);
+//											Log.d("Removing Guest ", guestName);
 											refreshLists();
 										}
 										
@@ -189,10 +189,10 @@ public class HostMenuActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_host_menu);
-		Log.d("Flow", "onCreate HostMenu");
+//		Log.d("Flow", "onCreate HostMenu");
 		ActionBar actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-		Log.d("Flow", "onStart HostMenu");
+//		Log.d("Flow", "onStart HostMenu");
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
 		if (posi > 0) VizEQ.numRand = posi;		
@@ -270,11 +270,11 @@ public class HostMenuActivity extends Activity
 					while(true)
 					{
 						//listen for search
-						Log.d("listen thread","listening");
+//						Log.d("listen thread","listening");
 						byte[] receiveData = new byte[1024];
 						DatagramPacket receivedPacket = new DatagramPacket(receiveData, receiveData.length);
 						listenSocket.receive(receivedPacket);
-						Log.d("listen thread", "packet received");
+//						Log.d("listen thread", "packet received");
 						
 						InetAddress ip = receivedPacket.getAddress();
 						int port = receivedPacket.getPort();
@@ -282,10 +282,10 @@ public class HostMenuActivity extends Activity
 						String message = PacketParser.getHeader(receivedPacket);
 						if (message.equals("search"))
 						{
-							Log.d("listen thread", "search received from "+ip.toString()+" "+ip.getHostAddress());
+//							Log.d("listen thread", "search received from "+ip.toString()+" "+ip.getHostAddress());
 							//send back information
 							String information = "found\n"+myapp.myName;
-							Log.d("listen thread", "sending back "+information+ " to "+ip.getHostAddress());
+//							Log.d("listen thread", "sending back "+information+ " to "+ip.getHostAddress());
 							
 							//make a packet
 							byte[] sendData = new byte[1024];
@@ -315,12 +315,12 @@ public class HostMenuActivity extends Activity
 							request.mTrack = PacketParser.getArgs(receivedPacket)[3];
 							request.mUri = PacketParser.getArgs(receivedPacket)[4];
 							myapp.requests.add(request);
-							Log.d("listen thread", "Request added!");
-							Log.d("listen thread", "request album = " + request.mAlbum);
-							Log.d("listen thread", "request artist = " + request.mArtist);
-							Log.d("listen thread", "request requester = " + request.mRequester);
-							Log.d("listen thread", "request track = " + request.mTrack);
-							Log.d("listen thread", "request uri = " + request.mUri);
+//							Log.d("listen thread", "Request added!");
+//							Log.d("listen thread", "request album = " + request.mAlbum);
+//							Log.d("listen thread", "request artist = " + request.mArtist);
+//							Log.d("listen thread", "request requester = " + request.mRequester);
+//							Log.d("listen thread", "request track = " + request.mTrack);
+//							Log.d("listen thread", "request uri = " + request.mUri);
 						}
 					}
 				}
@@ -438,13 +438,13 @@ public class HostMenuActivity extends Activity
 						String clientName = PacketParser.getArgs(listenPacket)[0];
 						InetAddress clientIp = listenPacket.getAddress();
 						myapp.connectedUsers.put(clientName, clientIp);
-						Log.d("join listener", "added "+clientName+" "+clientIp.getHostName());
+//						Log.d("join listener", "added "+clientName+" "+clientIp.getHostName());
 						byte sendData[] = new byte[1024];
 						String sendString = "accept\n" + VizEQ.nowPlaying + "\njunkk";
 						sendData = sendString.getBytes();
 						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, clientIp, 7771);
 						sendSocket.send(sendPacket);
-						Log.d("accept thread", "accept sent");
+//						Log.d("accept thread", "accept sent");
 						publishProgress();
 					}
 					

@@ -129,7 +129,7 @@ import android.view.View;
 					center.y = circlesToDraw.get(i).y;
 					if (isInCircle(touch, center, circlesToDraw.get(i).radius))
 					{
-						Log.d("Circles", "Touched circle " + i);
+//						Log.d("Circles", "Touched circle " + i);
 						thisOne = i;
 					}
 				}
@@ -204,12 +204,12 @@ import android.view.View;
 		protected void onDraw(Canvas canvas)
 		{
 			super.onDraw(canvas);
-			Log.d("onDraw", "Starting Drawing");
+//			Log.d("onDraw", "Starting Drawing");
 
 			paint.setTextSize(45);
 			for (int i = 0; i < numCirclesToDraw; i++)
 			{
-				Log.d("onDraw", "Drawing circle " + circlesToDraw.get(i).name);
+//				Log.d("onDraw", "Drawing circle " + circlesToDraw.get(i).name);
 				paint.setColor(circlesToDraw.get(i).color);
 				if (drawText == false)
 				{
