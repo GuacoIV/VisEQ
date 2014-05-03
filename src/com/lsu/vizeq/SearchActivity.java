@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -34,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -168,6 +171,7 @@ public class SearchActivity extends BackableActivity
 		searchLayout = (LinearLayout) findViewById(R.id.SearchLayout);
 		final EditText searchText = (EditText) findViewById(R.id.SearchField);
 		final OnTouchListener rowTap;
+		final OnTouchListener playlistTap;
 		TabHost tabhost = (TabHost) findViewById(android.R.id.tabhost);
 	    tabhost.setup();
 	    
@@ -487,19 +491,123 @@ public class SearchActivity extends BackableActivity
 			}
 		});
 		
+		playlistTap = new OnTouchListener()
+		{
+
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1)
+			{
+				if (arg1.getAction() == MotionEvent.ACTION_DOWN)
+				{
+					TrackRow row = (TrackRow)arg0;
+					row.setBackgroundColor(Color.WHITE);
+					return true;
+				}
+				else if (arg1.getAction() == MotionEvent.ACTION_UP)
+				{
+					TrackRow row = (TrackRow)arg0;
+					row.setBackgroundColor(row.originalColor);
+					
+					//If clear whole queue:
+					queueTab.removeAllViews();
+					myapp.queue.clear();
+					//See how many to add
+					SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
+					int playlistIndex = ((ViewGroup) findViewById(R.id.SavedPlaylists)).indexOfChild(row);
+					String name = memory.getString("playlist" + playlistIndex, "DNE");
+					if (name.equals("DNE") == false)
+					{
+						int playlistLength = memory.getInt("playlist" + playlistIndex + "Length", 0);
+						Set<String> list = memory.getStringSet("playlist" + playlistIndex + "Tracks", null);
+						String listInfo[] = new String[50];
+						list.toArray(listInfo);
+						for (int i = 0; i < playlistLength * 4; i+=4)
+						{
+							String track = listInfo[i];
+							String album = listInfo[i+1];
+							String artist = listInfo[i+2];
+							String uri = listInfo[i+3];
+							Track trackToAdd = new Track(track, album, artist, uri);
+							myapp.queue.add(trackToAdd);
+						}
+						refreshQueue();
+					}
+					else
+						return false;
+					return true;
+				}
+				return false;
+			}
+		};
+		
 		findViewById(R.id.SaveAsPlaylist).setOnClickListener(new OnClickListener()
 		{
 			@Override
 			public void onClick(View arg0)
 			{
+				//Scheme: save strings playlist0, playlist1, playlist2... for every one that exists
+				//then playlist0Length
+				//then playlist0Track0, playlist0Album0, playlist0Artist0, playlist0Uri0
 				
-				ArrayList<TrackRow> playlist = new ArrayList<TrackRow>();
-				for (int i = 0; i < queueTab.getChildCount(); i++)
+				AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);
+				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+				LinearLayout alertLayout = new LinearLayout(SearchActivity.this);
+				TextView message = new TextView(SearchActivity.this);
+				message.setText("Name this playlist: ");
+				final EditText nameIn = new EditText(SearchActivity.this);
+				
+				alertLayout.setOrientation(1);
+				alertLayout.addView(message, params);
+				alertLayout.addView(nameIn, params);
+				builder.setView(alertLayout).setCancelable(true)
+				.setPositiveButton("ok", new DialogInterface.OnClickListener()
 				{
-					playlist.add(((TrackRow) queueTab.getChildAt(0)));
-				}
+					public void onClick(DialogInterface dialog, int id)
+					{
+						String name = nameIn.getText().toString();
+						SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+						SharedPreferences.Editor saver = memory.edit();
+						int numPlaylists = memory.getInt("numPlaylists", -1);
+						saver.putString("playlist"+ (++numPlaylists), name);
+						saver.putInt("playlist" + numPlaylists + "Length", queueTab.getChildCount());
+						ArrayList<TrackRow> playlist = new ArrayList<TrackRow>();
+						Set<String> stringSet = new HashSet<String>();
+						for (int i = 0; i < queueTab.getChildCount(); i++)
+						{
+							playlist.add(((TrackRow) queueTab.getChildAt(i)));
+							stringSet.add(playlist.get(i).mTrack);
+							stringSet.add(playlist.get(i).mAlbum);
+							stringSet.add(playlist.get(i).mArtist);
+							stringSet.add(playlist.get(i).mUri);
+						}
+						saver.putStringSet("playlist" + numPlaylists + "Tracks", stringSet);
+						saver.commit();
+						TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
+						TextView textViewToAdd = new TextView(SearchActivity.this);
+						tableRowToAdd.setBackgroundColor(Color.GREEN);
+						textViewToAdd.setText(name);
+						textViewToAdd.setTextSize(25);
+						tableRowToAdd.setOnTouchListener(playlistTap);
+						tableRowToAdd.addView(textViewToAdd);
+						LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+						params.setMargins(0, 2, 0, 2);
+						((ViewGroup) findViewById(R.id.SavedPlaylists)).addView(tableRowToAdd, params);
+					}
+				})
+				.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() 
+				{	
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) 
+					{
+						
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();				
 			}
 		});
+		
+		
 	}
 
 	@Override

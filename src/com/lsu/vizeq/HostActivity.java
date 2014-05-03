@@ -116,7 +116,7 @@ public class HostActivity extends BackableActivity
 					v.setAlpha(0.7f);
 				else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
 					v.setAlpha(1f);
-				return true;
+				return false;
 			}
 			
 		});		
@@ -126,7 +126,7 @@ public class HostActivity extends BackableActivity
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 		
-		findViewById(R.id.OK).setOnClickListener(new View.OnClickListener()
+		letsParty.setOnClickListener(new View.OnClickListener()
 		{
 
 			@Override
