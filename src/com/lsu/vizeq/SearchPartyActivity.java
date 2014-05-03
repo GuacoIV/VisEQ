@@ -41,7 +41,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SearchPartyActivity extends Activity {
+public class SearchPartyActivity extends BackableActivity {
 	
 	public LocationManager locationManager;
 	MyApplication myapp;

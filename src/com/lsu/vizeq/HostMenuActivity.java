@@ -39,7 +39,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-public class HostMenuActivity extends Activity
+public class HostMenuActivity extends BackableActivity
 {
 	MyApplication myapp;
 	ActionBar actionBar;
@@ -201,7 +201,8 @@ public class HostMenuActivity extends Activity
 		search.setAlpha(0.7f);
 		playing.setAlpha(0.7f);
 		visualizer.setAlpha(0.7f);
-//		Log.d("Flow", "onStart HostMenu");
+		
+		//		Log.d("Flow", "onStart HostMenu");
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
 		if (posi > 0) VizEQ.numRand = posi;		
@@ -527,6 +528,8 @@ public class HostMenuActivity extends Activity
 			Intent nextIntent2  = new Intent(HostMenuActivity.this, AboutActivity.class);
 			startActivity(nextIntent2);
 			break;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 		return true;
 	}

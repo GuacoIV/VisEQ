@@ -29,7 +29,7 @@ import android.view.View.OnTouchListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class RequestDetailsActivity extends Activity
+public class RequestDetailsActivity extends BackableActivity
 {
 	public LinearLayout list;
 	public MyApplication myapp;

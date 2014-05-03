@@ -83,7 +83,7 @@ import com.lsu.vizeq.ServiceBinder.ServiceBinderDelegate;
 import com.lsu.vizeq.SpotifyService.PlayerUpdateDelegate;
 import com.lsu.vizeq.util.TunnelPlayerWorkaround;
 
-public class PlayerActivity extends Activity {
+public class PlayerActivity extends BackableActivity {
 	boolean isPlaying = false;
 	boolean AudioFocus = false;
 	String LOGTAG = "Audio focus";

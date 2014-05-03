@@ -25,7 +25,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class RoleActivity extends Activity
+public class RoleActivity extends BackableActivity
 {
 	public static MyApplication myapp;
 	ActionBar actionBar;
