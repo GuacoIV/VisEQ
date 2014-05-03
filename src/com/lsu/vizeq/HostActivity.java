@@ -146,6 +146,8 @@ public class HostActivity extends BackableActivity
 			imm1.hideSoftInputFromWindow(findViewById(R.id.hostBackground).getWindowToken(), 0);
 			startActivity(nextIntent2);
 			break;
+		default:
+			super.onOptionsItemSelected(item);
 		}
 		return true;
 	}

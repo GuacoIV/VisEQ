@@ -11,7 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-public class HostSoundVisualizationActivity extends BackableActivity {
+public class HostSoundVisualizationActivity extends Activity {
 	
 	private VisualizerView vizView;
 

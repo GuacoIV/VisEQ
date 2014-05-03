@@ -526,6 +526,8 @@ public class SearchActivity extends BackableActivity
 			imm1.hideSoftInputFromWindow(searchLayout.getWindowToken(), 0);
 			startActivity(nextIntent2);
 			break;
+		default:
+			super.onOptionsItemSelected(item);
 		}
 		return true;
 	}

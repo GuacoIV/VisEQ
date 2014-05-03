@@ -685,6 +685,8 @@ public class SearchPartyActivity extends BackableActivity {
 			Intent nextIntent2  = new Intent(SearchPartyActivity.this, AboutActivity.class);
 			startActivity(nextIntent2);
 			break;
+		default:
+			super.onOptionsItemSelected(item);
 		}
 		return true;
 	}
