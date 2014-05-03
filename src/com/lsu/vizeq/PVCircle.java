@@ -87,6 +87,29 @@ public class PVCircle {
 	{
 		return requesters;
 	}
+	
+	public void addTrack(Track track)
+	{
+		//add requesters either way
+		if (!track.requesters.contains(track.mRequester))
+			track.requesters.add(track.mRequester);
+		
+		boolean found = false;
+		for(int i=0; i<trackList.size(); i++)
+		{
+			//if same song - check uri
+			if(track.mUri.equals(trackList.get(i).mUri))
+			{
+				//don't add to list
+				found = true;
+			}
+		}
+		if(!found)
+		{	
+			trackList.add(track);
+		}
+		
+	}
 
 
 }
