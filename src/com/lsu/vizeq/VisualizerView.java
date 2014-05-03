@@ -108,7 +108,7 @@ public class VisualizerView extends View {
             @Override
             public void run() {
             	for (int i = 0; i < circles.length; i++) {
-        			Log.d("setting energy", states[i] + " " + i);
+//        			Log.d("setting energy", states[i] + " " + i);
             		if (states[i].equals("off")) {
         				circles[i].SetEnergy(false);
         			}
@@ -120,7 +120,7 @@ public class VisualizerView extends View {
             
         });
 		
-		Log.d("setting energy", " ");
+//		Log.d("setting energy", " ");
 	}
 	Parameters p;
 	Thread flashThread = new Thread(new Runnable()
@@ -165,7 +165,7 @@ public class VisualizerView extends View {
 					}
 					catch (Exception e) {
 				        e.printStackTrace();
-				        Log.d("Flashlight", "Exception flashLightOn");
+//				        Log.d("Flashlight", "Exception flashLightOn");
 				    }
 					//Time it
 					Timer persistFlash = new Timer();
@@ -188,7 +188,7 @@ public class VisualizerView extends View {
 							catch (Exception e) 
 							{
 						        e.printStackTrace();
-						        Log.d("Flashlight", "Exception flashLightOff");
+//						        Log.d("Flashlight", "Exception flashLightOff");
 						    }
 						}	
 					}, 40);

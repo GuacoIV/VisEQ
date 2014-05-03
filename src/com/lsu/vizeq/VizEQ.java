@@ -36,7 +36,7 @@ public class VizEQ extends Activity
 		setContentView(R.layout.activity_splash);
 		ActionBar actionBar = getActionBar();
 		actionBar.hide();
-		Log.d("Flow", "onCreate VizEQ");
+//		Log.d("Flow", "onCreate VizEQ");
 		//Makes volume buttons control music stream even when nothing playing
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
 		Random r = new Random();		
@@ -90,7 +90,7 @@ public class VizEQ extends Activity
 					 }
 					 catch (Exception e)
 					 {
-						 Log.d("Activity", "Login activity not started.");
+//						 Log.d("Activity", "Login activity not started.");
 					 }
 					 finally
 					 {

@@ -124,7 +124,7 @@ public class SearchActivity extends Activity
 			queueRow.setBackgroundColor(Color.argb(255, r, g, b));
 			params.setMargins(0, 2, 0, 2);
 			queueTab.addView(queueRow, params);
-			Log.d("refresh queue", "adding row to tab");
+//			Log.d("refresh queue", "adding row to tab");
 
 		}
 	}
@@ -135,7 +135,7 @@ public class SearchActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
-		Log.d("Flow", "onCreate SearchActivity");
+//		Log.d("Flow", "onCreate SearchActivity");
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
 		

@@ -95,7 +95,7 @@ public class SpotifyService extends Service {
 			throw new RuntimeException("Storage card not available");
 		if (libLoaded == false) 
 		{
-			Log.d("init", "spotify");
+//			Log.d("init", "spotify");
 			LibSpotifyWrapper.init(LibSpotifyWrapper.class.getClassLoader(), Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/com.lsu.vizeq");
 			libLoaded = true;
 		}
@@ -116,7 +116,7 @@ public class SpotifyService extends Service {
 		mWifiLock.release();
 
 		// Tell the user we stopped.
-		Log.d("Spotify", "The local service has stopped");
+//		Log.d("Spotify", "The local service has stopped");
 		super.onDestroy();
 	}
 

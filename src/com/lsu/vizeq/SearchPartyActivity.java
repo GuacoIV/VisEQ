@@ -95,7 +95,7 @@ public class SearchPartyActivity extends Activity {
     	EditText et = (EditText) findViewById(R.id.username_box);
     	
     	String username = et.getText().toString();
-    	Log.d("username", username);
+//    	Log.d("username", username);
     	
     	if(!username.isEmpty())
     	{
@@ -110,8 +110,8 @@ public class SearchPartyActivity extends Activity {
     {
     	String name = "Dummy";
     	myapp.myName = name;
-    	Log.d("test", "myapp = " + myapp);
-    	Log.d("test", "zipcode = " + myapp.zipcode);
+//    	Log.d("test", "myapp = " + myapp);
+//    	Log.d("test", "zipcode = " + myapp.zipcode);
     	if(myapp.zipcode == null || myapp.zipcode.compareTo("00000")==0)
     		myapp.zipcode = getZipcode();
     	if(myapp.zipcode.equals("00000"))
@@ -144,7 +144,7 @@ public class SearchPartyActivity extends Activity {
 						sendSocket.send(searchPacket);
 						Thread.sleep(10L);
 					}
-					Log.d("search party", "search sent");
+//					Log.d("search party", "search sent");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -183,7 +183,7 @@ public class SearchPartyActivity extends Activity {
 			{
 				@Override
 				public void onClick(View arg0) {
-					Log.d("Join", "Joining party");
+//					Log.d("Join", "Joining party");
 					new JoinTaskServer().execute(myapp.zipcode + ":" + name);
 					//new JoinTask().execute((InetAddress) pairs.getValue());
 				}
@@ -238,7 +238,7 @@ public class SearchPartyActivity extends Activity {
 	
 	public void noPartiesNotification()
 	{
-		Log.d("Contact Server", "No parties found");
+//		Log.d("Contact Server", "No parties found");
 		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
 		builder.setMessage("No parties found").setCancelable(false)
 		.setPositiveButton("ok", new DialogInterface.OnClickListener()
@@ -254,7 +254,7 @@ public class SearchPartyActivity extends Activity {
 	
 	public void connectionErrorNotification()
 	{
-		Log.d("Contact Server", "Error Connecting");
+//		Log.d("Contact Server", "Error Connecting");
 		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
 		builder.setMessage("Error connecting to server").setCancelable(false)
 		.setPositiveButton("ok", new DialogInterface.OnClickListener()
@@ -270,7 +270,7 @@ public class SearchPartyActivity extends Activity {
 	
 	public void noLocationNotification()
 	{
-		Log.d("Contact Server", "no location");
+//		Log.d("Contact Server", "no location");
 		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		LinearLayout alertLayout = new LinearLayout(this);
@@ -309,7 +309,7 @@ public class SearchPartyActivity extends Activity {
 		//params[0] = party name
 		//params[1] = zipcode
 		protected ArrayList<String> doInBackground(String... params) {
-			Log.d("ContactServerTask", "Trying to contact server");
+//			Log.d("ContactServerTask", "Trying to contact server");
 			String partyName = params[0];
 			String zipcode = params[1];
 			Integer result = 2;
@@ -360,7 +360,7 @@ public class SearchPartyActivity extends Activity {
 		@Override
 		protected void onPostExecute(ArrayList<String> result) {
 			// TODO Auto-generated method stub
-			Log.d("ContactServerTask", "Finished");
+//			Log.d("ContactServerTask", "Finished");
 			refreshPartyList(result);
 		}
 
@@ -444,7 +444,7 @@ public class SearchPartyActivity extends Activity {
 		@Override
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
-			Log.d("ContactServerTask", "Finished");
+//			Log.d("ContactServerTask", "Finished");
 			TextView resultText = (TextView) findViewById(R.id.resultText);
 			resultText.setText(result);
 
@@ -493,7 +493,7 @@ public class SearchPartyActivity extends Activity {
 			DatagramSocket listenSocket;
 			// TODO Auto-generated method stub
 			//send join request
-			Log.d("join party", "Clicked");
+//			Log.d("join party", "Clicked");
 			try {
 				sendSocket = new DatagramSocket();
 				listenSocket = new DatagramSocket(7771);
@@ -504,26 +504,26 @@ public class SearchPartyActivity extends Activity {
 				sendData = searchString.getBytes();
 				
 				
-				Log.d("join thru server", "host ip: "+ip);
+//				Log.d("join thru server", "host ip: "+ip);
 				
 				InetAddress ipaddress = InetAddress.getByName(ip);
 				
-				Log.d("join party", "Sending to " + ipaddress.getHostName());
+//				Log.d("join party", "Sending to " + ipaddress.getHostName());
 				DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7771);
 				sendSocket.send(searchPacket);
-				Log.d("join party", "join sent to "+ipaddress.getHostName());
+//				Log.d("join party", "join sent to "+ipaddress.getHostName());
 				//now wait for response
 				boolean joined = false;
 				while(!joined)
 				{
-					Log.d("listen for join", "listening");
+//					Log.d("listen for join", "listening");
 					DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
 					listenSocket.receive(receivePacket);
 					String message = PacketParser.getHeader(receivePacket);
-					Log.d("listen for join", message);
+//					Log.d("listen for join", message);
 					if(message.equals("accept"))
 					{
-						Log.d("listen for join", "we are joined");
+//						Log.d("listen for join", "we are joined");
 						myapp.joined = true;
 						myapp.hostAddress = receivePacket.getAddress();
 						joined = true;
@@ -574,7 +574,7 @@ public class SearchPartyActivity extends Activity {
 				DatagramSocket listenSocket;
 				// TODO Auto-generated method stub
 				//send join request
-				Log.d("join party", "Clicked");
+//				Log.d("join party", "Clicked");
 				try {
 					sendSocket = new DatagramSocket();
 					listenSocket = new DatagramSocket(7771);
@@ -585,22 +585,22 @@ public class SearchPartyActivity extends Activity {
 					sendData = searchString.getBytes();
 					InetAddress ipaddress = arg0[0];
 					
-					Log.d("join party", "Sending to " + ipaddress.getHostName());
+//					Log.d("join party", "Sending to " + ipaddress.getHostName());
 					DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7771);
 					sendSocket.send(searchPacket);
-					Log.d("join party", "join sent to "+ipaddress.getHostName());
+//					Log.d("join party", "join sent to "+ipaddress.getHostName());
 					//now wait for response
 					boolean joined = false;
 					while(!joined)
 					{
-						Log.d("listen for join", "listening");
+//						Log.d("listen for join", "listening");
 						DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
 						listenSocket.receive(receivePacket);
 						String message = PacketParser.getHeader(receivePacket);
-						Log.d("listen for join", message);
+//						Log.d("listen for join", message);
 						if(message.equals("accept"))
 						{
-							Log.d("listen for join", "we are joined");
+//							Log.d("listen for join", "we are joined");
 							myapp.joined = true;
 							myapp.hostAddress = receivePacket.getAddress();
 							joined = true;
@@ -719,7 +719,7 @@ public class SearchPartyActivity extends Activity {
 		@Override
 		public void onLocationChanged(Location arg0) {
 			// TODO Auto-generated method stub
-			Log.d("location listener", "location changed");
+//			Log.d("location listener", "location changed");
 			currLocation = arg0;
 			
 		}
