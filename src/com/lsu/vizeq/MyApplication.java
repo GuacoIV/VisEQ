@@ -26,7 +26,7 @@ public class MyApplication extends Application {
 	@Override
 	public void onTerminate()
 	{
-		Log.d("Jedis", "Disconnecting Jedis");
+//		Log.d("Jedis", "Disconnecting Jedis");
 		jedisPool.destroy();
 		super.onTerminate();
 	}

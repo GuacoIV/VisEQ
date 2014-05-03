@@ -95,7 +95,7 @@ public class SoundVisualizationActivity extends Activity
 						DatagramPacket ackPacket = new DatagramPacket(ack, ack.length, pingPacket.getAddress(), 7772);
 						try
 						{
-							Log.d("heartbeat", "sending ack");
+//							Log.d("heartbeat", "sending ack");
 							sendSocket.send(ackPacket);
 						}
 						catch(Exception e)
@@ -145,7 +145,7 @@ public class SoundVisualizationActivity extends Activity
 		myapp = (MyApplication) this.getApplicationContext();
 		//serverHeartbeat();
 		
-		Log.d("oncreate", "soundviz");
+//		Log.d("oncreate", "soundviz");
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -329,7 +329,7 @@ public class SoundVisualizationActivity extends Activity
 					final DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 					receiveSocket.receive(receivePacket);
 					String[] args = PacketParser.getArgs(receivePacket);
-					Log.d("packet", PacketParser.getHeader(receivePacket));
+//					Log.d("packet", PacketParser.getHeader(receivePacket));
 					if(PacketParser.getHeader(receivePacket).compareTo("freq_circle") == 0)
 					{
 						vizView.SetCircleStates(args);

@@ -195,7 +195,7 @@ public class RequestDetailsActivity extends Activity
 	public void addToQueue(final TrackRow row)
 	{
 		final Track track = row.getTrack();
-		Log.d("addToQueue", "track name = " + track.mTrack);
+//		Log.d("addToQueue", "track name = " + track.mTrack);
         //get the track cover
         final Thread getTrackCoverThread = new Thread(new Runnable()
 		{
@@ -210,7 +210,7 @@ public class RequestDetailsActivity extends Activity
 					HttpResponse response2 = httpClient.execute(new HttpGet(url));
 					HttpEntity entity = response2.getEntity();
 					String s = EntityUtils.toString(entity, "UTF-8");
-					Log.d("Get Album Art", "String s = " + s);
+//					Log.d("Get Album Art", "String s = " + s);
 					int numThumb = s.indexOf("thumbnail_url");
 					String thumbnail = s.substring(numThumb + 16);
 					thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
@@ -230,7 +230,7 @@ public class RequestDetailsActivity extends Activity
 
 				@Override
 				public void onClick(DialogInterface arg0, int arg1) {
-					Log.d("addToQueue", "Adding " + track.mTrack + " to top");
+//					Log.d("addToQueue", "Adding " + track.mTrack + " to top");
 					myapp.queue.add(0, track);	
 					list.removeView(row);
 					myapp.requests.remove(row.getTrack());
@@ -242,7 +242,7 @@ public class RequestDetailsActivity extends Activity
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					Log.d("addToQueue","Adding " + track.mTrack + " to bottom");
+//					Log.d("addToQueue","Adding " + track.mTrack + " to bottom");
 					myapp.queue.add(track);
 					list.removeView(row);
 					myapp.requests.remove(row.getTrack());

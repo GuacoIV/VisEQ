@@ -136,7 +136,7 @@ public class HostActivity extends Activity
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_settings:
-			Intent nextIntent  = new Intent(HostActivity.this, ProfileActivity.class);
+			Intent nextIntent  = new Intent(HostActivity.this, HostProfileActivity.class);
 			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(findViewById(R.id.hostBackground).getWindowToken(), 0);
 			startActivity(nextIntent);
@@ -166,12 +166,12 @@ public class HostActivity extends Activity
 			zipcode = addresses.get(0).getPostalCode();
 		} catch (IOException e) {
 			e.printStackTrace();
-			Log.d("zipcode", "Failed to get zipcode");
+//			Log.d("zipcode", "Failed to get zipcode");
 		} catch (NullPointerException e){
 			e.printStackTrace();
-			Log.d("zipcode", "Failed to get zipcode");
+//			Log.d("zipcode", "Failed to get zipcode");
 		}
-		Log.d("zipcode", zipcode);
+//		Log.d("zipcode", zipcode);
 		locationManager.removeUpdates(locationListener);
 		return zipcode;
 	}
@@ -182,7 +182,7 @@ public class HostActivity extends Activity
 		@Override
 		public void onLocationChanged(Location arg0) {
 			// TODO Auto-generated method stub
-			Log.d("location listener", "location changed");
+//			Log.d("location listener", "location changed");
 			currLocation = arg0;
 			
 		}
@@ -220,7 +220,7 @@ public class HostActivity extends Activity
 			StringBuilder str = new StringBuilder();
 			String line = null;
 			line = reader.readLine();
-			Log.d("external ip", line);
+//			Log.d("external ip", line);
 			ip = line;
 			in.close();
 		} catch (Exception e) {
@@ -236,7 +236,7 @@ public class HostActivity extends Activity
 	{
 		WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
 		String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
-		Log.d("Private ip", "Obtained: "+ip);
+//		Log.d("Private ip", "Obtained: "+ip);
 		return ip;
 	}
 	
@@ -258,7 +258,7 @@ public class HostActivity extends Activity
 	
 	public void changeNameNotification()
 	{
-		Log.d("Contact Server", "Name already in use");
+//		Log.d("Contact Server", "Name already in use");
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("This party name is already in use. Please choose another.").setCancelable(false)
 		.setPositiveButton("ok", new DialogInterface.OnClickListener()
@@ -274,7 +274,7 @@ public class HostActivity extends Activity
 	
 	public void connectionErrorNotification()
 	{
-		Log.d("Contact Server", "Error connecting");
+//		Log.d("Contact Server", "Error connecting");
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage("Error connecting to server").setCancelable(false)
 		.setPositiveButton("ok", new DialogInterface.OnClickListener()
@@ -290,7 +290,7 @@ public class HostActivity extends Activity
 	
 	public void noLocationNotification()
 	{
-		Log.d("Contact Server", "Couldn't find your location.");
+//		Log.d("Contact Server", "Couldn't find your location.");
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		LinearLayout alertLayout = new LinearLayout(this);

@@ -255,7 +255,7 @@ public class PlayerActivity extends Activity {
 		if (mTracks.size() == 0)
 			return;
 
-		Log.i("", "Play previous song");
+//		Log.i("", "Play previous song");
 		mIndex--;
 		if (mIndex < 0)
 			mIndex = mTracks.size() - 1;
@@ -359,11 +359,11 @@ public class PlayerActivity extends Activity {
 						Iterator it = MyApp.connectedUsers.entrySet().iterator();
 						while (it.hasNext())
 						{
-							Log.d("Send circl data", "hey");
+//							Log.d("Send circl data", "hey");
 							Map.Entry pairs= (Map.Entry) it.next();
 							InetAddress IPAddress = (InetAddress) pairs.getValue();
 							String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
-							Log.d("UDP",test);
+//							Log.d("UDP",test);
 							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
 							sendSocket.send(sendPacket);
 						}
@@ -377,11 +377,11 @@ public class PlayerActivity extends Activity {
 							Iterator it2 = MyApp.connectedUsers.entrySet().iterator();
 							while (it2.hasNext())
 							{
-								Log.d("Send circl data", "flash");
+//								Log.d("Send circl data", "flash");
 								Map.Entry pairs= (Map.Entry) it2.next();
 								InetAddress IPAddress = (InetAddress) pairs.getValue();
 								String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
-								Log.d("UDP",test);
+//								Log.d("UDP",test);
 								DatagramPacket sendPacket2 = new DatagramPacket(sendData2, sendData2.length, IPAddress, 7770);
 								sendSocket2.send(sendPacket2);
 							}
@@ -416,11 +416,11 @@ public class PlayerActivity extends Activity {
 						Iterator it = MyApp.connectedUsers.entrySet().iterator();
 						while (it.hasNext())
 						{
-							Log.d("Send circl data", "hey");
+//							Log.d("Send circl data", "hey");
 							Map.Entry pairs= (Map.Entry) it.next();
 							InetAddress IPAddress = (InetAddress) pairs.getValue();
 							String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
-							Log.d("UDP",test);
+//							Log.d("UDP",test);
 							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
 							sendSocket.send(sendPacket);
 						}
@@ -662,26 +662,26 @@ public class PlayerActivity extends Activity {
 			public void onAudioFocusChange(int focusChange) {
 			    switch (focusChange) {
 			        case AudioManager.AUDIOFOCUS_LOSS:
-			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS");
+//			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS");
 			            AudioFocus = false;
 			            if (isPlaying) togglePlay();
 			            break;
 
 			        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
+//			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
 			            break;
 
 			        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
 			        	AudioFocus = false;
 			        	if (isPlaying) togglePlay();
-			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT");
+//			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS_TRANSIENT");
 			            break;
 			        case AudioManager.AUDIOFOCUS_GAIN:
-			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_GAIN");
+//			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_GAIN");
 			            AudioFocus = true;
 			            break;
 			        default:
-			            Log.e(LOGTAG, "Unknown audio focus change code " + focusChange);
+//						Log.e(LOGTAG, "Unknown audio focus change code " + focusChange);
 			    }
 			}
 		};
@@ -790,7 +790,7 @@ public class PlayerActivity extends Activity {
 
 			}
 		});
-		Log.e("", "Your login id is " + Installation.id(this));
+//		Log.e("", "Your login id is " + Installation.id(this));
 		mWebservice = new WebService(Installation.id(this));
 		checkTheQueue();
 		mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

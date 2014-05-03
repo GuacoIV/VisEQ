@@ -92,7 +92,7 @@ public class LibSpotifyWrapper {
 		else {
 			num = 0;
 		}
-		Log.d("Beat occurred", String.valueOf(i));
+//		Log.d("Beat occurred", String.valueOf(i));
 		//PlayerActivity.SendBeat(colors[num]);
 		PlayerActivity.flash = 1;
 	}

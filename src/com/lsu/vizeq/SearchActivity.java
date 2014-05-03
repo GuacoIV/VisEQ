@@ -124,7 +124,7 @@ public class SearchActivity extends Activity
 			queueRow.setBackgroundColor(Color.argb(255, r, g, b));
 			params.setMargins(0, 2, 0, 2);
 			queueTab.addView(queueRow, params);
-			Log.d("refresh queue", "adding row to tab");
+//			Log.d("refresh queue", "adding row to tab");
 
 		}
 	}
@@ -135,7 +135,7 @@ public class SearchActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search);
-		Log.d("Flow", "onCreate SearchActivity");
+//		Log.d("Flow", "onCreate SearchActivity");
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
 		
@@ -495,12 +495,12 @@ public class SearchActivity extends Activity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		/*case R.id.action_settings:
-			Intent nextIntent  = new Intent(SearchActivity.this, ProfileActivity.class);
+		case R.id.action_settings:
+			Intent nextIntent  = new Intent(SearchActivity.this, HostProfileActivity.class);
 			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(searchLayout.getWindowToken(), 0);
 			startActivity(nextIntent);
-			break;*/
+			break;
 		case R.id.about:
 			Intent nextIntent2  = new Intent(SearchActivity.this, AboutActivity.class);
 			InputMethodManager imm1 = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -55,10 +55,10 @@ Bugfix for newer Galaxy devices:\n
  *\n
  * Licensed under the MIT license:\n
  * http://creativecommons.org/licenses/MIT/\n
-https://github.com/felixpalmer/android-visualizer/pull/6\n
-</string>
+https://github.com/felixpalmer/android-visualizer/pull/6\n</string>
     <string name="startSession">let\'s party!</string>
     <string name="noMusic">No music in the queue.  Queue it up!</string>
     <string name="title_activity_host_sound_visualization">HostSoundVisualizationActivity</string>
+    <string name="title_activity_host_profile">HostProfileActivity</string>
 
 </resources>

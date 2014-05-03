@@ -11,9 +11,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
-	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-	<uses-permission android:name="android.permission.RECORD_AUDIO" />
-    
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="16" />
@@ -162,6 +162,10 @@
         <activity
             android:name="com.lsu.vizeq.HostSoundVisualizationActivity"
             android:label="@string/title_activity_host_sound_visualization" >
+        </activity>
+        <activity
+            android:name="com.lsu.vizeq.HostProfileActivity"
+            android:label="@string/title_activity_host_profile" >
         </activity>
     </application>
 
