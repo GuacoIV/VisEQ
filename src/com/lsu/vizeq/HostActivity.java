@@ -136,7 +136,7 @@ public class HostActivity extends Activity
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.action_settings:
-			Intent nextIntent  = new Intent(HostActivity.this, ProfileActivity.class);
+			Intent nextIntent  = new Intent(HostActivity.this, HostProfileActivity.class);
 			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(findViewById(R.id.hostBackground).getWindowToken(), 0);
 			startActivity(nextIntent);

@@ -495,12 +495,12 @@ public class SearchActivity extends Activity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		/*case R.id.action_settings:
-			Intent nextIntent  = new Intent(SearchActivity.this, ProfileActivity.class);
+		case R.id.action_settings:
+			Intent nextIntent  = new Intent(SearchActivity.this, HostProfileActivity.class);
 			InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 			imm.hideSoftInputFromWindow(searchLayout.getWindowToken(), 0);
 			startActivity(nextIntent);
-			break;*/
+			break;
 		case R.id.about:
 			Intent nextIntent2  = new Intent(SearchActivity.this, AboutActivity.class);
 			InputMethodManager imm1 = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
