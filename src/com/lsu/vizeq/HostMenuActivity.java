@@ -388,11 +388,12 @@ public class HostMenuActivity extends BackableActivity
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent e){
+				LinearLayout l = (LinearLayout)v.getParent();
 				if (e.getAction() == MotionEvent.ACTION_DOWN) {
-					v.setAlpha(1);
+					l.setAlpha(1);
 				}
 				else if (e.getAction() == MotionEvent.ACTION_UP) {
-					v.setAlpha(.7f);
+					l.setAlpha(.7f);
 				}
 				return false;
 			}

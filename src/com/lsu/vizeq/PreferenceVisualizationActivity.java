@@ -72,7 +72,7 @@ public class PreferenceVisualizationActivity extends BackableActivity {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				viz.init();
+				//viz.init();
 				viz.sortByArtist();
 				currentSort = "artist";
 //				Log.d("viz", "packing circles...");
@@ -123,7 +123,7 @@ public class PreferenceVisualizationActivity extends BackableActivity {
 				public void run()
 				{
 					// TODO Auto-generated method stub
-					viz.init();
+					//viz.init();
 					viz.sortByArtist();
 					currentSort = "artist";
 //					Log.d("viz", "packing circles...");
@@ -171,7 +171,7 @@ public class PreferenceVisualizationActivity extends BackableActivity {
 			{
 				public void run()
 				{
-					viz.init();
+					//viz.init();
 					viz.sortByAlbum();
 					currentSort = "album";
 //					Log.d("viz", "packing circles...");
@@ -219,7 +219,7 @@ public class PreferenceVisualizationActivity extends BackableActivity {
 				public void run()
 				{
 					// TODO Auto-generated method stub
-					viz.init();
+					//viz.init();
 					viz.sortByTrack();
 					currentSort = "track";
 					//viz.packCircles2();
@@ -274,7 +274,7 @@ public class PreferenceVisualizationActivity extends BackableActivity {
 
 //			Log.d("viewCircles", "currCircle.getRadius = " + currCircle.getRadius());
 //			Log.d("viewCircles", "currCircle.getRadius * 300 = " + (currCircle.getRadius()*225));
-			PreferenceCircle pCircle = new PreferenceCircle(this, (int) (currCircle.getX()*currCircle.getScale()), (int) (currCircle.getY()*currCircle.getScale()), (int) (currCircle.getRadius()*currCircle.getScale()), currCircle.getName(), currCircle.getTrackList());
+			PreferenceCircle pCircle = new PreferenceCircle(this, (int) currCircle.getX(), (int) currCircle.getY(), (int) currCircle.getRadius(), currCircle.getName(), currCircle.getTrackList());
 //			Log.d("viewCircles", "pCircle.getRadius = " + pCircle.radius);
 			pCircle.color = currCircle.getColor();
 			pCircles.add(pCircle);
