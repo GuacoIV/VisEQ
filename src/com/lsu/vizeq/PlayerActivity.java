@@ -251,6 +251,7 @@ public class PlayerActivity extends Activity {
 			}
 		});
 		nextCoverThread.start();
+		showNotification();
 	}
 
 	public void playPrev() {
@@ -293,6 +294,7 @@ public class PlayerActivity extends Activity {
 			}
 		});
 		prevCoverThread.start();
+		showNotification();
 	}
 
 	public void updateTrackState() {
@@ -447,7 +449,7 @@ public class PlayerActivity extends Activity {
 		//startForeground(NOTIFICATION, notification);
 		NotificationCompat.Builder mBuilder =
 		        new NotificationCompat.Builder(this)
-		        .setSmallIcon(R.drawable.launch)
+		        .setSmallIcon(R.drawable.actionbaricon_47x47)
 		        .setContentTitle("VizEQ")
 		        .setContentText("Now Playing " + (mTracks.size() > 0 ? mTracks.get(mIndex).getTrackName() + " by " + mTracks.get(mIndex).mArtist : ""));
 		Intent resultIntent = new Intent(this, PlayerActivity.class);
