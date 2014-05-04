@@ -8,6 +8,7 @@ import java.util.Map;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import android.app.Application;
+import android.os.Build;
 import android.util.Log;
 
 public class MyApplication extends Application {
@@ -21,7 +22,8 @@ public class MyApplication extends Application {
 	public boolean joined = false;
 	public boolean hosting = false;
 	public JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), Redis.host, Redis.port);
-	
+	String brand = Build.BRAND; // for getting BrandName
+	String model = Build.MODEL; // for getting Model of the device
 	
 	@Override
 	public void onTerminate()

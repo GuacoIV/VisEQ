@@ -263,7 +263,7 @@ public class HostMenuActivity extends BackableActivity
 		RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		params.setMargins(3,3,3,3);
 		freqSlider.setLayoutParams(params);
-		freqSlider.setMax(7);
+		freqSlider.setMax(PlayerActivity.NUM_FLASH_BANDS - 1);
 		freqSlider.setProgress(0);
 		((ViewGroup) findViewById(R.id.HostMenuView)).addView(freqSlider);
 		

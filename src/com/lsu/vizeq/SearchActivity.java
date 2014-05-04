@@ -630,6 +630,7 @@ public class SearchActivity extends BackableActivity
 			tableRowToAdd.addView(textViewToAdd);
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 			tableRowToAdd.setPadding(0, 5, 0, 5);
+			params.setMargins(0, 2, 0, 2);
 			((ViewGroup) findViewById(R.id.SavedPlaylists)).addView(tableRowToAdd, params);
 	    }
 		

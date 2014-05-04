@@ -32,9 +32,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TableRow;
@@ -199,6 +202,37 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 		if (posi == -1) posi = 0;
 		spinner.setSelection(posi);
 		
+		Switch camFlash = (Switch) findViewById(R.id.CamFlash);
+		Switch bgFlash = (Switch) findViewById(R.id.BGFlash);
+		
+		camFlash.setChecked(memory.getBoolean("cameraFlash", true));
+		bgFlash.setChecked(memory.getBoolean("backgroundFlash", true));
+		
+		final SharedPreferences.Editor saver = memory.edit();
+		camFlash.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		{
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				SoundVisualizationActivity.doFlash = isChecked;		
+				saver.putBoolean("cameraFlash", isChecked);
+				saver.commit();
+			}
+			
+		});
+		bgFlash.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				SoundVisualizationActivity.doBackground = isChecked;
+				saver.putBoolean("backgroundFlash", isChecked);
+				saver.commit();
+			}
+			
+		});
+		
 		rowTap = new OnTouchListener()
 		{
 	
@@ -312,28 +346,12 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
 								//Log.d("Search", trackName + ": " + trackArtist);
 								TrackRow tableRowToAdd = new TrackRow(ProfileActivity.this, trackName, trackAlbum, trackArtist, uri);//Context context, String track, String album, String artist, String uri
-								/*TextView textViewToAdd = new TextView(ProfileActivity.this);
-								TextView textTwoViewToAdd = new TextView(ProfileActivity.this);
-								tableRowToAdd.mTrack = trackName;
-								tableRowToAdd.mArtist = trackArtist;
-								tableRowToAdd.mAlbum = trackAlbum;
-								tableRowToAdd.mUri = uri;*/
 								tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
 								tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
 								tableRowToAdd.setOnTouchListener(rowTap);
 								if (redStart + addRed < 255 && i < 16) redStart += addRed;
 								if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
 								if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
-								/*textViewToAdd.setText(trackName);
-								textTwoViewToAdd.setText(trackArtist);
-								textViewToAdd.setTextSize(20);
-								textTwoViewToAdd.setTextColor(Color.DKGRAY);
-								LinearLayout linearLayoutToAdd = new LinearLayout(ProfileActivity.this);
-								linearLayoutToAdd.setOrientation(LinearLayout.VERTICAL);
-								linearLayoutToAdd.addView(textViewToAdd);
-								linearLayoutToAdd.addView(textTwoViewToAdd);
-								tableRowToAdd.setOnTouchListener(rowTap);
-								tableRowToAdd.addView(linearLayoutToAdd);*/
 								customSearchLayout.addView(tableRowToAdd);
 							}
 							

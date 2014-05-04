@@ -69,6 +69,8 @@ public class SoundVisualizationActivity extends Activity
 
 	private VisualizerView vizView;
 	private MyApplication myapp;
+	public static boolean doFlash;
+	public static boolean doBackground;
 	
 	
 	public void serverHeartbeat()
@@ -148,6 +150,9 @@ public class SoundVisualizationActivity extends Activity
 //		Log.d("oncreate", "soundviz");
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		doFlash = memory.getBoolean("cameraFlash", true);
+		doBackground = memory.getBoolean("backgroundFlash", true);
+		
 		int posi = memory.getInt("colorPos", -1);
 		if (posi > 0) VizEQ.numRand = posi;		
 		switch (VizEQ.numRand)

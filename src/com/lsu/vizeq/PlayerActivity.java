@@ -113,6 +113,7 @@ public class PlayerActivity extends Activity {
 	static RelativeLayout playerBackground;
 	static int flash = 0;
 	static int BAND_TO_FLASH = 0;
+	static int NUM_FLASH_BANDS = 12;
 	int flashEnergyHistory[] = new int[10];
 	int flashHistoryIndex = 0;
 	ActionBar actionBar;
@@ -638,7 +639,7 @@ public class PlayerActivity extends Activity {
 
 				
 				//Flashing background
-				bandWidth = arg1.length/8; //8 bands
+				bandWidth = arg1.length/NUM_FLASH_BANDS;
 				if (bandWidth > 0)
 				{
 					for (int i = bandWidth*BAND_TO_FLASH; i < bandWidth*(BAND_TO_FLASH+1); i++) 

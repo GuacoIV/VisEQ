@@ -7,6 +7,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.graphics.Canvas;
@@ -127,7 +128,7 @@ public class VisualizerView extends View {
 	{
 		public void run()
 		{
-			if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) 
+			if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH) && SoundVisualizationActivity.doFlash) 
 	        {
 				try
 				{
@@ -152,11 +153,11 @@ public class VisualizerView extends View {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				if (flash == true)
+				if (flash)
 				{
 					try
 					{
-				        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) 
+				        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH) && SoundVisualizationActivity.doFlash) 
 				        {
 				            cam.startPreview();
 				            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
@@ -199,12 +200,10 @@ public class VisualizerView extends View {
 	
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		if (flash == false) this.setBackgroundColor(Color.BLACK);
+		if (flash == false || SoundVisualizationActivity.doBackground == false) this.setBackgroundColor(Color.BLACK);
 		else 
 		{
 			this.setBackgroundColor(Color.WHITE);
-			
-			
 		}
 		for (int i = 0; i < circles.length; i++) {
 			if (circles[i] != null) {

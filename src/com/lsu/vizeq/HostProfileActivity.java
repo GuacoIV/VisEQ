@@ -14,11 +14,14 @@ import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TabHost.TabSpec;
 
 public class HostProfileActivity extends BackableActivity implements OnItemSelectedListener{
@@ -34,10 +37,40 @@ public class HostProfileActivity extends BackableActivity implements OnItemSelec
 		spinner.setSelection(pos);
 		SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
 		mColor = (String) parent.getItemAtPosition(pos);
-		SharedPreferences.Editor saver = memory.edit();
+		final SharedPreferences.Editor saver = memory.edit();
 		saver.putString("color", mColor);
 		saver.putInt("colorPos", pos);
 		saver.commit();
+		
+		Switch camFlash = (Switch) findViewById(R.id.CamFlash);
+		Switch bgFlash = (Switch) findViewById(R.id.BGFlash);
+		
+		camFlash.setChecked(memory.getBoolean("cameraFlash", true));
+		bgFlash.setChecked(memory.getBoolean("backgroundFlash", true));
+		
+		camFlash.setOnCheckedChangeListener(new OnCheckedChangeListener()
+		{
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				SoundVisualizationActivity.doFlash = isChecked;		
+				saver.putBoolean("cameraFlash", isChecked);
+				saver.commit();
+			}
+			
+		});
+		bgFlash.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+			{
+				SoundVisualizationActivity.doBackground = isChecked;
+				saver.putBoolean("backgroundFlash", isChecked);
+				saver.commit();
+			}
+			
+		});
 				
 		actionBar = getActionBar();
 		int posi = memory.getInt("colorPos", -1);
