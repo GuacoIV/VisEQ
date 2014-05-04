@@ -7,9 +7,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class HostSoundVisualizationActivity extends Activity {
 	
@@ -72,6 +76,36 @@ public class HostSoundVisualizationActivity extends Activity {
 		
 		vizView.init(this);
 		
+		SeekBar freqSlider = new SeekBar(this);
+		RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+		params.setMargins(3,3,3,3);
+		freqSlider.setLayoutParams(params);
+		freqSlider.setMax(PlayerActivity.NUM_FLASH_BANDS - 1);
+		freqSlider.setProgress(0);
+		((ViewGroup) findViewById(R.id.host_viz_daddy)).addView(freqSlider);
+		
+freqSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
+			
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                PlayerActivity.BAND_TO_FLASH = progress;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {;
+                
+               
+               // dialog.show();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // TODO Auto-generated method stub
+            	//dialog.dismiss();
+            	//dialog.hide();
+            }
+
+        });
 
 	}
 

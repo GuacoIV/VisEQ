@@ -192,10 +192,10 @@ public class HostMenuActivity extends BackableActivity
 		LinearLayout scope = (LinearLayout)findViewById(R.id.ScopeWrap);
 		LinearLayout playing = (LinearLayout)findViewById(R.id.NowPlayingWrap);
 		LinearLayout visualizer = (LinearLayout)findViewById(R.id.SoundVizWrap);
-		scope.setAlpha(0.7f);
-		search.setAlpha(0.7f);
-		playing.setAlpha(0.7f);
-		visualizer.setAlpha(0.7f);
+		scope.setAlpha(0.9f);
+		search.setAlpha(0.9f);
+		playing.setAlpha(0.9f);
+		visualizer.setAlpha(0.9f);
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -259,13 +259,7 @@ public class HostMenuActivity extends BackableActivity
 		
 		//		Log.d("Flow", "onStart HostMenu");
 
-		SeekBar freqSlider = new SeekBar(this);
-		RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		params.setMargins(3,3,3,3);
-		freqSlider.setLayoutParams(params);
-		freqSlider.setMax(PlayerActivity.NUM_FLASH_BANDS - 1);
-		freqSlider.setProgress(0);
-		((ViewGroup) findViewById(R.id.HostMenuView)).addView(freqSlider);
+		
 		
 		final Dialog dialog = new Dialog(HostMenuActivity.this);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -275,28 +269,7 @@ public class HostMenuActivity extends BackableActivity
 		window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
 		window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 		
-		freqSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
-			
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                PlayerActivity.BAND_TO_FLASH = progress;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {;
-                
-               
-               // dialog.show();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-            	//dialog.dismiss();
-            	//dialog.hide();
-            }
-
-        });
+		
 		
 		myapp = (MyApplication) this.getApplicationContext();		
 		
@@ -407,10 +380,10 @@ public class HostMenuActivity extends BackableActivity
 			public boolean onTouch(View v, MotionEvent e){
 				LinearLayout l = (LinearLayout)v.getParent();
 				if (e.getAction() == MotionEvent.ACTION_DOWN) {
-					l.setAlpha(1);
+					l.setAlpha(.7f);
 				}
 				else if (e.getAction() == MotionEvent.ACTION_UP) {
-					l.setAlpha(.7f);
+					l.setAlpha(.9f);
 				}
 				return false;
 			}
