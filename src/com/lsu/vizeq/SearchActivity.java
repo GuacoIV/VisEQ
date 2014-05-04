@@ -517,6 +517,7 @@ public class SearchActivity extends BackableActivity
 					//If clear whole queue:
 					queueTab.removeAllViews();
 					myapp.queue.clear();
+					PlayerActivity.mIndex = 0;
 					//See how many to add
 					SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
 					int playlistIndex = ((ViewGroup) findViewById(R.id.SavedPlaylists)).indexOfChild(row);
