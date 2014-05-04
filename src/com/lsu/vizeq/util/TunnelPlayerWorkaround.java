@@ -49,7 +49,7 @@ public class TunnelPlayerWorkaround {
 
     MediaPlayer mp = null;
     try {
-      mp = MediaPlayer.create(context, R.raw.workaround_1min);
+      //mp = MediaPlayer.create(context, R.raw.workaround_1min);
       mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
       // NOTE: start() is no needed

@@ -101,7 +101,7 @@ public class RequestDetailsActivity extends BackableActivity
 				if (arg1.getAction() == MotionEvent.ACTION_DOWN)
 				{
 					TrackRow row = (TrackRow)arg0;
-					row.setBackgroundColor(Color.BLUE);
+					row.setBackgroundColor(Color.WHITE);
 					addToQueue(row);
 
 					return true;

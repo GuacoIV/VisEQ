@@ -55,6 +55,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.media.AudioManager;
@@ -83,7 +84,7 @@ import com.lsu.vizeq.ServiceBinder.ServiceBinderDelegate;
 import com.lsu.vizeq.SpotifyService.PlayerUpdateDelegate;
 import com.lsu.vizeq.util.TunnelPlayerWorkaround;
 
-public class PlayerActivity extends BackableActivity {
+public class PlayerActivity extends Activity {
 	boolean isPlaying = false;
 	boolean AudioFocus = false;
 	String LOGTAG = "Audio focus";
@@ -116,6 +117,7 @@ public class PlayerActivity extends BackableActivity {
 	int flashHistoryIndex = 0;
 	ActionBar actionBar;
 
+	
 	
     public InetAddress getBroadcastAddress() throws IOException
     {
@@ -325,8 +327,6 @@ public class PlayerActivity extends BackableActivity {
 
 		// Start listening for button presses
 		am.registerMediaButtonEventReceiver(new ComponentName(getPackageName(), RemoteControlReceiver.class.getName()));
-
-	    initTunnelPlayerWorkaround();
 		
 		//Refresh the queue
 		checkTheQueue();
@@ -470,6 +470,25 @@ public class PlayerActivity extends BackableActivity {
 			mNotificationManager.notify(mId, mBuilder.build());
 	}
 	
+	protected void ApplyTransition(boolean isOut) {
+		if (isOut)
+		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);	
+		else 
+		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);	
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		ApplyTransition(false);
+	}	
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		ApplyTransition(true);
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -507,7 +526,14 @@ public class PlayerActivity extends BackableActivity {
 			startActivity(nextIntent);
 		}
 		
-		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+        int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
+	    TextView yourTextView = (TextView) findViewById(titleId);
+	    yourTextView.setTextColor(Color.WHITE);
+	    Typeface titleFont = Typeface.createFromAsset(getAssets(), "Mohave-SemiBold.otf");
+	    yourTextView.setTypeface(titleFont);
+	    yourTextView.setTextSize(22);
+	    ApplyTransition(false);
 		
 		mVisualizer = new Visualizer(0);
 		if (mVisualizer.getEnabled()) {
@@ -686,26 +712,6 @@ public class PlayerActivity extends BackableActivity {
 			}
 		};
 		
-		new Thread( new Runnable()
-		{
-			public void run()
-			{
-				while (true)
-				{
-					flashOwnScreen();
-					try
-					{
-						Thread.sleep(140);
-					} catch (InterruptedException e)
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			
-		}).start();
-		
 		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
 		seekBar.setMax(300);
 		mBinder = new ServiceBinder(this);
@@ -820,14 +826,6 @@ public class PlayerActivity extends BackableActivity {
 		super.finish();
 	}
 
-	private void initTunnelPlayerWorkaround() {
-		 // Read "tunnel.decode" system property to determine
-		 // the workaround is needed
-		 if (TunnelPlayerWorkaround.isTunnelDecodeEnabled(this)) {
-		      mSilentPlayer = TunnelPlayerWorkaround.createSilentMediaPlayer(this);
-		 }
-	}
-
 	
 	
 	@Override
@@ -841,6 +839,9 @@ public class PlayerActivity extends BackableActivity {
 		case R.id.about:
 			Intent nextIntent2  = new Intent(PlayerActivity.this, AboutActivity.class);
 			startActivity(nextIntent2);
+			break;
+		case android.R.id.home:
+			moveTaskToBack(true);
 			break;
 		default:
 			super.onOptionsItemSelected(item);
@@ -857,37 +858,7 @@ public class PlayerActivity extends BackableActivity {
 		return super.onKeyDown(keyCode, event);
 	}
 	
-	public void flashOwnScreen()
-	{
-		if (flash==1) 
-		{
-			runOnUiThread(new Runnable()
-			{
-
-				@Override
-				public void run()
-				{
-					playerBackground.setBackgroundColor(Color.BLUE);					
-				}
-				
-			});
-			
-			flash = 0;
-		}
-		else
-		{
-			runOnUiThread(new Runnable()
-			{
-
-				@Override
-				public void run()
-				{
-					playerBackground.setBackgroundColor(Color.BLACK);					
-				}
-				
-			});			
-		}
-	}
+	
 	public void checkTheQueue()
 	{
 		mWebservice.loadAlbum(new WebService.TracksLoadedDelegate() {
