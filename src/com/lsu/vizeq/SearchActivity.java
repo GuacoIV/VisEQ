@@ -57,6 +57,7 @@ public class SearchActivity extends BackableActivity
 	AsyncHttpClient artworkClient = new AsyncHttpClient();
 	ActionBar actionBar;
 	LinearLayout queueTab;
+	int colorForPlaylists;
 	public void refreshQueue()
 	{
 		queueTab = (LinearLayout) findViewById(R.id.host_queue);
@@ -151,18 +152,23 @@ public class SearchActivity extends BackableActivity
 		{
 			case 1:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+				colorForPlaylists = getResources().getColor(R.color.Red);
 				break;
 			case 2:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));	
+				colorForPlaylists = getResources().getColor(R.color.Green);
 				break;
 			case 3:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+				colorForPlaylists = getResources().getColor(R.color.Blue);
 				break;
 			case 4:
-				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
+				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+				colorForPlaylists = getResources().getColor(R.color.Purple);
 				break;
 			case 5:
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+				colorForPlaylists = getResources().getColor(R.color.Orange);
 				break;		
 		}
 		
@@ -196,8 +202,6 @@ public class SearchActivity extends BackableActivity
 			//tabhost.getTabWidget().getChildAt(i).setBackgroundColor(getResources().getColor(R.color.LightGreen));
 		//}
 	    refreshQueue();
-		
-	    
 	    
 		rowTap = new OnTouchListener()
 		{
@@ -518,15 +522,13 @@ public class SearchActivity extends BackableActivity
 					if (name.equals("DNE") == false)
 					{
 						int playlistLength = memory.getInt("playlist" + playlistIndex + "Length", 0);
-						Set<String> list = memory.getStringSet("playlist" + playlistIndex + "Tracks", null);
-						String listInfo[] = new String[50];
-						list.toArray(listInfo);
-						for (int i = 0; i < playlistLength * 4; i+=4)
+						//String list = memory.getString("playlist" + playlistIndex + "Tracks", null);
+						for (int i = 0; i < playlistLength; i++)
 						{
-							String track = listInfo[i];
-							String album = listInfo[i+1];
-							String artist = listInfo[i+2];
-							String uri = listInfo[i+3];
+							String track = memory.getString("playlist" + playlistIndex + "Track" + i, "");
+							String album = memory.getString("playlist" + playlistIndex + "Album" + i, "");
+							String artist = memory.getString("playlist" + playlistIndex + "Artist" + i, "");
+							String uri = memory.getString("playlist" + playlistIndex + "Uri" + i, "");
 							Track trackToAdd = new Track(track, album, artist, uri);
 							myapp.queue.add(trackToAdd);
 						}
@@ -569,28 +571,28 @@ public class SearchActivity extends BackableActivity
 						SharedPreferences.Editor saver = memory.edit();
 						int numPlaylists = memory.getInt("numPlaylists", -1);
 						saver.putString("playlist"+ (++numPlaylists), name);
+						saver.putInt("numPlaylists", numPlaylists);
 						saver.putInt("playlist" + numPlaylists + "Length", queueTab.getChildCount());
 						ArrayList<TrackRow> playlist = new ArrayList<TrackRow>();
-						Set<String> stringSet = new HashSet<String>();
 						for (int i = 0; i < queueTab.getChildCount(); i++)
 						{
 							playlist.add(((TrackRow) queueTab.getChildAt(i)));
-							stringSet.add(playlist.get(i).mTrack);
-							stringSet.add(playlist.get(i).mAlbum);
-							stringSet.add(playlist.get(i).mArtist);
-							stringSet.add(playlist.get(i).mUri);
+							saver.putString("playlist" + numPlaylists + "Track" + i, playlist.get(i).mTrack);
+							saver.putString("playlist" + numPlaylists + "Album" + i, playlist.get(i).mAlbum);
+							saver.putString("playlist" + numPlaylists + "Artist" + i, playlist.get(i).mArtist);
+							saver.putString("playlist" + numPlaylists + "Uri" + i, playlist.get(i).mUri);
 						}
-						saver.putStringSet("playlist" + numPlaylists + "Tracks", stringSet);
 						saver.commit();
 						TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
 						TextView textViewToAdd = new TextView(SearchActivity.this);
-						tableRowToAdd.setBackgroundColor(Color.GREEN);
+						tableRowToAdd.setBackgroundColor(colorForPlaylists);
+						tableRowToAdd.originalColor = colorForPlaylists;
 						textViewToAdd.setText(name);
 						textViewToAdd.setTextSize(25);
 						tableRowToAdd.setOnTouchListener(playlistTap);
 						tableRowToAdd.addView(textViewToAdd);
 						LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-						params.setMargins(0, 2, 0, 2);
+						tableRowToAdd.setPadding(0, 5, 0, 5);
 						((ViewGroup) findViewById(R.id.SavedPlaylists)).addView(tableRowToAdd, params);
 					}
 				})
@@ -606,7 +608,22 @@ public class SearchActivity extends BackableActivity
 				alert.show();				
 			}
 		});
-		
+		//refresh Playlist list
+	    int numPlaylists = memory.getInt("numPlaylists", -1);
+	    for (int i = 0; i <= numPlaylists; i++)
+	    {
+	    	TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
+			TextView textViewToAdd = new TextView(SearchActivity.this);
+			tableRowToAdd.setBackgroundColor(colorForPlaylists);
+			tableRowToAdd.originalColor = colorForPlaylists;
+			textViewToAdd.setText(memory.getString("playlist" + i, ""));
+			textViewToAdd.setTextSize(25);
+			tableRowToAdd.setOnTouchListener(playlistTap);
+			tableRowToAdd.addView(textViewToAdd);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			tableRowToAdd.setPadding(0, 5, 0, 5);
+			((ViewGroup) findViewById(R.id.SavedPlaylists)).addView(tableRowToAdd, params);
+	    }
 		
 	}
 
