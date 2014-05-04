@@ -54,7 +54,7 @@ public class HostProfileActivity extends BackableActivity implements OnItemSelec
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
-				SoundVisualizationActivity.doFlash = isChecked;		
+				MyApplication.doFlash = isChecked;		
 				saver.putBoolean("cameraFlash", isChecked);
 				saver.commit();
 			}
@@ -65,7 +65,7 @@ public class HostProfileActivity extends BackableActivity implements OnItemSelec
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
-				SoundVisualizationActivity.doBackground = isChecked;
+				MyApplication.doBackground = isChecked;
 				saver.putBoolean("backgroundFlash", isChecked);
 				saver.commit();
 			}

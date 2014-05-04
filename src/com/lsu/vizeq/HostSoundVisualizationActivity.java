@@ -1,6 +1,7 @@
 package com.lsu.vizeq;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;

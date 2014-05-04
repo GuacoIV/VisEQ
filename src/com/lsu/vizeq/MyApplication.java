@@ -8,6 +8,7 @@ import java.util.Map;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
@@ -24,6 +25,16 @@ public class MyApplication extends Application {
 	public JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), Redis.host, Redis.port);
 	String brand = Build.BRAND; // for getting BrandName
 	String model = Build.MODEL; // for getting Model of the device
+	public static boolean doFlash;
+	public static boolean doBackground;
+	@Override
+	public void onCreate()
+	{
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		doFlash = memory.getBoolean("cameraFlash", true);
+		doBackground = memory.getBoolean("backgroundFlash", true);
+		//super.onCreate();
+	}
 	
 	@Override
 	public void onTerminate()

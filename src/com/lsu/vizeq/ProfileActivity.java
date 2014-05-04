@@ -215,7 +215,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
-				SoundVisualizationActivity.doFlash = isChecked;		
+				myapp.doFlash = isChecked;		
 				saver.putBoolean("cameraFlash", isChecked);
 				saver.commit();
 			}
@@ -226,7 +226,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
-				SoundVisualizationActivity.doBackground = isChecked;
+				myapp.doBackground = isChecked;
 				saver.putBoolean("backgroundFlash", isChecked);
 				saver.commit();
 			}

@@ -128,7 +128,7 @@ public class VisualizerView extends View {
 	{
 		public void run()
 		{
-			if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH) && SoundVisualizationActivity.doFlash) 
+			if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH) && MyApplication.doFlash) 
 	        {
 				try
 				{
@@ -157,7 +157,7 @@ public class VisualizerView extends View {
 				{
 					try
 					{
-				        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH) && SoundVisualizationActivity.doFlash) 
+				        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH) && MyApplication.doFlash) 
 				        {
 				            cam.startPreview();
 				            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
@@ -200,7 +200,7 @@ public class VisualizerView extends View {
 	
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		if (flash == false || SoundVisualizationActivity.doBackground == false) this.setBackgroundColor(Color.BLACK);
+		if (flash == false || MyApplication.doBackground == false) this.setBackgroundColor(Color.BLACK);
 		else 
 		{
 			this.setBackgroundColor(Color.WHITE);
