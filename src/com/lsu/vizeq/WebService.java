@@ -81,7 +81,7 @@ public class WebService {
 				mTracksLoadedDelegate.onTracksLoaded(result, mAlbumUri, mImageUri);
 
 			} catch (JSONException e) {
-				throw new RuntimeException("Could not parse the result from spotify webapi");
+				//throw new RuntimeException("Could not parse the result from spotify webapi");
 			}
 		}
 	};

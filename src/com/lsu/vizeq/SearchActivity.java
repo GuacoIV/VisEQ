@@ -44,6 +44,7 @@ import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -112,6 +113,7 @@ public class SearchActivity extends BackableActivity
 		for(int i=PlayerActivity.mIndex; i<myapp.queue.size(); i++)
 		{
 			TrackRow queueRow = new TrackRow(this.getBaseContext(), myapp.queue.get(i).mTrack, myapp.queue.get(i).mAlbum, myapp.queue.get(i).mArtist, myapp.queue.get(i).mUri);
+			queueRow.mThumbnail = myapp.queue.get(i).mThumbnail;
 			queueRow.setOnTouchListener(null);
 			int r,g,b;
 			
@@ -488,7 +490,7 @@ public class SearchActivity extends BackableActivity
 
 						} 
 						catch (JSONException e) {
-							throw new RuntimeException("Could not parse the results");
+							//throw new RuntimeException("Could not parse the results");
 						}
 					}
 				});
@@ -529,10 +531,13 @@ public class SearchActivity extends BackableActivity
 							String album = memory.getString("playlist" + playlistIndex + "Album" + i, "");
 							String artist = memory.getString("playlist" + playlistIndex + "Artist" + i, "");
 							String uri = memory.getString("playlist" + playlistIndex + "Uri" + i, "");
+							String thumbnail = memory.getString("playlist" + playlistIndex + "Thumbnail" + i, "");
 							Track trackToAdd = new Track(track, album, artist, uri);
+							trackToAdd.mThumbnail = thumbnail;
 							myapp.queue.add(trackToAdd);
 						}
 						refreshQueue();
+						Toast.makeText(SearchActivity.this, "" + name + " has been loaded as the queue", Toast.LENGTH_SHORT).show();
 					}
 					else
 						return false;
@@ -549,7 +554,7 @@ public class SearchActivity extends BackableActivity
 			{
 				//Scheme: save strings playlist0, playlist1, playlist2... for every one that exists
 				//then playlist0Length
-				//then playlist0Track0, playlist0Album0, playlist0Artist0, playlist0Uri0
+				//then playlist0Track0, playlist0Album0, playlist0Artist0, playlist0Uri0, playlist0Thumbnail
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);
 				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -581,6 +586,7 @@ public class SearchActivity extends BackableActivity
 							saver.putString("playlist" + numPlaylists + "Album" + i, playlist.get(i).mAlbum);
 							saver.putString("playlist" + numPlaylists + "Artist" + i, playlist.get(i).mArtist);
 							saver.putString("playlist" + numPlaylists + "Uri" + i, playlist.get(i).mUri);
+							saver.putString("playlist" + numPlaylists + "Thumbnail" + i, myapp.queue.get(i+PlayerActivity.mIndex).mThumbnail);
 						}
 						saver.commit();
 						TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
@@ -593,6 +599,7 @@ public class SearchActivity extends BackableActivity
 						tableRowToAdd.addView(textViewToAdd);
 						LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 						tableRowToAdd.setPadding(0, 5, 0, 5);
+						params.setMargins(0, 2, 0, 2);
 						((ViewGroup) findViewById(R.id.SavedPlaylists)).addView(tableRowToAdd, params);
 					}
 				})

@@ -186,7 +186,6 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 	    ts.setContent(R.id.tab03);
 	    ts.setIndicator("Profile");
 	    tabhost.addTab(ts);
-	    final LinearLayout customListTab = (LinearLayout) findViewById(R.id.tab02);
 	    Button submit = (Button)findViewById(R.id.SubmitCustomList);
 	    submit.setOnClickListener(submitListener);
 	    //Animation an = new Animation();	   
@@ -346,7 +345,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 	
 						} 
 						catch (JSONException e) {
-							throw new RuntimeException("Could not parse the results");
+							//throw new RuntimeException("Could not parse the results");
 						}
 					}
 				});
