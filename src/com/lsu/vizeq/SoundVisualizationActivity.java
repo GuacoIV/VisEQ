@@ -322,8 +322,6 @@ public class SoundVisualizationActivity extends Activity
 
 		@Override
 		protected String doInBackground(Void... params) {
-			// TODO Auto-generated method stub
-			String color = "#000000";
 			try {
 				receiveSocket = new DatagramSocket(7770);
 				byte[] receiveData = new byte[1024];

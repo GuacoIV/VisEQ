@@ -501,7 +501,7 @@ public class HostMenuActivity extends BackableActivity
 						myapp.connectedUsers.put(clientName, clientIp);
 //						Log.d("join listener", "added "+clientName+" "+clientIp.getHostName());
 						byte sendData[] = new byte[1024];
-						String sendString = "accept\n" + VizEQ.nowPlaying + "\njunkk";
+						String sendString = "accept\n" + VizEQ.nowPlaying + "\n";
 						sendData = sendString.getBytes();
 						DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, clientIp, 7771);
 						sendSocket.send(sendPacket);

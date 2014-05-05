@@ -354,7 +354,7 @@ public class PlayerActivity extends Activity {
 						for (int i = 0; i < datas.length; i++) {
 							data += "\n" + datas[i];
 						}
-						data += "\n" + " junk ";
+						data += "\n";
 						HostSoundVisualizationActivity.data = datas;
 						HostSoundVisualizationActivity.dirty = true;
 
@@ -375,7 +375,7 @@ public class PlayerActivity extends Activity {
 						{
 							DatagramSocket sendSocket2 = new DatagramSocket();
 							byte[] sendData2 = new byte[200];
-							data = "flash\n" + "junk\n" + "junk";
+							data = "flash\n";
 							sendData2 = data.getBytes();
 							Iterator it2 = MyApp.connectedUsers.entrySet().iterator();
 							while (it2.hasNext())
