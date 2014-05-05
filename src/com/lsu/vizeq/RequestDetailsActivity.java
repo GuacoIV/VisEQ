@@ -260,8 +260,13 @@ public class RequestDetailsActivity extends BackableActivity
 
 				@Override
 				public void onClick(DialogInterface arg0, int arg1) {
-//					Log.d("addToQueue", "Adding " + track.mTrack + " to top");
-					myapp.queue.add(0, track);	
+//					Log.d("addToQueue", "Adding " + track.mTrack + " to top");	
+					if (PlayerActivity.mIndex > 0) 
+             	    {
+             		   myapp.queue.add(PlayerActivity.mIndex + 1, track);
+             		   //PlayerActivity.mTracks
+             	    }
+             	    else myapp.queue.add(PlayerActivity.mIndex, track);
 					removeRequest(track);
 					refreshList();
 					getTrackCoverThread.start();
