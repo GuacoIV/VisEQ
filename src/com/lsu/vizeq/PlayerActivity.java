@@ -687,13 +687,14 @@ public class PlayerActivity extends Activity {
 		MyApp = myapp;
 		playerBackground = (RelativeLayout) findViewById(R.id.PlayerLayout);
 		am = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-		OnAudioFocusChangeListener mAudioFocusListener = new OnAudioFocusChangeListener() {
+		afChangeListener = new OnAudioFocusChangeListener() {
 			public void onAudioFocusChange(int focusChange) {
 			    switch (focusChange) {
 			        case AudioManager.AUDIOFOCUS_LOSS:
 //			            Log.v(LOGTAG, "AudioFocus: received AUDIOFOCUS_LOSS");
 			            AudioFocus = false;
 			            if (isPlaying) togglePlay();
+			            am.abandonAudioFocus(afChangeListener);
 			            break;
 
 			        case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
@@ -714,6 +715,7 @@ public class PlayerActivity extends Activity {
 			    }
 			}
 		};
+		//OnAudioFocusChangeListener.
 		
 		SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
 		seekBar.setMax(300);
