@@ -93,7 +93,7 @@ public class SearchPartyActivity extends BackableActivity {
 					v.setAlpha(0.7f);
 				else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
 					v.setAlpha(1f);
-				return true;
+				return false;
 			}
 
 		});

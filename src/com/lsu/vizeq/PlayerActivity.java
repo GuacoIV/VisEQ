@@ -413,7 +413,7 @@ public class PlayerActivity extends Activity {
 						byte[] sendData = new byte[200];
 						DatagramSocket sendSocket = new DatagramSocket();
 						String data = "track_info\n" + VizEQ.nowPlaying;
-						data += "\n" + " junk ";
+						data += "\n";
 
 						sendData = data.getBytes();
 						Iterator it = MyApp.connectedUsers.entrySet().iterator();
