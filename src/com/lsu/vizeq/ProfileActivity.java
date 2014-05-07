@@ -83,18 +83,23 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 			{
 				case 1:
 					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Red)));
+					VizEQ.colorScheme = getResources().getColor(R.color.Red);
 					break;
 				case 2:
-					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));				
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Green)));
+					VizEQ.colorScheme = getResources().getColor(R.color.Green);
 					break;
 				case 3:
 					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Blue)));
+					VizEQ.colorScheme = getResources().getColor(R.color.Blue);
 					break;
 				case 4:
-					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));				
+					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Purple)));
+					VizEQ.colorScheme = getResources().getColor(R.color.Purple);
 					break;
 				case 5:
 					actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
+					VizEQ.colorScheme = getResources().getColor(R.color.Orange);
 					break;		
 			}
 		}
