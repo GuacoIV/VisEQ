@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
@@ -273,7 +274,7 @@ public class HostMenuActivity extends BackableActivity
 		search.setAlpha(0.7f);
 		playing.setAlpha(0.7f);
 		visualizer.setAlpha(0.7f);
-		
+		refreshLists();
 		//		Log.d("Flow", "onStart HostMenu");
 
 		
@@ -480,6 +481,11 @@ public class HostMenuActivity extends BackableActivity
 		String ipString = "";
 		MyApplication myapp = (MyApplication) this.getApplicationContext();
 		Iterator it = myapp.connectedUsers.entrySet().iterator();
+		int numPartiers = 0;
+		TextView partyText = (TextView)findViewById(R.id.numUsers);
+		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Regular.otf");
+		partyText.setTypeface(font);
+		partyText.setTextColor(Color.WHITE);
 		while (it.hasNext())
 		{
 			Map.Entry pairs= (Map.Entry) it.next();
@@ -487,7 +493,9 @@ public class HostMenuActivity extends BackableActivity
 			String ip = ((InetAddress) pairs.getValue()).getHostAddress();
 			nameString += (name + "\n");
 			ipString += (ip + "\n");
+			numPartiers++;
 		}
+		partyText.setText(numPartiers + " people are connected to the party");
 		//iterate through usersConnected
 		
 		nameList.setText(nameString);

@@ -11,7 +11,7 @@
     android:background="@drawable/backgroundhostscreen" >
 <TableLayout
     android:id="@+id/tableLayout"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_width="match_parent">
     <TableRow
         android:id="@+id/tableRow1"
@@ -82,6 +82,15 @@
      </LinearLayout>
      </TableRow>
 </TableLayout>
+
+	<TextView
+	    android:id="@+id/numUsers"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@id/tableLayout"
+	    android:layout_marginTop="5dp"
+	    android:gravity="center_horizontal"
+	    android:textSize="20sp"/>
     <EditText
         android:id="@+id/name_field"
         android:layout_width="wrap_content"
@@ -123,13 +132,15 @@
         android:layout_alignLeft="@+id/ip_field"
         android:layout_below="@+id/ip_field"
         android:layout_marginTop="13dp"
-        android:width="100dp" />
+        android:width="100dp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/ip_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/name_list"
-        android:width="100dp" />
+        android:width="100dp"
+        android:visibility="gone" />
 
 </RelativeLayout>
