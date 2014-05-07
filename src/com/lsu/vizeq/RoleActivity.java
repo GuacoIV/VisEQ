@@ -7,6 +7,9 @@ import com.lsu.vizeq.R.color;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -14,6 +17,7 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
@@ -88,6 +92,11 @@ public class RoleActivity extends Activity
 
 		myapp = (MyApplication) this.getApplicationContext();
 		
+		if ((myapp.model).equals("Nexus 7")) 
+		{
+			NotCompletelySupportedNotification();
+		}
+		
 		findViewById(R.id.DJ).setOnTouchListener(new View.OnTouchListener()
 		{
 			
@@ -142,6 +151,23 @@ public class RoleActivity extends Activity
 			}
 		});		
 	}
+	
+	public void NotCompletelySupportedNotification()
+	{
+//		Log.d("Contact Server", "Error connecting");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Warning: Not all VizEQ features are currently supported by your device:\nNo sound visualization for host.").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
 	
 	public boolean isInCircle(Point tp, Point c, int radius)
 	{

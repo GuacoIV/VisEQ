@@ -146,16 +146,16 @@ public class HostMenuActivity extends BackableActivity
 					
 						while(myapp.hosting)
 						{
-							Iterator< Entry<String, InetAddress> > it = myapp.connectedUsers.entrySet().iterator();
+							Iterator< Entry<InetAddress, String> > it = myapp.connectedUsers.entrySet().iterator();
 							byte [] ping = new byte[1024];
 							byte [] ack = new byte[1024];
 							ping = "ping".getBytes();
 							
 							while(it.hasNext())
 							{
-								Entry<String, InetAddress> currEntry = it.next();
-								InetAddress currIp = currEntry.getValue();
-								final String guestName = currEntry.getKey();
+								Entry<InetAddress, String> currEntry = it.next();
+								InetAddress currIp = currEntry.getKey();
+								final String guestName = currEntry.getValue();
 								DatagramPacket pingPacket = new DatagramPacket(ping, ping.length, currIp, 7772);
 								DatagramPacket ackPacket = new DatagramPacket(ack, ack.length);
 								try
@@ -463,7 +463,7 @@ public class HostMenuActivity extends BackableActivity
 		EditText ipField = (EditText) this.findViewById(R.id.ip_field);
 		MyApplication myapp = (MyApplication) this.getApplicationContext();
 		try {
-			myapp.connectedUsers.put(nameField.getText().toString(), InetAddress.getByName(ipField.getText().toString()));
+			myapp.connectedUsers.put(InetAddress.getByName(ipField.getText().toString()), nameField.getText().toString());
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -480,7 +480,7 @@ public class HostMenuActivity extends BackableActivity
 		String nameString = "";
 		String ipString = "";
 		MyApplication myapp = (MyApplication) this.getApplicationContext();
-		Iterator it = myapp.connectedUsers.entrySet().iterator();
+		Iterator< Entry<InetAddress, String> > it = myapp.connectedUsers.entrySet().iterator();
 		int numPartiers = 0;
 		TextView partyText = (TextView)findViewById(R.id.numUsers);
 		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Regular.otf");
@@ -488,9 +488,9 @@ public class HostMenuActivity extends BackableActivity
 		partyText.setTextColor(Color.WHITE);
 		while (it.hasNext())
 		{
-			Map.Entry pairs= (Map.Entry) it.next();
-			String name = (String) pairs.getKey();
-			String ip = ((InetAddress) pairs.getValue()).getHostAddress();
+			Map.Entry<InetAddress, String> pairs= it.next();
+			String name = (String) pairs.getValue();
+			String ip = ((InetAddress) pairs.getKey()).getHostAddress();
 			nameString += (name + "\n");
 			ipString += (ip + "\n");
 			numPartiers++;
@@ -523,7 +523,7 @@ public class HostMenuActivity extends BackableActivity
 					{
 						String clientName = PacketParser.getArgs(listenPacket)[0];
 						InetAddress clientIp = listenPacket.getAddress();
-						myapp.connectedUsers.put(clientName, clientIp);
+						myapp.connectedUsers.put(clientIp, clientName);
 //						Log.d("join listener", "added "+clientName+" "+clientIp.getHostName());
 						byte sendData[] = new byte[1024];
 						String sendString = "accept\n" + VizEQ.nowPlaying + "\n";

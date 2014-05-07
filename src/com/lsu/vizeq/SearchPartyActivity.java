@@ -228,14 +228,14 @@ public class SearchPartyActivity extends BackableActivity {
 		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
 		LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
 		
-		Iterator<Map.Entry<String,InetAddress>> it = myapp.connectedUsers.entrySet().iterator();
+		Iterator<Map.Entry<InetAddress,String>> it = myapp.connectedUsers.entrySet().iterator();
 		while(it.hasNext())
 		{
-			final Map.Entry<String,InetAddress> pairs = (Map.Entry<String,InetAddress>) it.next();
+			final Map.Entry<InetAddress,String> pairs = it.next();
 			
 			//name of party
 			TextView tv = new TextView(this);
-			tv.setText((String)pairs.getKey());
+			tv.setText((String)pairs.getValue());
 			tv.setWidth(200);
 			tv.setHeight(60);
 			tv.setTextSize(20.f);
@@ -251,7 +251,7 @@ public class SearchPartyActivity extends BackableActivity {
 			{
 				@Override
 				public void onClick(View arg0) {
-					new JoinTask().execute((InetAddress) pairs.getValue());
+					new JoinTask().execute((InetAddress) pairs.getKey());
 				}
 			});
 			
@@ -450,7 +450,7 @@ public class SearchPartyActivity extends BackableActivity {
 							found = true;
 							partyName = PacketParser.getArgs(receivePacket)[0];
 							partyIp = receivePacket.getAddress().getHostAddress();
-							myapp.connectedUsers.put(partyName, InetAddress.getByName(partyIp));
+							myapp.connectedUsers.put(InetAddress.getByName(partyIp), partyName);
 							result = "Found parties:";
 							publishProgress();
 						}

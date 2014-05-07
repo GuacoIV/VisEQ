@@ -15,7 +15,7 @@ import android.os.Build;
 import android.util.Log;
 
 public class MyApplication extends Application {
-	public Map<String, InetAddress> connectedUsers = new HashMap<String,InetAddress>();
+	public Map<InetAddress, String> connectedUsers = new HashMap<InetAddress, String>();
 	public ArrayList<Track> queue = new ArrayList<Track>();
 	public ArrayList<Track> requests = new ArrayList<Track>();
 	public InetAddress hostAddress;
@@ -40,11 +40,8 @@ public class MyApplication extends Application {
 		 * Workaround attempt for Nexus 7.  See what the brand and model strings actually are in debug mode and adjust accordingly.
 		 * Then, it would solo that stream for the whole application, but I think our sound driver probably won't push the music out through there.
 		 * Give it a try though.
-		if ((brand + model).equals("Nexus 7")) 
-		{
-			AudioManager manager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
-			manager.setStreamSolo(AudioManager.STREAM_ALARM, true);
-		}*/
+		*/
+		
 	}
 	
 	@Override
