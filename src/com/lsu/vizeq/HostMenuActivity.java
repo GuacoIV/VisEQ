@@ -13,8 +13,10 @@ import java.util.Map.Entry;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -41,24 +43,7 @@ public class HostMenuActivity extends BackableActivity
 {
 	MyApplication myapp;
 	ActionBar actionBar;
-	
-	public String getIpString()
-	{
-		WifiManager wifi = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
-    	DhcpInfo dhcp = wifi.getDhcpInfo();
-    	ByteBuffer b = ByteBuffer.allocate(4);
-    	b.putInt(dhcp.ipAddress);
-    	InetAddress myAddress;
-    	String ipString = "fail";
-    	try {
-			 myAddress = InetAddress.getByAddress(b.array());
-			 ipString = myAddress.getHostAddress();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ipString;
-	}
+	boolean connectionGood = true;
 	
 	public void serverHeartbeat()
 	{
@@ -74,9 +59,11 @@ public class HostMenuActivity extends BackableActivity
 					long test = 0;
 					while(test != 1)
 					{
-						Jedis jedis = myapp.jedisPool.getResource();
+						Jedis jedis = null;
+						
 						try
 						{
+							jedis = myapp.jedisPool.getResource();
 							jedis.auth(Redis.auth);
 //							Log.d("heartbeat", "sending heartbeat");
 							//jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
@@ -86,6 +73,7 @@ public class HostMenuActivity extends BackableActivity
 								jedis.set(myapp.zipcode + ":" + myapp.myName, myapp.myIp);
 								test = jedis.expire(myapp.zipcode + ":" + myapp.myName, 5);
 							}
+							connectionGood = true;
 						} 
 						catch (JedisConnectionException e)
 						{
@@ -94,6 +82,18 @@ public class HostMenuActivity extends BackableActivity
 							{
 								myapp.jedisPool.returnBrokenResource(jedis);
 								jedis = null;
+							}
+							if(connectionGood)
+							{
+								connectionGood = false;
+								runOnUiThread(new Runnable()
+								{
+									@Override
+									public void run() {
+										// TODO Auto-generated method stub
+										LostConnectionNotification();
+									}
+								});	
 							}
 						}
 						finally
@@ -115,6 +115,21 @@ public class HostMenuActivity extends BackableActivity
 		}).start();
 	}
 	
+	public void LostConnectionNotification()
+	{
+//		Log.d("Contact Server", "Error connecting");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Lost connection to server").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
 	
 	public void userHeartbeat()
 	{

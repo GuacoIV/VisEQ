@@ -137,6 +137,22 @@ public class SearchActivity extends BackableActivity
 		}
 	}
 	
+	public void NoConnectionNotification()
+	{
+//		Log.d("Contact Server", "Error connecting");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Unable to search - no network connection").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -491,7 +507,15 @@ public class SearchActivity extends BackableActivity
 						} 
 						catch (JSONException e) {
 							//throw new RuntimeException("Could not parse the results");
+							e.printStackTrace();
 						}
+					}
+
+					@Override
+					public void onFailure(Throwable e, JSONObject errorResponse) {
+						// TODO Auto-generated method stub
+						super.onFailure(e, errorResponse);
+						NoConnectionNotification();
 					}
 				});
 			}
