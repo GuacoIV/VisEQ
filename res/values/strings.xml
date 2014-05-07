@@ -35,7 +35,7 @@
     <string name="HostIPAddress">ip address</string>
     <string name="AddClient">add</string>
     <string name="OrText">-or-</string>
-    <string name="ExplainSignIn">To play music, please sign in to Spotify</string>
+    <string name="ExplainSignIn">To play music, please sign in to Spotify Premium</string>
     <string name="username">Enter Your Name</string>
     <string name="usernameTitle">User Name:</string>
     <string name="cam_strobe">Camera Strobe</string>
