@@ -590,4 +590,43 @@ public class HostMenuActivity extends BackableActivity
 		return true;
 	}
 	
+	public void BackWarning()
+	{
+//		Log.d("Contact Server", "Couldn't find your location.");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Going back will stop your party.\nAre you sure you wish to continue?")
+		.setCancelable(false)
+		.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+				goBack();
+			}
+		})
+		.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() 
+		{	
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) 
+			{
+				
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
+	public void goBack()
+	{
+		super.onBackPressed();
+	}
+	
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		BackWarning();
+	}
+	
+	
+	
 }
