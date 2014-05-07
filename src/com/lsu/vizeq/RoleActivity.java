@@ -156,7 +156,7 @@ public class RoleActivity extends Activity
 	{
 //		Log.d("Contact Server", "Error connecting");
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("Warning: VizEQ does not currently support sound visualization for your device.").setCancelable(false)
+		builder.setMessage("Warning: Not all VizEQ features are currently supported by your device:\nNo sound visualization for host.").setCancelable(false)
 		.setPositiveButton("ok", new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int id)

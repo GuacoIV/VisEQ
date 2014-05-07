@@ -324,7 +324,7 @@ public class SoundVisualizationActivity extends Activity
 		protected String doInBackground(Void... params) {
 			try {
 				receiveSocket = new DatagramSocket(7770);
-				byte[] receiveData = new byte[1024];
+				byte[] receiveData = new byte[200];
 				while (!isCancelled())
 				{
 					final DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);

@@ -384,13 +384,13 @@ public class PlayerActivity extends Activity {
 						HostSoundVisualizationActivity.dirty = true;
 
 						sendData = data.getBytes();
-						Iterator it = MyApp.connectedUsers.entrySet().iterator();
+						Iterator< Map.Entry<InetAddress, String> > it = MyApp.connectedUsers.entrySet().iterator();
 						while (it.hasNext())
 						{
 //							Log.d("Send circl data", "hey");
-							Map.Entry pairs= (Map.Entry) it.next();
-							InetAddress IPAddress = (InetAddress) pairs.getValue();
-							String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
+							Map.Entry<InetAddress, String> pairs= it.next();
+							InetAddress IPAddress = pairs.getKey();
+							String test = "name: " + pairs.getValue() + " ip: " + pairs.getKey();
 //							Log.d("UDP",test);
 							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
 							sendSocket.send(sendPacket);
@@ -402,13 +402,13 @@ public class PlayerActivity extends Activity {
 							byte[] sendData2 = new byte[200];
 							data = "flash\n";
 							sendData2 = data.getBytes();
-							Iterator it2 = MyApp.connectedUsers.entrySet().iterator();
+							Iterator< Map.Entry<InetAddress, String> > it2 = MyApp.connectedUsers.entrySet().iterator();
 							while (it2.hasNext())
 							{
 //								Log.d("Send circl data", "flash");
-								Map.Entry pairs= (Map.Entry) it2.next();
-								InetAddress IPAddress = (InetAddress) pairs.getValue();
-								String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
+								Map.Entry<InetAddress, String> pairs = it2.next();
+								InetAddress IPAddress = pairs.getKey();
+								String test = "name: " + pairs.getValue() + " ip: " + pairs.getKey();
 //								Log.d("UDP",test);
 								DatagramPacket sendPacket2 = new DatagramPacket(sendData2, sendData2.length, IPAddress, 7770);
 								sendSocket2.send(sendPacket2);
@@ -441,13 +441,13 @@ public class PlayerActivity extends Activity {
 						data += "\n";
 
 						sendData = data.getBytes();
-						Iterator it = MyApp.connectedUsers.entrySet().iterator();
+						Iterator< Map.Entry<InetAddress, String> > it = MyApp.connectedUsers.entrySet().iterator();
 						while (it.hasNext())
 						{
 //							Log.d("Send circl data", "hey");
-							Map.Entry pairs= (Map.Entry) it.next();
-							InetAddress IPAddress = (InetAddress) pairs.getValue();
-							String test = "name: " + pairs.getKey() + " ip: " + pairs.getValue();
+							Map.Entry<InetAddress, String> pairs= it.next();
+							InetAddress IPAddress = pairs.getKey();
+							String test = "name: " + pairs.getValue() + " ip: " + pairs.getKey();
 //							Log.d("UDP",test);
 							DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, IPAddress, 7770);
 							sendSocket.send(sendPacket);

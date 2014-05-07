@@ -15,7 +15,7 @@ import android.os.Build;
 import android.util.Log;
 
 public class MyApplication extends Application {
-	public Map<String, InetAddress> connectedUsers = new HashMap<String,InetAddress>();
+	public Map<InetAddress, String> connectedUsers = new HashMap<InetAddress, String>();
 	public ArrayList<Track> queue = new ArrayList<Track>();
 	public ArrayList<Track> requests = new ArrayList<Track>();
 	public InetAddress hostAddress;
