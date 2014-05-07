@@ -15,12 +15,12 @@ import java.util.Set;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
@@ -182,11 +182,12 @@ public class SearchPartyActivity extends BackableActivity {
 	public void refreshPartyList(ArrayList<String> partyNames)
 	{
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		
+		params.setMargins(10, 2, 10, 2);
 		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
 		LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
 		
 		nameLayout.removeAllViews();
+		buttonLayout.removeAllViews();
 		for(int i=0; i<partyNames.size(); i++)
 		{
 			final String name = partyNames.get(i);
@@ -194,8 +195,7 @@ public class SearchPartyActivity extends BackableActivity {
 			//name of party
 			TextView tv = new TextView(this);
 			tv.setText(name);
-			tv.setWidth(200);
-			tv.setHeight(60);
+			tv.setHeight(100);
 			tv.setTextSize(20.f);
 			tv.setLayoutParams(params);
 			
@@ -203,8 +203,9 @@ public class SearchPartyActivity extends BackableActivity {
 			Button b = new Button(this);
 			b.setText("Join");
 			b.setWidth(75);
-			b.setHeight(60);
+			b.setHeight(100);
 			b.setLayoutParams(params);
+			b.setBackgroundColor(Color.WHITE);
 			b.setOnClickListener(new OnClickListener()
 			{
 				@Override
@@ -212,6 +213,19 @@ public class SearchPartyActivity extends BackableActivity {
 //					Log.d("Join", "Joining party");
 					new JoinTaskServer().execute(myapp.zipcode + ":" + name);
 					//new JoinTask().execute((InetAddress) pairs.getValue());
+				}
+			});
+			
+			b.setOnTouchListener(new OnTouchListener()
+			{
+				@Override
+				public boolean onTouch(View v, MotionEvent event)
+				{
+					if (event.getAction() == MotionEvent.ACTION_DOWN)
+						v.setAlpha(0.7f);
+					else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)
+						v.setAlpha(1f);
+					return false;
 				}
 			});
 			
@@ -227,7 +241,8 @@ public class SearchPartyActivity extends BackableActivity {
 		
 		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
 		LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
-		
+		nameLayout.removeAllViews();
+		buttonLayout.removeAllViews();
 		Iterator<Map.Entry<InetAddress,String>> it = myapp.connectedUsers.entrySet().iterator();
 		while(it.hasNext())
 		{
@@ -338,6 +353,7 @@ public class SearchPartyActivity extends BackableActivity {
 //			Log.d("ContactServerTask", "Trying to contact server");
 			String partyName = params[0];
 			String zipcode = params[1];
+			Log.d("zipcode: ", zipcode);
 			Integer result = 2;
 			ArrayList<String> partyNames = new ArrayList<String>();
 			Jedis jedis = myapp.jedisPool.getResource();
