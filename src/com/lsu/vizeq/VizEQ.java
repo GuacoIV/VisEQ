@@ -11,6 +11,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -44,9 +45,6 @@ public class VizEQ extends Activity
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
 		
-		// SET COLORS FROM PREFERENCE HERE 
-		// Code is really jank, sorry guys! Basically posi gets the savedPreference value of the index of the color from the string-array color_spinner in colors.xml and uses the old numRand method to assigning those colors
-		// BUG#1 Changing colors only effects screens during onCreate (which is only called when the screen is pulled up again)
 		if (posi != -1) numRand = posi;
 		if (posi <= 0) numRand = r.nextInt(5) + 1;
 
