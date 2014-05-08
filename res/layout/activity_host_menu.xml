@@ -1,146 +1,74 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".HostMenuActivity"
     android:id="@+id/HostMenuView"
     android:background="@drawable/backgroundhostscreen" >
-<TableLayout
-    android:id="@+id/tableLayout"
+<LinearLayout
+    android:id="@+id/HostMenuView"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent">
-    <TableRow
-        android:id="@+id/tableRow1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal" 
-        android:padding="10dp">
-        <LinearLayout
-        android:background="@color/Green"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/SearchWrap"
-        android:layout_marginRight="10dp">   
-     <Button
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+     <LinearLayout 
+         android:layout_weight="1"
+         android:layout_height="fill_parent"
+         android:layout_width="fill_parent"
+         android:orientation="horizontal">
+     <ImageButton
         android:id="@+id/Search"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType="centerInside"
         android:layout_margin="10dp"
-        android:background="@drawable/searchnqueue_button"/>
-     </LinearLayout>
-     <LinearLayout
-        android:background="@color/Green"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/ScopeWrap"
-        android:layout_marginLeft="10dp">
-     <Button
+        android:src="@drawable/searchnqueue_button"/>
+     <ImageButton
         android:id="@+id/Scope"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
+        android:layout_weight="1"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" 
+        android:scaleType="centerInside"
         android:layout_margin="10dp"
-        android:background="@drawable/scope_button"/>
+        android:src="@drawable/scope_button"/>
      </LinearLayout>
-     </TableRow>
+
      
-     <TableRow
-        android:id="@+id/tableRow2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="center_horizontal" >
      <LinearLayout
-        android:background="@color/Green"
+        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/NowPlayingWrap"
-        android:layout_marginRight="10dp">
-    <Button
+        android:orientation="horizontal" >
+    <ImageButton
         android:id="@+id/NowPlaying"
+        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp" 
-        android:background="@drawable/nowplaying_button"/>
-		</LinearLayout>
+        android:scaleType="centerInside"
+        android:src="@drawable/nowplaying_button"/>
    
-        <LinearLayout
-        android:background="@color/Green"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/SoundVizWrap"
-        android:layout_marginLeft="10dp">
-     <Button
-        android:id="@+id/sound_viz"
+     <ImageButton
+        android:id="@+id/SoundViz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 		android:layout_margin="10dp"
-		android:background="@drawable/visualizer_button"/>
+		android:layout_weight="1"
+		android:scaleType="centerInside"
+		android:src="@drawable/visualizer_button"/>
      </LinearLayout>
-     </TableRow>
-</TableLayout>
-
-	<TextView
-	    android:id="@+id/numUsers"
-	    android:layout_width="match_parent"
+	<LinearLayout 
+	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_below="@id/tableLayout"
-	    android:layout_marginTop="5dp"
-	    android:gravity="center_horizontal"
-	    android:textSize="20sp"/>
-    <EditText
-        android:id="@+id/name_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_marginTop="17dp"
-        android:ems="10"
-        android:hint="@string/HostName"
-        android:visibility="gone" >
+	    android:gravity="center_horizontal">
+     <TextView
+         android:id="@+id/numUsers"
+         android:layout_width="0dp"
+         android:layout_height="wrap_content"
+         android:layout_weight="1"
+         android:text="TextView"
+         android:gravity="center_horizontal" />
+	</LinearLayout>
+     </LinearLayout>
 
-    <requestFocus/>    
-    </EditText>
-    
-    <EditText
-        android:id="@+id/ip_field"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/name_field"
-        android:layout_alignRight="@+id/name_field"
-        android:layout_below="@+id/name_field"
-        android:layout_marginTop="13dp"
-        android:ems="10"
-        android:hint="@string/HostIPAddress"
-        android:visibility="gone" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/ip_field"
-        android:text="@string/AddClient"
-        android:onClick="addUserToList"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/name_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/ip_field"
-        android:layout_below="@+id/ip_field"
-        android:layout_marginTop="13dp"
-        android:width="100dp"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/ip_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/name_list"
-        android:width="100dp"
-        android:visibility="gone" />
-
-</RelativeLayout>
+     </FrameLayout>

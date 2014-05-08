@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,29 +14,23 @@ import redis.clients.jedis.exceptions.JedisConnectionException;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.net.DhcpInfo;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class HostMenuActivity extends BackableActivity
@@ -204,10 +197,10 @@ public class HostMenuActivity extends BackableActivity
 		super.onStart();
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-		LinearLayout search = (LinearLayout)findViewById(R.id.SearchWrap);
-		LinearLayout scope = (LinearLayout)findViewById(R.id.ScopeWrap);
-		LinearLayout playing = (LinearLayout)findViewById(R.id.NowPlayingWrap);
-		LinearLayout visualizer = (LinearLayout)findViewById(R.id.SoundVizWrap);
+		ImageButton search = (ImageButton)findViewById(R.id.Search);
+		ImageButton scope = (ImageButton)findViewById(R.id.Scope);
+		ImageButton playing = (ImageButton)findViewById(R.id.NowPlaying);
+		ImageButton visualizer = (ImageButton)findViewById(R.id.SoundViz);
 		scope.setAlpha(0.9f);
 		search.setAlpha(0.9f);
 		playing.setAlpha(0.9f);
@@ -266,10 +259,10 @@ public class HostMenuActivity extends BackableActivity
 //		Log.d("Flow", "onCreate HostMenu");
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));
-		LinearLayout search = (LinearLayout)findViewById(R.id.SearchWrap);
-		LinearLayout scope = (LinearLayout)findViewById(R.id.ScopeWrap);
-		LinearLayout playing = (LinearLayout)findViewById(R.id.NowPlayingWrap);
-		LinearLayout visualizer = (LinearLayout)findViewById(R.id.SoundVizWrap);
+		ImageButton search = (ImageButton)findViewById(R.id.Search);
+		ImageButton scope = (ImageButton)findViewById(R.id.Scope);
+		ImageButton playing = (ImageButton)findViewById(R.id.NowPlaying);
+		ImageButton visualizer = (ImageButton)findViewById(R.id.SoundViz);
 		scope.setAlpha(0.7f);
 		search.setAlpha(0.7f);
 		playing.setAlpha(0.7f);
@@ -396,12 +389,12 @@ public class HostMenuActivity extends BackableActivity
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent e){
-				LinearLayout l = (LinearLayout)v.getParent();
+				
 				if (e.getAction() == MotionEvent.ACTION_DOWN) {
-					l.setAlpha(.7f);
+					v.setAlpha(.7f);
 				}
 				else if (e.getAction() == MotionEvent.ACTION_UP) {
-					l.setAlpha(.9f);
+					v.setAlpha(.9f);
 				}
 				return false;
 			}
@@ -410,7 +403,7 @@ public class HostMenuActivity extends BackableActivity
 		findViewById(R.id.NowPlaying).setOnTouchListener(touchListener);
 		findViewById(R.id.Scope).setOnTouchListener(touchListener);
 		findViewById(R.id.Search).setOnTouchListener(touchListener);
-		findViewById(R.id.sound_viz).setOnTouchListener(touchListener);
+		findViewById(R.id.SoundViz).setOnTouchListener(touchListener);
 		
 		findViewById(R.id.NowPlaying).setOnClickListener(new View.OnClickListener()
 		{
@@ -446,7 +439,7 @@ public class HostMenuActivity extends BackableActivity
 			
 		});
 		
-		findViewById(R.id.sound_viz).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.SoundViz).setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -459,24 +452,25 @@ public class HostMenuActivity extends BackableActivity
 	
 	public void addUserToList(View view)
 	{
-		EditText nameField = (EditText) this.findViewById(R.id.name_field);
-		EditText ipField = (EditText) this.findViewById(R.id.ip_field);
+		//EditText nameField = (EditText) this.findViewById(R.id.name_field);
+		//EditText ipField = (EditText) this.findViewById(R.id.ip_field);
 		MyApplication myapp = (MyApplication) this.getApplicationContext();
 		try {
-			myapp.connectedUsers.put(InetAddress.getByName(ipField.getText().toString()), nameField.getText().toString());
-		} catch (UnknownHostException e) {
+			
+			//myapp.connectedUsers.put(InetAddress.getByName(ipField.getText().toString()), nameField.getText().toString());
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		nameField.setText("");
-		ipField.setText("");
+		//nameField.setText("");
+		//ipField.setText("");
 		refreshLists();
 	}
 	
 	private void refreshLists()
 	{
-		TextView nameList = (TextView) this.findViewById(R.id.name_list);
-		TextView ipList = (TextView) this.findViewById(R.id.ip_list);
+		//TextView nameList = (TextView) this.findViewById(R.id.name_list);
+		//TextView ipList = (TextView) this.findViewById(R.id.ip_list);
 		String nameString = "";
 		String ipString = "";
 		MyApplication myapp = (MyApplication) this.getApplicationContext();
@@ -498,8 +492,8 @@ public class HostMenuActivity extends BackableActivity
 		partyText.setText(numPartiers + " people are connected to the party");
 		//iterate through usersConnected
 		
-		nameList.setText(nameString);
-		ipList.setText(ipString);
+		//nameList.setText(nameString);
+		//ipList.setText(ipString);
 	}
 	
 	private class ListenForJoinRequestTask extends AsyncTask <Void, Void, Void>
