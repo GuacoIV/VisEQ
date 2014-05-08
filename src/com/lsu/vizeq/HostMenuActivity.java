@@ -495,7 +495,8 @@ public class HostMenuActivity extends BackableActivity
 			ipString += (ip + "\n");
 			numPartiers++;
 		}
-		partyText.setText(numPartiers + " people are connected to the party");
+		String peepString = (numPartiers != 1) ? " person " : " people ";
+		partyText.setText(numPartiers + peepString + "are connected to the party");
 		//iterate through usersConnected
 		
 		nameList.setText(nameString);
