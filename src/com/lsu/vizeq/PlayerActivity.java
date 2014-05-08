@@ -55,6 +55,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
@@ -914,6 +915,16 @@ public class PlayerActivity extends Activity {
 									@Override
 									public void run()
 									{
+										//final Display display = getWindowManager().getDefaultDisplay();
+									    final float screenWidth = findViewById(R.id.cover_image).getWidth();
+									    final float screenHeight = findViewById(R.id.cover_image).getHeight();
+									   // final float imageWidth = bmp.;
+									    //final float imageHeight = splashView.getDrawable().getIntrinsicHeight();
+									    final Matrix splashMatrix = new Matrix();
+									    final float scale = Math.max(screenHeight/300 ,screenWidth/300);
+									    splashMatrix.postScale(scale, scale);
+									    //splashView
+										((ImageView) findViewById(R.id.cover_image)).setImageMatrix(splashMatrix);
 										((ImageView) findViewById(R.id.cover_image)).setImageBitmap(bmp);
 										
 									}

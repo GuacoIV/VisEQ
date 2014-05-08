@@ -329,27 +329,29 @@ public class SoundVisualizationActivity extends Activity
 				{
 					final DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 					receiveSocket.receive(receivePacket);
-					String[] args = PacketParser.getArgs(receivePacket);
+					String header = PacketParser.getHeader(receivePacket);
+					final String[] args = PacketParser.getArgs(receivePacket);
+					
 //					Log.d("packet", PacketParser.getHeader(receivePacket));
-					if(PacketParser.getHeader(receivePacket).compareTo("freq_circle") == 0)
+					if(header.compareTo("freq_circle") == 0)
 					{
 						vizView.SetCircleStates(args);
 						//color = PacketParser.getArgs(receivePacket)[0];
 						//publishProgress(color);
 						//Log.d("UDP","Received!"+color);
 					}
-					else if (PacketParser.getHeader(receivePacket).equals("flash"))
+					else if (header.equals("flash"))
 					{
 						vizView.flash = true;
 					}
-					else if (PacketParser.getHeader(receivePacket).equals("track_info")) {
+					else if (header.equals("track_info")) {
 						Handler mainHandler = new Handler(SoundVisualizationActivity.this.getMainLooper());
 						Runnable myRunnable = new Runnable() {
 
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								textViewNowPlaying.setText(PacketParser.getArgs(receivePacket)[0]);
+								textViewNowPlaying.setText(args[0]);
 							}
 							
 						};
