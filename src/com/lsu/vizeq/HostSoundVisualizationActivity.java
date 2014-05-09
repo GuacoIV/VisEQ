@@ -140,8 +140,7 @@ freqSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 // TODO Auto-generated method stub
-            	//dialog.dismiss();
-            	//dialog.hide();
+            	saveSlider = PlayerActivity.BAND_TO_FLASH;
             }
 
         });
