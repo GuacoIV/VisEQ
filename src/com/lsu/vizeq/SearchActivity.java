@@ -431,14 +431,10 @@ public class SearchActivity extends BackableActivity
 								final String uri = tracks.getJSONObject(i).getString("href");
 								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
 								//Log.d("Search", trackName + ": " + trackArtist);
-								final TrackRow tableRowToAdd = new TrackRow(SearchActivity.this);
-								TextView textViewToAdd = new TextView(SearchActivity.this);
-								TextView textTwoViewToAdd = new TextView(SearchActivity.this);
-								tableRowToAdd.mTrack = trackName;
-								tableRowToAdd.mArtist = trackArtist;
-								tableRowToAdd.mAlbum = trackAlbum;
-								tableRowToAdd.mUri = uri;
-
+								final TrackRow tableRowToAdd = new TrackRow(SearchActivity.this, trackName, trackAlbum, trackArtist, uri);//Context context, String track, String album, String artist, String uri
+								tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
+								tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+								tableRowToAdd.setOnTouchListener(rowTap);
 
 									//JSONObject array = response.getJSONObject("thumbnail_url");
 									//String thumbnail = array.toString();
@@ -482,17 +478,6 @@ public class SearchActivity extends BackableActivity
 								if (redStart + addRed < 255 && i < 16) redStart += addRed;
 								if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
 								if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
-								textViewToAdd.setText(trackName);
-								textTwoViewToAdd.setText(trackArtist);
-								textViewToAdd.setTextSize(20);
-								textTwoViewToAdd.setTextColor(Color.DKGRAY);
-								LinearLayout linearLayoutToAdd = new LinearLayout(SearchActivity.this);
-								linearLayoutToAdd.setOrientation(LinearLayout.VERTICAL);
-								//linearLayoutToAdd.setShowDividers(LinearLayout.SHOW_DIVIDER_BEGINNING);
-								linearLayoutToAdd.addView(textViewToAdd);
-								linearLayoutToAdd.addView(textTwoViewToAdd);
-								tableRowToAdd.setOnTouchListener(rowTap);
-								tableRowToAdd.addView(linearLayoutToAdd);
 								LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 								params.setMargins(0, 2, 0, 2);
 								searchLayout.addView(tableRowToAdd, params);
