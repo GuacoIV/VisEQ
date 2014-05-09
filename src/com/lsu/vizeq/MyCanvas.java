@@ -220,9 +220,13 @@ import android.view.View;
 				paint.setColor(Color.BLUE);
 				int halfOfText =  0;
 				//int fittedTextSize = 45;
+				final float densityMultiplier = getContext().getResources().getDisplayMetrics().density;
+				//final float size = paint.measureText("sample text");
 				for (int j = 45; j > 5; j-=2)
 				{
-					if (paint.measureText(circlesToDraw.get(i).text) > circlesToDraw.get(i).radius * 2) paint.setTextSize(j);
+					float scaledPx = j * densityMultiplier;
+					paint.setTextSize(scaledPx);
+					if (paint.measureText(circlesToDraw.get(i).text) > circlesToDraw.get(i).radius * 2) paint.setTextSize(scaledPx);
 					else break;
 				}
 				//paint.setTextSize(fittedTextSize);
