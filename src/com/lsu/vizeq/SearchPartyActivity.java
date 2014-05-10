@@ -738,8 +738,10 @@ public class SearchPartyActivity extends BackableActivity {
 		String zipcode = "00000";
 		if(currLocation == null)
 		{
-			String locationProvider = LocationManager.GPS_PROVIDER;
-			currLocation = locationManager.getLastKnownLocation(locationProvider);
+			//String locationProvider = LocationManager.GPS_PROVIDER;
+			//currLocation = locationManager.getLastKnownLocation(locationProvider);
+			zipcode = "00000";
+			return zipcode;
 		}
 
 		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
