@@ -5,7 +5,8 @@
     android:background="@color/black"
     android:orientation="vertical"
     tools:context=".PlayerActivity" 
-    android:id="@+id/PlayerLayout">
+    android:id="@+id/PlayerLayout"
+    android:parentActivityName="com.lsu.vizeq.HostMenuActivity">
     
     <LinearLayout
         android:layout_width="match_parent"

@@ -1,25 +1,23 @@
 package com.lsu.vizeq;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class HostSoundVisualizationActivity extends Activity {
 	
@@ -81,7 +79,9 @@ public class HostSoundVisualizationActivity extends Activity {
 		
 		vizView = (VisualizerView)findViewById(R.id.visualizer);
 		
-		vizView.init(this);
+		
+		
+		vizView.init(this, true);
 		
 		LinearLayout controls = new LinearLayout(this);
 		controls.setOrientation(LinearLayout.VERTICAL);
@@ -121,6 +121,24 @@ public class HostSoundVisualizationActivity extends Activity {
 		text.addView(text3);
 		controls.addView(text);
 		
+		ToggleButton tog = (ToggleButton)findViewById(R.id.taptoflash);
+		tog.setChecked(!MyApplication.tapToFlash);
+		tog.setTextOff("Auto");
+		tog.setTextOn("Auto");
+		tog.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (isChecked) {
+					MyApplication.tapToFlash = false;
+				}
+				else {
+					MyApplication.tapToFlash = true;
+				}
+			}
+			
+		});
 		((ViewGroup) findViewById(R.id.host_viz_daddy)).addView(controls);
 		
 freqSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){

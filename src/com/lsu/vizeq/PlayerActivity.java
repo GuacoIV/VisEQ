@@ -374,6 +374,7 @@ public class PlayerActivity extends Activity {
 			{
 					try
 					{
+			
 						byte[] sendData = new byte[200];
 						DatagramSocket sendSocket = new DatagramSocket();
 						String data = "freq_circle";
@@ -688,7 +689,7 @@ public class PlayerActivity extends Activity {
 					averageLocalEnergy += flashEnergyHistory[i];
 				averageLocalEnergy /= 10;
 				
-				if (flashBandEnergy > averageLocalEnergy)
+				if (flashBandEnergy > averageLocalEnergy && MyApplication.tapToFlash == false)
 				{
 					HostSoundVisualizationActivity.flash = true;
 					SendBeat(sendValues, "yes");

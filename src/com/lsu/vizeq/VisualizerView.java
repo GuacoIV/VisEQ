@@ -17,6 +17,7 @@ import android.hardware.Camera.Parameters;
 import android.media.audiofx.Visualizer;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -34,6 +35,7 @@ public class VisualizerView extends View {
 		private float onSize;
 		private float offSize;
 		private float threshold = 1.1f;
+
 		
 		public FrequencyCircle(Paint p, float on, float off) {
 			mPaint = p;
@@ -67,6 +69,8 @@ public class VisualizerView extends View {
 	
 	public static final int NUM_BANDS = 4;
 	
+	
+	private boolean tapToFlash = false;
 	private Activity mActivity;
 	private Visualizer mVisualizer;
 	private Interpolator mInterpolator = new DecelerateInterpolator();
@@ -81,10 +85,26 @@ public class VisualizerView extends View {
 		this.context = context;
 	}
 
-	public void init(Activity host) {
+	public void init(Activity host, boolean isHost) {
 
 		captureRate = Visualizer.getMaxCaptureRate()/4;
 
+		tapToFlash = isHost;
+		
+		this.setOnTouchListener(new View.OnTouchListener() {
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (tapToFlash) {
+					if (event.getAction() == MotionEvent.ACTION_DOWN) {
+						HostSoundVisualizationActivity.flash = true;
+						PlayerActivity.SendBeat(HostSoundVisualizationActivity.data, "yes");
+					}
+				}
+				return false;
+			}
+		});
+		
 		mActivity = host;
 		flashThread.start();
 		for (int i = 0; i < circles.length; i++) {

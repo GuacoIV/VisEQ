@@ -29,6 +29,7 @@ public class MyApplication extends Application {
 	String model = Build.MODEL; // for getting Model of the device
 	public static boolean doFlash;
 	public static boolean doBackground;
+	public static boolean tapToFlash = false;
 	@Override
 	public void onCreate()
 	{

@@ -123,6 +123,7 @@ public class SoundVisualizationActivity extends Activity
 			VisualizerView.cam.release();
 		}
 		VisualizerView.cam = null;
+		if (rct != null)
 		rct.cancel(true);
 	}
 	
@@ -181,7 +182,7 @@ public class SoundVisualizationActivity extends Activity
 		vizView = (VisualizerView)findViewById(R.id.visualizer_view);
 		
 		
-		((VisualizerView)vizView).init(this);
+		((VisualizerView)vizView).init(this, false);
 		
 		
 		
@@ -317,6 +318,7 @@ public class SoundVisualizationActivity extends Activity
 		@Override
 		protected void onCancelled() {
 			// TODO Auto-generated method stub
+			if (receiveSocket != null)
 			receiveSocket.close();
 		}
 

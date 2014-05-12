@@ -412,6 +412,7 @@ public class HostMenuActivity extends BackableActivity
 			public void onClick(View v)
 			{
 				Intent nextIntent = new Intent(HostMenuActivity.this, PlayerActivity.class);
+				
 				startActivity(nextIntent);		
 			}
 			

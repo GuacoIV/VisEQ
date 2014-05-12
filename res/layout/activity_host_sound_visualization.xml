@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/host_viz_daddy"
-    tools:context=".HostSoundVisualizationActivity" >
+    tools:context=".HostSoundVisualizationActivity"
+    android:parentActivityName="com.lsu.vizeq.HostMenuActivity" >
     
 <com.lsu.vizeq.VisualizerView
     android:id="@+id/visualizer"
@@ -15,5 +16,12 @@
     android:textColor="#33b5e5"
     android:textSize="50sp"
     android:textStyle="bold" />
+
+<ToggleButton
+    android:id="@+id/taptoflash"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom|left"
+    android:text="Tap-to-flash" />
  
 </FrameLayout>
