@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 public class HostSoundVisualizationActivity extends Activity {
@@ -135,6 +136,7 @@ public class HostSoundVisualizationActivity extends Activity {
 				}
 				else {
 					MyApplication.tapToFlash = true;
+					Toast.makeText(HostSoundVisualizationActivity.this, "You've got the lights!  Tap anywhere to flash all party lights.", Toast.LENGTH_SHORT).show();
 				}
 			}
 			

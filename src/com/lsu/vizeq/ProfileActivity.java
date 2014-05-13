@@ -344,6 +344,13 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 							int blueStart = Color.blue(startColor);
 							int blueEnd = Color.blue(endColor);
 							int addBlue = (blueEnd - blueStart)/15;
+							
+							if (tracks.length()==0) 
+							{
+								TextView noResults = new TextView(ProfileActivity.this);
+								noResults.setText("There are no results.");
+								customSearchLayout.addView(noResults);
+							}
 							for (int i = 0; i < tracks.length(); i++)
 							{
 								String trackName = tracks.getJSONObject(i).getString("name");

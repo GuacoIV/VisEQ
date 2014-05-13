@@ -424,6 +424,12 @@ public class SearchActivity extends BackableActivity
 							int addBlue = (blueEnd - blueStart)/15;
 							
 							
+							if (tracks.length()==0) 
+							{
+								TextView noResults = new TextView(SearchActivity.this);
+								noResults.setText("There are no results.");
+								searchLayout.addView(noResults);
+							}
 							for (int i = 0; i < tracks.length(); i++)
 							{
 								String trackName = tracks.getJSONObject(i).getString("name");
