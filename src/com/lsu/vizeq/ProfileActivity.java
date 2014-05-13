@@ -68,7 +68,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 		saver.putString("color", mColor);
 		saver.putInt("colorPos", pos);
 		saver.commit();
-				
+		Log.d("Color", "item selected");
 		actionBar = getActionBar();
 		int posi = memory.getInt("colorPos", -1);
 		if (posi != -1) 
@@ -107,6 +107,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
+    	Log.d("Color", "Nothing Selected");
     	actionBar = getActionBar();
     	SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);

@@ -7,6 +7,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,7 +42,7 @@ public class HostProfileActivity extends BackableActivity implements OnItemSelec
 		saver.putString("color", mColor);
 		saver.putInt("colorPos", pos);
 		saver.commit();
-		
+		Log.d("Color", "item selected");
 		Switch camFlash = (Switch) findViewById(R.id.CamFlash);
 		Switch bgFlash = (Switch) findViewById(R.id.BGFlash);
 		
@@ -114,6 +115,7 @@ public class HostProfileActivity extends BackableActivity implements OnItemSelec
     	SharedPreferences memory = getSharedPreferences("VizEQ", MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
 		spinner.setSelection(posi);
+		Log.d("Color", "Nothing Selected");
 		if (posi > 0) 
 		{
 			VizEQ.numRand = posi;	

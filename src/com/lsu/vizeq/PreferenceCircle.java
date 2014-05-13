@@ -2,12 +2,12 @@ package com.lsu.vizeq;
 
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.Paint.Align;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -16,9 +16,10 @@ import android.view.View;
 	public class PreferenceCircle extends View
 	{
 		Random r = new Random();
+		Typeface font;
 		public PreferenceCircle(Context context) {
 			super(context);
-			// TODO Auto-generated constructor stub
+			font = Typeface.createFromAsset(context.getAssets(), "Mission Gothic Regular.otf");
 		}
 		public List<Track> tracks;
 		String text;
@@ -30,6 +31,7 @@ import android.view.View;
 		final float scale = getResources().getDisplayMetrics().density;
 		final float width = getResources().getDisplayMetrics().widthPixels;
 		final float height = getResources().getDisplayMetrics().heightPixels;
+		
 		//Code for working with bitmaps and density pixels
 		//int twentyFiveDP = (int) (25 * scale + 0.5f);
 		// Bitmap sub8 = BitmapFactory.decodeResource(getResources(), R.drawable.eighth);
@@ -75,8 +77,9 @@ import android.view.View;
 			
 			//paint.setColor(Color.MAGENTA);
 			canvas.drawCircle(x, y, radius, paint);
+			paint.setTypeface(font);
 			paint.setTextSize(50);
-		    paint.setColor(Color.BLUE);
+		    paint.setColor(Color.WHITE);
 		    paint.setTextAlign(Align.CENTER);
 		    canvas.drawText(text, x, y, paint);
 		}

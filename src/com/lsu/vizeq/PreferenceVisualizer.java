@@ -58,7 +58,6 @@ public class PreferenceVisualizer {
 					circles.set(j+1, circles.get(j));
 			}
 			circles.set(j+1, temp);
-
 		}
 		
 	}

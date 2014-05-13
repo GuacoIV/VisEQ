@@ -33,6 +33,7 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -197,6 +198,7 @@ public class SearchPartyActivity extends BackableActivity {
 			tv.setText(name);
 			tv.setHeight(100);
 			tv.setTextSize(20.f);
+			params.gravity = Gravity.CENTER;
 			tv.setLayoutParams(params);
 			
 			//join button

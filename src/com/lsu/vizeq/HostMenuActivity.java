@@ -490,7 +490,7 @@ public class HostMenuActivity extends BackableActivity
 			ipString += (ip + "\n");
 			numPartiers++;
 		}
-		String peepString = (numPartiers == 1) ? " person " : " people ";
+		String peepString = (numPartiers == 1) ? " person" : " people";
 		String verb = (numPartiers == 1) ? " is " : " are ";
 		partyText.setText(numPartiers + peepString + verb + "connected to the party");
 		//iterate through usersConnected

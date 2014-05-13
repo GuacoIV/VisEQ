@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -31,6 +32,7 @@ import android.view.View;
 		final float height = getResources().getDisplayMetrics().heightPixels - 70;
 		
 		Paint paint = new Paint();
+		Typeface font;
 		List<PreferenceCircle> circlesToDraw;
 		
 		public MyCanvas(Context context) {
@@ -44,6 +46,7 @@ import android.view.View;
 			appContext = context;
 			this.circlesToDraw = circles;
 			this.numCirclesToDraw = num; 
+			font = Typeface.createFromAsset(context.getAssets(), "Mission Gothic Regular.otf");
 			//init() //my version doesn't need this
 
 		}
@@ -207,6 +210,7 @@ import android.view.View;
 //			Log.d("onDraw", "Starting Drawing");
 
 			paint.setTextSize(45);
+			paint.setTypeface(font);
 			for (int i = 0; i < numCirclesToDraw; i++)
 			{
 //				Log.d("onDraw", "Drawing circle " + circlesToDraw.get(i).name);
@@ -217,7 +221,7 @@ import android.view.View;
 				}
 				else 
 					canvas.drawCircle(circlesToDraw.get(i).x, circlesToDraw.get(i).y, circlesToDraw.get(i).radius, paint);
-				paint.setColor(Color.BLUE);
+				paint.setColor(Color.WHITE);
 				int halfOfText =  0;
 				//int fittedTextSize = 45;
 				final float densityMultiplier = getContext().getResources().getDisplayMetrics().density;
