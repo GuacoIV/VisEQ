@@ -317,7 +317,7 @@ public class SearchPartyActivity extends BackableActivity {
 //		Log.d("Contact Server", "no location");
 		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		LinearLayout alertLayout = new LinearLayout(this);
+		final LinearLayout alertLayout = new LinearLayout(this);
 		TextView message = new TextView(this);
 		message.setText("Couldn't find your location. Please manually enter your zipcode: ");
 		final EditText zipin = new EditText(this);
@@ -332,6 +332,7 @@ public class SearchPartyActivity extends BackableActivity {
 			{
 				String zipcode = zipin.getText().toString();
 				myapp.zipcode = zipcode;
+				searchForPartiesServer(alertLayout);
 			}
 		})
 		.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() 

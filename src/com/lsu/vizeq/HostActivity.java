@@ -345,6 +345,7 @@ public class HostActivity extends BackableActivity
 			{
 				String zipcode = zipin.getText().toString();
 				myapp.zipcode = zipcode;
+				new ContactServerTask().execute(myapp.zipcode);
 			}
 		})
 		.setNegativeButton("Nevermind", new DialogInterface.OnClickListener() 
