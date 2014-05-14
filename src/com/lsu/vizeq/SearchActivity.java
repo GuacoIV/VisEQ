@@ -532,13 +532,6 @@ public class SearchActivity extends BackableActivity
 					}
 
 					@Override
-					protected Object parseResponse(String responseBody) throws JSONException
-					{
-						
-						return super.parseResponse(responseBody);
-					}
-
-					@Override
 					public void onFailure(Throwable e, JSONObject errorResponse) {
 						// TODO Auto-generated method stub
 						super.onFailure(e, errorResponse);

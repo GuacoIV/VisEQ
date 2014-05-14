@@ -36,6 +36,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TabHost;
@@ -55,6 +56,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 	LinearLayout customSearchLayout;
 	OnClickListener submitListener;
 	ActionBar actionBar;
+	ProgressBar progress;
 	public MyApplication myapp;
 	
 	AsyncHttpClient searchClient = new AsyncHttpClient();
@@ -142,7 +144,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 		super.onCreate(savedInstanceState);		
 		setContentView(R.layout.activity_profile);		
 		actionBar = getActionBar();
-		
+		progress = (ProgressBar)findViewById(R.id.spinner2);
 		myapp = (MyApplication) this.getApplicationContext();
 		
 		EditText et = (EditText) this.findViewById(R.id.ProfileUsername);
@@ -297,87 +299,132 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 				String strSearch = searchText.getText().toString();
 				strSearch = strSearch.replace(' ', '+');
 				searchText.clearFocus();
+				progress.setVisibility(View.VISIBLE);
 				searchClient.get("http://ws.spotify.com/search/1/track.json?q=" + strSearch, new JsonHttpResponseHandler() {
 	
-					public void onSuccess(JSONObject response) {
-						try {
-							JSONArray tracks = response.getJSONArray("tracks");
-							//JSONObject track = tracks.getJSONObject(0);
-							//Calculate start and end colors
-							int startColor = 0;
-							int endColor = 0;
-							SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
-							int posi = memory.getInt("colorPos", -1);
-							if (posi > 0) VizEQ.numRand = posi;	
-							switch (VizEQ.numRand)
+					public void onSuccess(final JSONObject response) {
+						new Thread(new Runnable()
+						{
+							public void run()
 							{
-								case 1:
-									startColor = getResources().getColor(R.color.Red); //203, 32, 38
-									endColor = Color.rgb(203+50, 32+90, 38+90);
-									break;
-								case 2:
-									startColor = getResources().getColor(R.color.Green);//100, 153, 64
-									endColor = Color.rgb(100+90, 153+90, 64+90);
-									break;
-								case 3:
-									startColor = getResources().getColor(R.color.Blue); //0, 153, 204
-									endColor = Color.rgb(0+90, 153+90, 204+50);
-									break;
-								case 4:
-									startColor = getResources().getColor(R.color.Purple); //155, 105, 172
-									endColor = Color.rgb(155+70, 105+70, 172+70);
-									break;
-								case 5:
-									startColor = getResources().getColor(R.color.Orange); //245, 146, 30
-									endColor = Color.rgb(245, 146+90, 30+90);
-									break;
+						
+								try {
+									JSONArray tracks = response.getJSONArray("tracks");
+									//JSONObject track = tracks.getJSONObject(0);
+									//Calculate start and end colors
+									int startColor = 0;
+									int endColor = 0;
+									SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+									int posi = memory.getInt("colorPos", -1);
+									if (posi > 0) VizEQ.numRand = posi;	
+									switch (VizEQ.numRand)
+									{
+										case 1:
+											startColor = getResources().getColor(R.color.Red); //203, 32, 38
+											endColor = Color.rgb(203+50, 32+90, 38+90);
+											break;
+										case 2:
+											startColor = getResources().getColor(R.color.Green);//100, 153, 64
+											endColor = Color.rgb(100+90, 153+90, 64+90);
+											break;
+										case 3:
+											startColor = getResources().getColor(R.color.Blue); //0, 153, 204
+											endColor = Color.rgb(0+90, 153+90, 204+50);
+											break;
+										case 4:
+											startColor = getResources().getColor(R.color.Purple); //155, 105, 172
+											endColor = Color.rgb(155+70, 105+70, 172+70);
+											break;
+										case 5:
+											startColor = getResources().getColor(R.color.Orange); //245, 146, 30
+											endColor = Color.rgb(245, 146+90, 30+90);
+											break;
+									}
+									
+									int redStart = Color.red(startColor);
+									int redEnd = Color.red(endColor);
+									int addRed = (redEnd - redStart)/15;
+									
+									int greenStart = Color.green(startColor);
+									int greenEnd = Color.green(endColor);
+									int addGreen = (greenEnd - greenStart)/15;
+									
+									int blueStart = Color.blue(startColor);
+									int blueEnd = Color.blue(endColor);
+									int addBlue = (blueEnd - blueStart)/15;
+									
+									runOnUiThread(new Runnable()
+									{
+										@Override
+										public void run()
+										{
+											progress.setVisibility(Spinner.GONE);
+										}
+									});
+									
+									if (tracks.length()==0) 
+									{
+										final TextView noResults = new TextView(ProfileActivity.this);
+										noResults.setText("There are no results.");
+										runOnUiThread(new Runnable()
+										{
+											public void run()
+											{
+												customSearchLayout.addView(noResults);
+											}
+										});
+									}
+									for (int i = 0; i < tracks.length(); i++)
+									{
+										String trackName = tracks.getJSONObject(i).getString("name");
+										String trackArtist = tracks.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
+										String uri = tracks.getJSONObject(i).getString("href");
+										String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
+										//Log.d("Search", trackName + ": " + trackArtist);
+										final TrackRow tableRowToAdd = new TrackRow(ProfileActivity.this, trackName, trackAlbum, trackArtist, uri);//Context context, String track, String album, String artist, String uri
+										tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
+										tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+										tableRowToAdd.setOnTouchListener(rowTap);
+										if (redStart + addRed < 255 && i < 16) redStart += addRed;
+										if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
+										if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
+										runOnUiThread(new Runnable()
+										{
+											public void run()
+											{
+												customSearchLayout.addView(tableRowToAdd);
+											}
+										});
+										
+									}
+									
+									//mAlbumUri = album.getString("spotify");
+									//mImageUri = album.getString("image");
+									// Now get track details from the webapi
+									//LSU Team, it looks like .get(http://ws.spotify.com/search/1/track?q=kaizers+orchestra) is the way to do a search
+									//mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
+			
+								} 
+								catch (JSONException e) {
+									//throw new RuntimeException("Could not parse the results");
+								}
 							}
-							
-							int redStart = Color.red(startColor);
-							int redEnd = Color.red(endColor);
-							int addRed = (redEnd - redStart)/15;
-							
-							int greenStart = Color.green(startColor);
-							int greenEnd = Color.green(endColor);
-							int addGreen = (greenEnd - greenStart)/15;
-							
-							int blueStart = Color.blue(startColor);
-							int blueEnd = Color.blue(endColor);
-							int addBlue = (blueEnd - blueStart)/15;
-							
-							if (tracks.length()==0) 
+						}).start();
+					}
+
+					@Override
+					public void onFailure(Throwable e, JSONArray errorResponse)
+					{
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
 							{
-								TextView noResults = new TextView(ProfileActivity.this);
-								noResults.setText("There are no results.");
-								customSearchLayout.addView(noResults);
+								progress.setVisibility(Spinner.GONE);
 							}
-							for (int i = 0; i < tracks.length(); i++)
-							{
-								String trackName = tracks.getJSONObject(i).getString("name");
-								String trackArtist = tracks.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
-								String uri = tracks.getJSONObject(i).getString("href");
-								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
-								//Log.d("Search", trackName + ": " + trackArtist);
-								TrackRow tableRowToAdd = new TrackRow(ProfileActivity.this, trackName, trackAlbum, trackArtist, uri);//Context context, String track, String album, String artist, String uri
-								tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
-								tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
-								tableRowToAdd.setOnTouchListener(rowTap);
-								if (redStart + addRed < 255 && i < 16) redStart += addRed;
-								if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
-								if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
-								customSearchLayout.addView(tableRowToAdd);
-							}
-							
-							//mAlbumUri = album.getString("spotify");
-							//mImageUri = album.getString("image");
-							// Now get track details from the webapi
-							//LSU Team, it looks like .get(http://ws.spotify.com/search/1/track?q=kaizers+orchestra) is the way to do a search
-							//mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
-	
-						} 
-						catch (JSONException e) {
-							//throw new RuntimeException("Could not parse the results");
-						}
+						});
+						NoConnectionNotification();
+						super.onFailure(e, errorResponse);
 					}
 				});
 			}
@@ -599,6 +646,21 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 			queueTab.addView(queueRow, params);
 //			Log.d("refresh queue", "adding row to tab");
 		}
+	}
+	public void NoConnectionNotification()
+	{
+//		Log.d("Contact Server", "Error connecting");
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("Unable to search - no network connection").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 
 }
