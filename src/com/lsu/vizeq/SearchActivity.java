@@ -1,8 +1,10 @@
 package com.lsu.vizeq;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
@@ -374,9 +376,17 @@ public class SearchActivity extends BackableActivity
 				InputMethodManager imm1 = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm1.hideSoftInputFromWindow(searchLayout.getWindowToken(), 0);
 				searchLayout.removeAllViews();
-				final String strSearch = searchText.getText().toString().replace(' ', '+');
 				searchText.clearFocus();
+				String strSearch; 
 				spinner.setVisibility(View.VISIBLE);
+				try
+				{
+					strSearch = URLEncoder.encode(searchText.getText().toString(), "UTF-8");
+				} catch (UnsupportedEncodingException e1)
+				{
+					strSearch = searchText.getText().toString().replace(' ', '+');
+					e1.printStackTrace();
+				}
 				searchClient.get("http://ws.spotify.com/search/1/track.json?q=" + strSearch, new JsonHttpResponseHandler() {
 
 					public void onSuccess(final JSONObject response) {

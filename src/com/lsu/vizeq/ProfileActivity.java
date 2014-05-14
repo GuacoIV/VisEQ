@@ -2,9 +2,11 @@ package com.lsu.vizeq;
 
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.URLEncoder;
 import java.util.Random;
 
 import org.json.JSONArray;
@@ -12,13 +14,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -296,10 +296,17 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 			{
 				// TODO Auto-generated method stub
 				customSearchLayout.removeAllViews();
-				String strSearch = searchText.getText().toString();
-				strSearch = strSearch.replace(' ', '+');
+				String strSearch;
 				searchText.clearFocus();
 				progress.setVisibility(View.VISIBLE);
+				try
+				{
+					strSearch = URLEncoder.encode(searchText.getText().toString(), "UTF-8");
+				} catch (UnsupportedEncodingException e1)
+				{
+					strSearch = searchText.getText().toString().replace(' ', '+');
+					e1.printStackTrace();
+				}
 				searchClient.get("http://ws.spotify.com/search/1/track.json?q=" + strSearch, new JsonHttpResponseHandler() {
 	
 					public void onSuccess(final JSONObject response) {
