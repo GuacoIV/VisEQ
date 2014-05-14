@@ -68,16 +68,31 @@
 					        android:layout_height="match_parent"
 					        android:text="OK" />
                         </LinearLayout>
-
+						<LinearLayout
+						    android:layout_width="match_parent"
+						    android:layout_height="wrap_content"
+						    android:orientation="vertical"
+						    android:gravity="center">
+						    <ProgressBar
+                            android:id ="@+id/spinner"
+                            android:visibility="gone"
+				            style="?android:attr/progressBarStyleLarge"
+				            android:layout_width="wrap_content"
+				            android:layout_height="wrap_content"
+				            android:layout_marginBottom="8dp" />
+						</LinearLayout>
                         <ScrollView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical">
+                        	
                             <LinearLayout
                                 android:id="@+id/SearchLayout"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical"/>
+                                android:orientation="vertical">
+                                 
+                                </LinearLayout>
                         </ScrollView>
                 </LinearLayout>
                 

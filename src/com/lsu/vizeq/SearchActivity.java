@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,18 +16,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -40,6 +39,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TableRow;
@@ -58,6 +59,7 @@ public class SearchActivity extends BackableActivity
 	AsyncHttpClient artworkClient = new AsyncHttpClient();
 	ActionBar actionBar;
 	LinearLayout queueTab;
+	ProgressBar spinner;
 	int colorForPlaylists;
 	public void refreshQueue()
 	{
@@ -162,6 +164,7 @@ public class SearchActivity extends BackableActivity
 //		Log.d("Flow", "onCreate SearchActivity");
 		actionBar = getActionBar();
 		actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.LightGreen)));	
+		spinner = (ProgressBar)findViewById(R.id.spinner);
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		int posi = memory.getInt("colorPos", -1);
@@ -371,141 +374,182 @@ public class SearchActivity extends BackableActivity
 				InputMethodManager imm1 = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm1.hideSoftInputFromWindow(searchLayout.getWindowToken(), 0);
 				searchLayout.removeAllViews();
-				String strSearch = searchText.getText().toString();
-				strSearch = strSearch.replace(' ', '+');
+				final String strSearch = searchText.getText().toString().replace(' ', '+');
 				searchText.clearFocus();
+				spinner.setVisibility(View.VISIBLE);
 				searchClient.get("http://ws.spotify.com/search/1/track.json?q=" + strSearch, new JsonHttpResponseHandler() {
 
-					public void onSuccess(JSONObject response) {
-						try {
-							JSONArray tracks = response.getJSONArray("tracks");
-							//JSONObject track = tracks.getJSONObject(0);
-							
-							//Calculate start and end colors
-							int startColor = 0;
-							int endColor = 0;
-							SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
-							int posi = memory.getInt("colorPos", -1);
-							if (posi > 0) VizEQ.numRand = posi;	
-							switch (VizEQ.numRand)
+					public void onSuccess(final JSONObject response) {
+						new Thread(new Runnable()
+						{
+							public void run()
 							{
-								case 1:
-									startColor = getResources().getColor(R.color.Red); //203, 32, 38
-									endColor = Color.rgb(203+50, 32+90, 38+90);
-									break;
-								case 2:
-									startColor = getResources().getColor(R.color.Green);//100, 153, 64
-									endColor = Color.rgb(100+90, 153+90, 64+90);
-									break;
-								case 3:
-									startColor = getResources().getColor(R.color.Blue); //0, 153, 204
-									endColor = Color.rgb(0+90, 153+90, 204+50);
-									break;
-								case 4:
-									startColor = getResources().getColor(R.color.Purple); //155, 105, 172
-									endColor = Color.rgb(155+70, 105+70, 172+70);
-									break;
-								case 5:
-									startColor = getResources().getColor(R.color.Orange); //245, 146, 30
-									endColor = Color.rgb(245, 146+90, 30+90);
-									break;
-							}
-							
-							int redStart = Color.red(startColor);
-							int redEnd = Color.red(endColor);
-							int addRed = (redEnd - redStart)/15;
-							
-							int greenStart = Color.green(startColor);
-							int greenEnd = Color.green(endColor);
-							int addGreen = (greenEnd - greenStart)/15;
-							
-							int blueStart = Color.blue(startColor);
-							int blueEnd = Color.blue(endColor);
-							int addBlue = (blueEnd - blueStart)/15;
-							
-							
-							if (tracks.length()==0) 
-							{
-								TextView noResults = new TextView(SearchActivity.this);
-								noResults.setText("There are no results.");
-								searchLayout.addView(noResults);
-							}
-							for (int i = 0; i < tracks.length(); i++)
-							{
-								String trackName = tracks.getJSONObject(i).getString("name");
-								String trackArtist = tracks.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
-								final String uri = tracks.getJSONObject(i).getString("href");
-								String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
-								//Log.d("Search", trackName + ": " + trackArtist);
-								final TrackRow tableRowToAdd = new TrackRow(SearchActivity.this, trackName, trackAlbum, trackArtist, uri);//Context context, String track, String album, String artist, String uri
-								tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
-								tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
-								tableRowToAdd.setOnTouchListener(rowTap);
-
-									//JSONObject array = response.getJSONObject("thumbnail_url");
-									//String thumbnail = array.toString();
+								try {
+									JSONArray tracks = response.getJSONArray("tracks");
+									//JSONObject track = tracks.getJSONObject(0);
 									
-									Thread coverThread = new Thread(new Runnable()
+									//Calculate start and end colors
+									int startColor = 0;
+									int endColor = 0;
+									SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+									int posi = memory.getInt("colorPos", -1);
+									if (posi > 0) VizEQ.numRand = posi;	
+									switch (VizEQ.numRand)
 									{
+										case 1:
+											startColor = getResources().getColor(R.color.Red); //203, 32, 38
+											endColor = Color.rgb(203+50, 32+90, 38+90);
+											break;
+										case 2:
+											startColor = getResources().getColor(R.color.Green);//100, 153, 64
+											endColor = Color.rgb(100+90, 153+90, 64+90);
+											break;
+										case 3:
+											startColor = getResources().getColor(R.color.Blue); //0, 153, 204
+											endColor = Color.rgb(0+90, 153+90, 204+50);
+											break;
+										case 4:
+											startColor = getResources().getColor(R.color.Purple); //155, 105, 172
+											endColor = Color.rgb(155+70, 105+70, 172+70);
+											break;
+										case 5:
+											startColor = getResources().getColor(R.color.Orange); //245, 146, 30
+											endColor = Color.rgb(245, 146+90, 30+90);
+											break;
+									}
+									
+									int redStart = Color.red(startColor);
+									int redEnd = Color.red(endColor);
+									int addRed = (redEnd - redStart)/15;
+									
+									int greenStart = Color.green(startColor);
+									int greenEnd = Color.green(endColor);
+									int addGreen = (greenEnd - greenStart)/15;
+									
+									int blueStart = Color.blue(startColor);
+									int blueEnd = Color.blue(endColor);
+									int addBlue = (blueEnd - blueStart)/15;
+									runOnUiThread(new Runnable()
+									{
+										@Override
 										public void run()
 										{
-											URI url;
-											try
-											{
-												url = new URI("https://embed.spotify.com/oembed/?url=" + uri);
-												HttpClient httpClient = new DefaultHttpClient();
-												HttpResponse response2 = httpClient.execute(new HttpGet(url));
-												HttpEntity entity = response2.getEntity();
-												String s = EntityUtils.toString(entity, "UTF-8");
-												int numThumb = s.indexOf("thumbnail_url");
-												String thumbnail = s.substring(numThumb + 16);
-												thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
-												thumbnail = thumbnail.replace("\\", "");
-												tableRowToAdd.mThumbnail = thumbnail;
-												//System.out.println(s);
-											} catch (URISyntaxException e)
-											{
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											} catch (ClientProtocolException e)
-											{
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											} catch (IOException e)
-											{
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											}	
+											spinner.setVisibility(Spinner.GONE);
 										}
 									});
-
-								tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
-								tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
-								if (redStart + addRed < 255 && i < 16) redStart += addRed;
-								if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
-								if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
-								LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-								params.setMargins(0, 2, 0, 2);
-								searchLayout.addView(tableRowToAdd, params);
+									if (tracks.length()==0) 
+									{
+										final TextView noResults = new TextView(SearchActivity.this);
+										noResults.setText("There are no results.");
+										runOnUiThread(new Runnable()
+										{
+											public void run()
+											{
+												searchLayout.addView(noResults);
+											}
+										});
+										
+									}
+									for (int i = 0; i < tracks.length(); i++)
+									{
+										String trackName = tracks.getJSONObject(i).getString("name");
+										String trackArtist = tracks.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
+										final String uri = tracks.getJSONObject(i).getString("href");
+										String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
+										//Log.d("Search", trackName + ": " + trackArtist);
+										final TrackRow tableRowToAdd = new TrackRow(SearchActivity.this, trackName, trackAlbum, trackArtist, uri);//Context context, String track, String album, String artist, String uri
+										tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
+										tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+										tableRowToAdd.setOnTouchListener(rowTap);
+		
+											//JSONObject array = response.getJSONObject("thumbnail_url");
+											//String thumbnail = array.toString();
+											
+											Thread coverThread = new Thread(new Runnable()
+											{
+												public void run()
+												{
+													URI url;
+													try
+													{
+														url = new URI("https://embed.spotify.com/oembed/?url=" + uri);
+														HttpClient httpClient = new DefaultHttpClient();
+														HttpResponse response2 = httpClient.execute(new HttpGet(url));
+														HttpEntity entity = response2.getEntity();
+														String s = EntityUtils.toString(entity, "UTF-8");
+														int numThumb = s.indexOf("thumbnail_url");
+														String thumbnail = s.substring(numThumb + 16);
+														thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
+														thumbnail = thumbnail.replace("\\", "");
+														tableRowToAdd.mThumbnail = thumbnail;
+														//System.out.println(s);
+													} catch (URISyntaxException e)
+													{
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													} catch (ClientProtocolException e)
+													{
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													} catch (IOException e)
+													{
+														// TODO Auto-generated catch block
+														e.printStackTrace();
+													}	
+												}
+											});
+		
+										tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
+										tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+										if (redStart + addRed < 255 && i < 16) redStart += addRed;
+										if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
+										if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
+										final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+										params.setMargins(0, 2, 0, 2);
+										runOnUiThread(new Runnable()
+										{
+											@Override
+											public void run()
+											{
+												searchLayout.addView(tableRowToAdd, params);
+											}
+										});
+									}
+									
+									//mAlbumUri = album.getString("spotify");
+									//mImageUri = album.getString("image");
+									// Now get track details from the webapi
+									//LSU Team, it looks like .get(http://ws.spotify.com/search/1/track?q=kaizers+orchestra) is the way to do a search
+									//mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
+		
+								} 
+								catch (JSONException e) {
+									//throw new RuntimeException("Could not parse the results");
+									e.printStackTrace();
+								}
 							}
-							
-							//mAlbumUri = album.getString("spotify");
-							//mImageUri = album.getString("image");
-							// Now get track details from the webapi
-							//LSU Team, it looks like .get(http://ws.spotify.com/search/1/track?q=kaizers+orchestra) is the way to do a search
-							//mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
+						}).start();
+					}
 
-						} 
-						catch (JSONException e) {
-							//throw new RuntimeException("Could not parse the results");
-							e.printStackTrace();
-						}
+					@Override
+					protected Object parseResponse(String responseBody) throws JSONException
+					{
+						
+						return super.parseResponse(responseBody);
 					}
 
 					@Override
 					public void onFailure(Throwable e, JSONObject errorResponse) {
 						// TODO Auto-generated method stub
 						super.onFailure(e, errorResponse);
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run()
+							{
+								spinner.setVisibility(Spinner.GONE);
+							}
+						});
 						NoConnectionNotification();
 					}
 				});
@@ -681,4 +725,38 @@ public class SearchActivity extends BackableActivity
 		}
 		return true;
 	}
+	
+	/**
+	 * Shows the progress UI and hides the login form.
+	 */
+	/*@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	private void showProgress(final boolean show) {
+		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+		// for very easy animations. If available, use these APIs to fade-in
+		// the progress spinner.
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+			int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+			mLoginStatusView.setVisibility(View.VISIBLE);
+			mLoginStatusView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
+				}
+			});
+
+			mLoginFormView.setVisibility(View.VISIBLE);
+			mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+				}
+			});
+		} else {
+			// The ViewPropertyAnimator APIs are not available, so simply show
+			// and hide the relevant UI components.
+			mLoginStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
+			mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+		}
+	}*/
 }

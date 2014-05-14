@@ -286,6 +286,7 @@ public class LoginActivity extends BackableActivity {
 					if (backToPlayer) {
 						Intent goToPlayer = new Intent(LoginActivity.this, PlayerActivity.class);
 						startActivity(goToPlayer);
+						finish();
 					}
 					Intent roleIntent = new Intent(LoginActivity.this, HostActivity.class);
 					startActivity(roleIntent);
