@@ -87,7 +87,8 @@ public class HostActivity extends BackableActivity
 				rl.setBackground(getResources().getDrawable(R.drawable.orange));
 				break;			
 		}
-		
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setDisplayShowTitleEnabled(true);
 	}
 	
 	@Override
@@ -328,7 +329,7 @@ public class HostActivity extends BackableActivity
 	{
 //		Log.d("Contact Server", "Couldn't find your location.");
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		LinearLayout alertLayout = new LinearLayout(this);
 		TextView message = new TextView(this);
 		message.setText("Couldn't find your location. Please manually enter your zipcode: ");

@@ -50,6 +50,8 @@ public class PreferenceVisualizationActivity extends BackableActivity {
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				break;			
 		}
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setDisplayShowTitleEnabled(true);
 	}
 	
 	@Override

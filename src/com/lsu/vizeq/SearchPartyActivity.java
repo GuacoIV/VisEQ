@@ -37,6 +37,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -315,7 +316,7 @@ public class SearchPartyActivity extends BackableActivity {
 	{
 //		Log.d("Contact Server", "no location");
 		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		LinearLayout alertLayout = new LinearLayout(this);
 		TextView message = new TextView(this);
 		message.setText("Couldn't find your location. Please manually enter your zipcode: ");
@@ -709,6 +710,8 @@ public class SearchPartyActivity extends BackableActivity {
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				break;		
 		}
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setDisplayShowTitleEnabled(true);
 	}
 
 	@Override

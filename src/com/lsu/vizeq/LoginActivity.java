@@ -190,6 +190,18 @@ public class LoginActivity extends BackableActivity {
 			}
 		});
 		
+		findViewById(R.id.sign_in_button).setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1)
+			{
+				if (arg1.getAction() == MotionEvent.ACTION_UP || arg1.getAction() == MotionEvent.ACTION_CANCEL)
+					arg0.setAlpha(1);
+				else if (arg1.getAction() == MotionEvent.ACTION_DOWN)
+					arg0.setAlpha(0.7f);
+				return false;
+			}
+		});
+		
 
 		binder = new ServiceBinder(this);
 		binder.bindService(new ServiceBinderDelegate() {

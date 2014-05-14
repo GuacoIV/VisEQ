@@ -868,9 +868,14 @@ public class PlayerActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.menu_settings:
+		//This can log out if we want if for later
+		/*case R.id.menu_settings:
 			Process.killProcess(Process.myPid());
 			mBinder.getService().destroy();
+			break;*/
+		case R.id.Settings:
+			Intent nextIntent = new Intent(PlayerActivity.this, HostProfileActivity.class);
+			startActivity(nextIntent);
 			break;
 		case R.id.about:
 			Intent nextIntent2  = new Intent(PlayerActivity.this, AboutActivity.class);

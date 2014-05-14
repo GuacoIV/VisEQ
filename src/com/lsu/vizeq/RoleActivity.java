@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,6 +61,8 @@ public class RoleActivity extends Activity
 				actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.Orange)));
 				break;		
 		}
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setDisplayShowTitleEnabled(true);
 	}
 	
 	@Override
@@ -113,6 +116,7 @@ public class RoleActivity extends Activity
 					DJButton.setImageResource(R.drawable.hostbutton_325x325);
 					if (event.getAction() == MotionEvent.ACTION_UP && isInCircle)
 					{
+						v.playSoundEffect(SoundEffectConstants.CLICK);
 						Intent nextIntent = new Intent(RoleActivity.this, LoginActivity.class);
 						startActivity(nextIntent);
 					}
@@ -135,6 +139,7 @@ public class RoleActivity extends Activity
 					DJButton.setImageResource(R.drawable.joinbutton_325x325);
 					if (event.getAction() == MotionEvent.ACTION_UP && isInCircle)
 					{
+						v.playSoundEffect(SoundEffectConstants.CLICK);
 						Intent nextIntent;
 						if(myapp.joined)
 						{

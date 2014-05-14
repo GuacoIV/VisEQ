@@ -13,7 +13,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0.5"
-        android:src="@drawable/hostbutton_325x325" />
+        android:src="@drawable/hostbutton_325x325"
+        android:soundEffectsEnabled="true" />
 
 	    <TextView
 	        android:id="@+id/DJText"
@@ -41,6 +42,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_weight="0.5"
-	        android:src="@drawable/joinbutton_325x325" />
+	        android:src="@drawable/joinbutton_325x325" 
+	        android:soundEffectsEnabled="true"/>
 
 </LinearLayout>
