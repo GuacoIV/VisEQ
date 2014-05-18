@@ -143,7 +143,7 @@ public class HostActivity extends BackableActivity
 		    	}
 		    	else
 		    	{
-		    		new ContactServerTask().execute(myapp.zipcode);
+		    		StartParty();
 		    	}
 				//myapp.zipcode = getZipcode();//"70820";
 				//String ip = "0.0.0.0";
@@ -369,6 +369,92 @@ public class HostActivity extends BackableActivity
 		myapp.hosting = true;
 		Intent nextIntent = new Intent(HostActivity.this, HostMenuActivity.class);
 		startActivity(nextIntent);
+	}
+	
+	private void StartParty()
+	{
+		final String partyName, zipcode, ip;
+		
+		zipcode = getZipcode();
+		if(myapp.zipcode == null || myapp.zipcode.equals("00000"))
+    		myapp.zipcode = getZipcode();
+    	if(myapp.zipcode.equals("00000"))
+    	{
+    		noLocationNotification();
+    		return;
+    	}
+    	
+    	partyName = getName();
+		ip = getPrivateIp();
+		
+		Thread startPartyOnServerThread = new Thread(new Runnable()
+		{
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				alertType alert = alertType.SERVER_ERROR;
+				
+				Jedis jedis = null;
+				try
+				{
+					jedis = myapp.jedisPool.getResource();
+					jedis.auth(Redis.auth);
+
+
+					long reply = jedis.setnx(zipcode + ":" + partyName, ip);
+					if(reply == 0)
+						alert = alertType.SAME_NAME_ERROR;
+					else
+					{
+						alert = alertType.NO_ERROR;
+						jedis.expire(zipcode + ":" + partyName, 500);
+						jedis.sadd(zipcode, partyName);
+					}
+				}
+				catch (JedisConnectionException e)
+				{
+					if(jedis != null)
+					{
+						myapp.jedisPool.returnBrokenResource(jedis);
+						jedis = null;
+					}
+				}
+				finally
+				{
+					if(jedis != null)
+						myapp.jedisPool.returnResource(jedis);
+				}
+				
+				final alertType finalAlert = alert;
+				runOnUiThread(new Runnable()
+				{
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						if(finalAlert == alertType.NO_ERROR)
+						{
+							setName(partyName);
+							setIp(ip);
+							moveToMenu();
+						}
+						else showAlert(finalAlert);
+					}
+				});	
+			}
+		});
+		startPartyOnServerThread.start();	
+	}
+	
+	private void showAlert(alertType type)
+	{
+		switch(type)
+		{
+		case SERVER_ERROR: connectionErrorNotification(); break;
+		case LOCATION_ERROR: noLocationNotification(); break;
+		case SAME_NAME_ERROR: changeNameNotification(); break;
+		}
 	}
 	
 	private class ContactServerTask extends AsyncTask<String, Void, Integer>

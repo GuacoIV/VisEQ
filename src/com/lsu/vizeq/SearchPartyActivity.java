@@ -46,6 +46,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+enum alertType { NO_ERROR, LOCATION_ERROR, SERVER_ERROR, NO_PARTIES_ERROR, SAME_NAME_ERROR };
+
 public class SearchPartyActivity extends BackableActivity {
 	
 	public LocationManager locationManager;
@@ -136,50 +138,9 @@ public class SearchPartyActivity extends BackableActivity {
     
     public void searchForPartiesServer(View view)
     {
-    	String name = "Dummy";
-    	myapp.myName = name;
-//    	Log.d("test", "myapp = " + myapp);
-//    	Log.d("test", "zipcode = " + myapp.zipcode);
-    	if(myapp.zipcode == null || myapp.zipcode.compareTo("00000")==0)
-    		myapp.zipcode = getZipcode();
-    	if(myapp.zipcode.equals("00000"))
-    	{
-    		noLocationNotification();
-    	}
-    	else
-    		new ContactServerTask().execute(name, myapp.zipcode);
+    	searchServer();
+    
     }
-	
-	public void searchForParties(View view)
-	{	
-		new ListPartiesTask().execute();
-		new Thread(new Runnable()
-		{
-
-			@Override
-			public void run() {
-				DatagramSocket sendSocket;
-				try {
-					sendSocket = new DatagramSocket();
-					//send search signal
-					byte[] sendData = new byte[1024];
-					String searchString = "search";
-					sendData = searchString.getBytes();
-					DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, getBroadcastAddress(), 7770);
-					//send it a bunch of times
-					for(int i=0; i<100; i++)
-					{
-						sendSocket.send(searchPacket);
-						Thread.sleep(10L);
-					}
-//					Log.d("search party", "search sent");
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}).start();
-	}
 	
 	public void refreshPartyList(ArrayList<String> partyNames)
 	{
@@ -238,47 +199,6 @@ public class SearchPartyActivity extends BackableActivity {
 		}
 	}
 	
-	public void refreshPartyList()
-	{
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		
-		LinearLayout nameLayout = (LinearLayout) findViewById(R.id.nameLayout);
-		LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.buttonLayout);
-		nameLayout.removeAllViews();
-		buttonLayout.removeAllViews();
-		Iterator<Map.Entry<InetAddress,String>> it = myapp.connectedUsers.entrySet().iterator();
-		while(it.hasNext())
-		{
-			final Map.Entry<InetAddress,String> pairs = it.next();
-			
-			//name of party
-			TextView tv = new TextView(this);
-			tv.setText((String)pairs.getValue());
-			tv.setWidth(200);
-			tv.setHeight(60);
-			tv.setTextSize(20.f);
-			tv.setLayoutParams(params);
-			
-			//join button
-			Button b = new Button(this);
-			b.setText("Join");
-			b.setWidth(75);
-			b.setHeight(60);
-			b.setLayoutParams(params);
-			b.setOnClickListener(new OnClickListener()
-			{
-				@Override
-				public void onClick(View arg0) {
-					new JoinTask().execute((InetAddress) pairs.getKey());
-				}
-			});
-			
-			//add them
-			nameLayout.addView(tv);
-			buttonLayout.addView(b);
-		}
-		
-	}
 	
 	public void noPartiesNotification()
 	{
@@ -345,6 +265,94 @@ public class SearchPartyActivity extends BackableActivity {
 		});
 		AlertDialog alert = builder.create();
 		alert.show();
+	}
+	
+	
+	private void searchServer()
+	{
+    	if(myapp.zipcode == null || myapp.zipcode.compareTo("00000")==0)
+    		myapp.zipcode = getZipcode();
+    	if(myapp.zipcode.equals("00000"))
+    	{
+    		noLocationNotification();
+    		return;
+    	}
+    	
+    	final String zipcode = myapp.zipcode;
+    	
+    	Thread contactServerThread = new Thread(new Runnable()
+    	{
+			@Override
+			public void run() {
+				
+				alertType alert = alertType.SERVER_ERROR;
+				final ArrayList<String> partyNames = new ArrayList<String>();
+				Jedis jedis = null;
+				try
+				{
+					jedis = myapp.jedisPool.getResource();
+					jedis.auth(Redis.auth);
+					Set<String> names = jedis.smembers(zipcode);
+					
+					//Check if they all have valid ips
+					Iterator<String> it = names.iterator();
+					
+					while(it.hasNext())
+					{
+						String name = it.next();
+						boolean check = jedis.exists(zipcode + ":" + name);
+						if(!check)
+						{
+							jedis.srem(zipcode, name);
+							it.remove();
+						}
+						else partyNames.add(name);
+					}
+					
+					if (partyNames.size() <= 0) alert = alertType.NO_PARTIES_ERROR;
+					else alert = alertType.NO_ERROR;
+					if (zipcode.equals("00000")) alert = alertType.LOCATION_ERROR;
+				}
+				catch (JedisConnectionException e)
+				{
+					e.printStackTrace();
+					if(jedis != null)
+					{
+						myapp.jedisPool.returnBrokenResource(jedis);
+						jedis = null;
+					}
+				}
+				finally
+				{
+					if(jedis != null)
+						myapp.jedisPool.returnResource(jedis);
+				}
+				
+				final alertType finalAlert = alert;
+				runOnUiThread(new Runnable()
+				{
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						refreshPartyList(partyNames);
+						showAlert(finalAlert);
+					}
+					
+				});	
+			}
+    	});
+    	contactServerThread.start();
+	}
+	
+	private void showAlert(alertType type)
+	{
+		switch(type)
+		{
+		case SERVER_ERROR: connectionErrorNotification(); break;
+		case LOCATION_ERROR: noLocationNotification(); break;
+		case NO_PARTIES_ERROR: noPartiesNotification(); break;
+		}
 	}
 	
 	private class ContactServerTask extends AsyncTask<String, Integer, ArrayList<String>>
@@ -434,74 +442,8 @@ public class SearchPartyActivity extends BackableActivity {
 		
 	}
 	
-	private class ListPartiesTask extends AsyncTask<Void, String, String>
+	private void joinParty()
 	{
-		DatagramSocket receiveSocket;
-		@Override
-		protected String doInBackground(Void... arg0) {
-			//listen for incoming party info
-		
-			String result = "Unable to find parties. Make sure you're connected to Wifi and try again.";
-			try {
-				receiveSocket = new DatagramSocket(7770);
-				receiveSocket.setSoTimeout(2000);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-				
-				String partyName = "";
-				String partyIp = "";
-				
-				//listen for response
-				boolean found = false;
-				//base on time elapsed to receive more parties (or no parties) - later
-				while (!found)
-				{
-					byte[] receiveData = new byte[1024];
-					
-					DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-					try
-					{
-						receiveSocket.receive(receivePacket);
-						String message = PacketParser.getHeader(receivePacket);
-						if(message.equals("found"))
-						{
-							found = true;
-							partyName = PacketParser.getArgs(receivePacket)[0];
-							partyIp = receivePacket.getAddress().getHostAddress();
-							myapp.connectedUsers.put(InetAddress.getByName(partyIp), partyName);
-							result = "Found parties:";
-							publishProgress();
-						}
-					}
-					catch(Exception e)
-					{
-						if(e.getClass().equals(SocketTimeoutException.class))
-						{
-							found = true;
-						}
-						else e.printStackTrace();
-					}
-				}
-			return result;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			// TODO Auto-generated method stub
-//			Log.d("ContactServerTask", "Finished");
-			TextView resultText = (TextView) findViewById(R.id.resultText);
-			resultText.setText(result);
-
-			receiveSocket.close();
-		}
-
-		@Override
-		protected void onProgressUpdate(String... values) {
-			// TODO Auto-generated method stub
-			refreshPartyList();
-		}
 		
 	}
 	
@@ -607,81 +549,6 @@ public class SearchPartyActivity extends BackableActivity {
 		
 	}
 	
-	public class JoinTask extends AsyncTask<InetAddress, Void, String>
-	{
-
-		@Override
-		protected String doInBackground(InetAddress... arg0) {
-			
-				//check if not entered username
-				if(!checkIfNameEntered()) return "Must enter name first";
-			
-				DatagramSocket sendSocket;
-				DatagramSocket listenSocket;
-				// TODO Auto-generated method stub
-				//send join request
-//				Log.d("join party", "Clicked");
-				try {
-					sendSocket = new DatagramSocket();
-					listenSocket = new DatagramSocket(7771);
-					//send join request
-					byte[] sendData = new byte[1024];
-					byte[] receiveData = new byte[1024];
-					String searchString = "join\n"+myapp.myName;
-					sendData = searchString.getBytes();
-					InetAddress ipaddress = arg0[0];
-					
-//					Log.d("join party", "Sending to " + ipaddress.getHostName());
-					DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7771);
-					sendSocket.send(searchPacket);
-//					Log.d("join party", "join sent to "+ipaddress.getHostName());
-					//now wait for response
-					boolean joined = false;
-					while(!joined)
-					{
-//						Log.d("listen for join", "listening");
-						DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
-						listenSocket.receive(receivePacket);
-						String message = PacketParser.getHeader(receivePacket);
-//						Log.d("listen for join", message);
-						if(message.equals("accept"))
-						{
-//							Log.d("listen for join", "we are joined");
-							myapp.joined = true;
-							myapp.hostAddress = receivePacket.getAddress();
-							joined = true;
-						}
-					}
-					return "Joined!";
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			return "Failed!";
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			//move to dummy content
-			final String s = result;
-			AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
-			builder.setMessage(result).setCancelable(false)
-			.setPositiveButton("ok", new DialogInterface.OnClickListener()
-			{
-				public void onClick(DialogInterface dialog, int id)
-				{
-					if(!s.equals("Must enter name first"))
-					{	
-						Intent nextIntent = new Intent(SearchPartyActivity.this, SoundVisualizationActivity.class);
-						startActivity(nextIntent);
-					}
-				}
-			});
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
-		
-	}
 
 	/**
 	 * Set up the {@link android.app.ActionBar}.
