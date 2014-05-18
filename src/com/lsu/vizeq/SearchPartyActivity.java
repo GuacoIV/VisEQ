@@ -175,7 +175,7 @@ public class SearchPartyActivity extends BackableActivity {
 				@Override
 				public void onClick(View arg0) {
 //					Log.d("Join", "Joining party");
-					new JoinTaskServer().execute(myapp.zipcode + ":" + name);
+					joinParty(myapp.zipcode + ":" + name);
 					//new JoinTask().execute((InetAddress) pairs.getValue());
 				}
 			});
@@ -442,8 +442,140 @@ public class SearchPartyActivity extends BackableActivity {
 		
 	}
 	
-	private void joinParty()
+	//there's a better way of doing this. but i'm in a hurry. sorry!
+	private void finishJoining(String result)
 	{
+		final String s = result;
+		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
+		builder.setMessage(result).setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+				if(s.equals("Joined!"))
+				{	
+					Intent nextIntent = new Intent(SearchPartyActivity.this, SoundVisualizationActivity.class);
+					startActivity(nextIntent);
+				}
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
+	private void joinParty(String partyName)
+	{
+		//check if not entered username
+		if(!checkIfNameEntered())
+		{
+			finishJoining("Must enter name first");
+			return;
+		}
+		
+		final String name = partyName;
+		
+		Thread joinPartyThread = new Thread(new Runnable()
+		{
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Jedis jedis = null;
+				String ip = null;
+				try
+				{
+					jedis = myapp.jedisPool.getResource();
+					jedis.auth(Redis.auth);
+					ip = jedis.get(name);
+				}
+				catch (JedisConnectionException e)
+				{
+					e.printStackTrace();
+					if(jedis != null)
+					{
+						myapp.jedisPool.returnBrokenResource(jedis);
+						jedis = null;
+					}
+					runOnUiThread(new Runnable()
+					{
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							finishJoining("Error connecting to server");
+							return;
+						}
+						
+					});
+				}
+				finally
+				{
+					if(jedis != null)
+						myapp.jedisPool.returnResource(jedis);
+				}
+			
+				DatagramSocket sendSocket;
+				DatagramSocket listenSocket;
+				// TODO Auto-generated method stub
+				//send join request
+//				Log.d("join party", "Clicked");
+				try {
+					sendSocket = new DatagramSocket();
+					listenSocket = new DatagramSocket(7771);
+					//send join request
+					byte[] sendData = new byte[1024];
+					byte[] receiveData = new byte[1024];
+					String searchString = "join\n"+myapp.myName;
+					sendData = searchString.getBytes();
+					
+					
+//					Log.d("join thru server", "host ip: "+ip);
+					
+					InetAddress ipaddress = InetAddress.getByName(ip);
+					
+//					Log.d("join party", "Sending to " + ipaddress.getHostName());
+					DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7771);
+					sendSocket.send(searchPacket);
+//					Log.d("join party", "join sent to "+ipaddress.getHostName());
+					//now wait for response
+					boolean joined = false;
+					while(!joined)
+					{
+//						Log.d("listen for join", "listening");
+						DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
+						listenSocket.receive(receivePacket);
+						String message = PacketParser.getHeader(receivePacket);
+//						Log.d("listen for join", message);
+						if(message.equals("accept"))
+						{
+//							Log.d("listen for join", "we are joined");
+							myapp.joined = true;
+							myapp.hostAddress = receivePacket.getAddress();
+							joined = true;
+							VizEQ.nowPlaying = PacketParser.getArgs(receivePacket)[0];
+						}
+					}
+					runOnUiThread(new Runnable()
+					{
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							finishJoining("Joined!");
+							return;
+						}
+						
+					});
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+			}
+			
+		});
+		
+		joinPartyThread.start();
 		
 	}
 	
