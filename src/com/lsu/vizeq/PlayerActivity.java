@@ -922,15 +922,15 @@ public class PlayerActivity extends Activity {
 									public void run()
 									{
 										//final Display display = getWindowManager().getDefaultDisplay();
-									    final float screenWidth = findViewById(R.id.cover_image).getWidth();
+									   /* final float screenWidth = findViewById(R.id.cover_image).getWidth();
 									    final float screenHeight = findViewById(R.id.cover_image).getHeight();
 									   // final float imageWidth = bmp.;
 									    //final float imageHeight = splashView.getDrawable().getIntrinsicHeight();
 									    final Matrix splashMatrix = new Matrix();
 									    final float scale = Math.max(screenHeight/300 ,screenWidth/300);
-									    splashMatrix.postScale(scale, scale);
+									    splashMatrix.postScale(scale, scale);*/
 									    //splashView
-										((ImageView) findViewById(R.id.cover_image)).setImageMatrix(splashMatrix);
+										//((ImageView) findViewById(R.id.cover_image)).setImageMatrix(splashMatrix);
 										((ImageView) findViewById(R.id.cover_image)).setImageBitmap(bmp);
 										
 									}

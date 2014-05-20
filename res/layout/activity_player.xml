@@ -16,29 +16,45 @@
         android:gravity="center"
         android:orientation="vertical" >
         
-        <TextView
-        android:id="@+id/track_info"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/noMusic"
-        android:singleLine="true"
-        android:textColor="#fff" />
-        <TextView
-            android:id="@+id/track_name"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:singleLine="true"
-        android:text="..."
-        android:textColor="#fff" />
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical" 
+        android:layout_weight="1">
+	        <TextView
+	        android:id="@+id/track_info"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:text="@string/noMusic"
+	        android:singleLine="true"
+	        android:textColor="#fff" />
+	        <TextView
+	            android:id="@+id/track_name"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_horizontal"
+	        android:singleLine="true"
+	        android:text="..."
+	        android:textColor="#fff" />
+        </LinearLayout>
 
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical" 
+        android:layout_weight="12">
         <ImageView
             android:id="@+id/cover_image"
-            android:layout_width="400dp"
-			android:layout_height="400dp"
+            android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="10"
             android:layout_marginTop="10dp"
-            android:src="@drawable/albumart" />
+            android:src="@drawable/albumart" 
+            android:scaleType="fitCenter"
+            android:contentDescription="Album cover"/>
 
         <LinearLayout
             android:id="@+id/topbar"
@@ -46,7 +62,8 @@
             android:layout_height="60dp"
             android:baselineAligned="false"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_weight="1" >
 
             <LinearLayout
                 android:id="@+id/player_star"
@@ -55,15 +72,16 @@
                 android:layout_weight="1"
                 android:background="@drawable/state"
                 android:clickable="true"
-                android:gravity="center" >
+                android:gravity="center">
 
                 <ImageView
                     android:id="@+id/star_image"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/unstar_100x100" />
+                    android:background="@drawable/unstar_100x100"
+                    android:contentDescription="Star this song" />
             </LinearLayout>
-
+		</LinearLayout>
             <!-- <LinearLayout
                 android:id="@+id/player_next_album"
                 android:layout_width="0px"

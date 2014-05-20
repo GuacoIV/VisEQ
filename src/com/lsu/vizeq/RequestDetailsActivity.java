@@ -246,7 +246,7 @@ public class RequestDetailsActivity extends BackableActivity
 					String thumbnail = s.substring(numThumb + 16);
 					thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
 					thumbnail = thumbnail.replace("\\", "");
-					thumbnail = thumbnail.replace("/cover/", "/300/");
+					thumbnail = thumbnail.replace("/cover/", "/640/");
 					track.mThumbnail = thumbnail;
 				} catch (Exception e)
 				{
