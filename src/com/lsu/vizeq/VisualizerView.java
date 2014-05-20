@@ -159,7 +159,7 @@ public class VisualizerView extends View {
 				}
 				catch( Exception e)
 				{
-					
+					e.printStackTrace();
 				}
 	            
 	        }

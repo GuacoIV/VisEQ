@@ -265,14 +265,12 @@ public class RequestDetailsActivity extends BackableActivity
 					if (PlayerActivity.mIndex > 0) 
              	    {
              		   myapp.queue.add(PlayerActivity.mIndex + 1, track);
-             		   //PlayerActivity.mTracks
              	    }
              	    else myapp.queue.add(PlayerActivity.mIndex, track);
 					removeRequest(track);
 					refreshList();
 					getTrackCoverThread.start();
 				}
-        		
         	})
         	.setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
 
@@ -284,7 +282,6 @@ public class RequestDetailsActivity extends BackableActivity
 					refreshList();
 					getTrackCoverThread.start();
 				}
-				
         	});
         
         builder.show();
