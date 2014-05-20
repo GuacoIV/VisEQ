@@ -264,10 +264,11 @@ public class RequestDetailsActivity extends BackableActivity
 				public void onClick(DialogInterface arg0, int arg1) {
 //					Log.d("addToQueue", "Adding " + track.mTrack + " to top");	
 					if (PlayerActivity.mIndex > 0) 
-             	    {
+             	   {
              		   myapp.queue.add(PlayerActivity.mIndex + 1, track);
-             	    }
-             	    else myapp.queue.add(PlayerActivity.mIndex, track);
+             	   }
+             	   else if (myapp.queue.size() == 0) myapp.queue.add(PlayerActivity.mIndex, track);
+             	   else if (myapp.queue.size() > 0 && PlayerActivity.mIndex >= 0) myapp.queue.add(PlayerActivity.mIndex + 1, track);
 					removeRequest(track);
 					refreshList();
 					getTrackCoverThread.start();

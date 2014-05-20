@@ -283,9 +283,9 @@ public class SearchActivity extends BackableActivity
 					                	   if (PlayerActivity.mIndex > 0) 
 					                	   {
 					                		   myapp.queue.add(PlayerActivity.mIndex + 1, tempTrack);
-					                		   //PlayerActivity.mTracks
 					                	   }
-					                	   else myapp.queue.add(PlayerActivity.mIndex, tempTrack);
+					                	   else if (myapp.queue.size() == 0) myapp.queue.add(PlayerActivity.mIndex, tempTrack);
+					                	   else if (myapp.queue.size() > 0 && PlayerActivity.mIndex >= 0) myapp.queue.add(PlayerActivity.mIndex + 1, tempTrack);
 										}
 									});
 			                	   coverThread.start();
