@@ -45,7 +45,7 @@
     <string name="color_pick">Pick your Color</string>
     <string name="uppercaseVIZEQ">VIZEQ</string>        
     <string name="SoundVisualizer">Visualizer</string>
-    <string name="aboutText">Version: Public Release 1.1 \n\n
+    <string name="aboutText">Version: Public Release 1.1.3 \n\n
         This product uses SPOTIFY CORE but is not endorsed, certified or otherwise approved in any way by Spotify. Spotify is the registered trade mark of the Spotify Group.\n\n
 Credits:\n\n
 Libspotify wrapper: https://github.com/spotify/psyonspotify\n\n

@@ -543,7 +543,7 @@ public class SearchPartyActivity extends BackableActivity {
 					{
 //						Log.d("listen for join", "listening");
 						DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
-						listenSocket.receive(receivePacket);
+						listenSocket.receive(receivePacket); //When no WiFi, but there is cell network - it dies at this line
 						String message = PacketParser.getHeader(receivePacket);
 //						Log.d("listen for join", message);
 						if(message.equals("accept"))

@@ -85,6 +85,37 @@ public class RoleActivity extends Activity
 		notADJText.setTextColor(Color.rgb(153, 153, 153));
 		orText.setTextSize(27);//27 gothic bold //51, 51, 51 //diameter is 140
 		orText.setTextColor(Color.rgb(51, 51, 51));
+		
+		final float densityMultiplier = this.getResources().getDisplayMetrics().density;
+		ImageView picButton = (ImageView) findViewById(R.id.DJ);
+		ImageView picButton2 = (ImageView) findViewById(R.id.NotADJ);
+		//Scale the text to fit
+		for (int j = 40; j > 9; j-=2)
+		{
+			//Measure
+			float scaledPx = j * densityMultiplier;
+			int bigTextSize = (int) DJText.getPaint().measureText((String) DJText.getText());
+			int littleTextSize = (int) orText.getPaint().measureText((String) orText.getText());
+			picButton.measure(0, 0);
+			
+			//Check
+			if (this.getResources().getDisplayMetrics().heightPixels - (bigTextSize*2 + littleTextSize + picButton.getMeasuredHeight()*2) < 0) 
+				DJText.setTextSize(scaledPx);	
+			else break;
+			
+			//Fix
+			DJText.setTextSize(scaledPx);
+			notADJText.setTextSize(scaledPx);
+			orText.setTextSize((j - 10) * densityMultiplier);
+			picButton.requestLayout();	
+			picButton2.requestLayout();
+			picButton.setAdjustViewBounds(true);
+			picButton2.setAdjustViewBounds(true);
+			picButton.setMaxHeight(picButton.getMeasuredHeight() - 10);
+			picButton.setMaxWidth(picButton.getMeasuredWidth() - 10);
+			picButton2.setMaxHeight(picButton.getMeasuredHeight() - 10);
+			picButton2.setMaxWidth(picButton.getMeasuredWidth() - 10);
+		}
 		actionBar = getActionBar();
 		int titleId = getResources().getIdentifier("action_bar_title", "id", "android");
 	    TextView yourTextView = (TextView) findViewById(titleId);

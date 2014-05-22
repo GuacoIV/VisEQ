@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -152,7 +153,7 @@ public class VisualizerView extends View {
 	        {
 				try
 				{
-		            cam = Camera.open();
+		            cam = Camera.open();		            
 		            p = cam.getParameters();
 		            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
 		            cam.setParameters(p);
