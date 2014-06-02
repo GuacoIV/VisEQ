@@ -45,6 +45,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 enum alertType { NO_ERROR, LOCATION_ERROR, SERVER_ERROR, NO_PARTIES_ERROR, SAME_NAME_ERROR };
 
@@ -542,10 +543,13 @@ public class SearchPartyActivity extends BackableActivity {
 					while(!joined)
 					{
 //						Log.d("listen for join", "listening");
+						try
+						{
 						DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
 						listenSocket.receive(receivePacket); //When no WiFi, but there is cell network - it dies at this line
 						String message = PacketParser.getHeader(receivePacket);
 //						Log.d("listen for join", message);
+						
 						if(message.equals("accept"))
 						{
 //							Log.d("listen for join", "we are joined");
@@ -554,17 +558,26 @@ public class SearchPartyActivity extends BackableActivity {
 							joined = true;
 							VizEQ.nowPlaying = PacketParser.getArgs(receivePacket)[0];
 						}
+						}
+						catch (Exception e)
+						{
+							runOnUiThread(new Runnable()
+							{
+								@Override
+								public void run() {
+									Toast.makeText(thisActivity, "Please connect to the same WiFi network as the host to join this party.", Toast.LENGTH_SHORT).show();
+									return;
+								}			
+							});							
+						}
 					}
 					runOnUiThread(new Runnable()
 					{
-
 						@Override
 						public void run() {
-							// TODO Auto-generated method stub
 							finishJoining("Joined!");
 							return;
-						}
-						
+						}		
 					});
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
