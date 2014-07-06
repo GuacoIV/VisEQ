@@ -208,6 +208,8 @@ public class HostActivity extends BackableActivity
 		} catch (NullPointerException e){
 			e.printStackTrace();
 //			Log.d("zipcode", "Failed to get zipcode");
+		} catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
 		}
 //		Log.d("zipcode", zipcode);
 		locationManager.removeUpdates(locationListener);
@@ -272,6 +274,7 @@ public class HostActivity extends BackableActivity
 	public String getPrivateIp()
 	{
 		WifiManager wm = (WifiManager) getSystemService(WIFI_SERVICE);
+		//TODO: change to InetAddress.getHostAddress()
 		String ip = Formatter.formatIpAddress(wm.getConnectionInfo().getIpAddress());
 //		Log.d("Private ip", "Obtained: "+ip);
 		return ip;

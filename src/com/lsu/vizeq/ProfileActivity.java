@@ -258,19 +258,16 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 					final TrackRow row = (TrackRow)arg0;
 					row.setBackgroundColor(row.originalColor);
 					AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
-			        builder.setMessage(R.string.QueueTopOrBottom)
-			               .setPositiveButton("Top", new DialogInterface.OnClickListener() {
+			        builder.setMessage(R.string.RequestPrompt)
+			               .setPositiveButton("Add to queue", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
 			                	   myapp.queue.add(0, row.getTrack());
 			                	   refreshQueue();
 			                	   customSearchLayout.removeView(row);			                	   
 			                   }
 			               })
-			               .setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
+			               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                	   myapp.queue.add(row.getTrack());
-			                	   refreshQueue();
-			                	   customSearchLayout.removeView(row);             	   
 			                   }
 			               });
 			        //builder.create();
@@ -521,7 +518,6 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 				@Override
 				public void run() 
 				{
-					// TODO Auto-generated method stub
 					DatagramSocket sendSocket;
 					try 
 					{
