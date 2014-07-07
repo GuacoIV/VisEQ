@@ -18,9 +18,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -29,15 +26,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -63,6 +65,7 @@ public class SearchActivity extends BackableActivity
 	LinearLayout queueTab;
 	ProgressBar spinner;
 	int colorForPlaylists;
+	OnTouchListener swipeListener;
 	public void refreshQueue()
 	{
 		queueTab = (LinearLayout) findViewById(R.id.host_queue);
@@ -112,13 +115,11 @@ public class SearchActivity extends BackableActivity
 		int blueEnd = Color.blue(endColor);
 		int addBlue = (blueEnd - blueStart)/15;
 		
-		/*---queue stuff---*/
-		
 		for(int i=PlayerActivity.mIndex; i<myapp.queue.size(); i++)
 		{
 			TrackRow queueRow = new TrackRow(this.getBaseContext(), myapp.queue.get(i).mTrack, myapp.queue.get(i).mAlbum, myapp.queue.get(i).mArtist, myapp.queue.get(i).mUri);
 			queueRow.mThumbnail = myapp.queue.get(i).mThumbnail;
-			queueRow.setOnTouchListener(null);
+			queueRow.setOnTouchListener(swipeListener);
 			int r,g,b;
 			
 			if (i>15) 
@@ -226,20 +227,78 @@ public class SearchActivity extends BackableActivity
 		//}
 	    refreshQueue();
 	    
-		rowTap = new OnTouchListener()
-		{
-
+	    swipeListener = new OnTouchListener()
+	    {
+	    	View lastTouched;
+			boolean moved = false;
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1)
 			{
+				if (arg1.getAction() == MotionEvent.ACTION_DOWN)
+				{
+					lastTouched = arg0;
+					moved = false;
+					return true;
+				}
+				else if (arg1.getAction() == MotionEvent.ACTION_MOVE)
+				{
+					if (arg1.getHistorySize() > 1)
+					{
+						if (Math.abs(arg1.getHistoricalX(arg1.getHistorySize() - 1)) - (arg1.getHistoricalX(arg1.getHistorySize() - 2)) > .2)
+						{
+							lastTouched.setTranslationX(arg1.getX());
+							//lastTouched.refreshDrawableState();
+							lastTouched.invalidate();
+							moved = true;
+						}
+					}
+					Log.d("gesture", "swiping " + arg1.getX());
+				}
+			
+				else if (arg1.getAction() == MotionEvent.ACTION_UP)
+				{	
+					if (!moved)
+					{
+				        moved = false;
+						return true;
+					}
+					else
+					{
+						//Determine if it dragged far enough
+						for (int i = 0; i < myapp.queue.size(); i++)
+							Log.d("before queue", ""+myapp.queue.get(i).mTrack);
+						slideToRight(arg0);
+						
+						Log.d("gesture", "animating");
+					}
+				}
+				else if (arg1.getAction() == MotionEvent.ACTION_CANCEL)
+				{
+					TrackRow row = (TrackRow)arg0;
+					row.setBackgroundColor(row.originalColor);
+					row.setTranslationX(0);
+					moved = false;
+					return true;
+				}
+				return false;
+			}
+	    	
+	    };
+		rowTap = new OnTouchListener()
+		{
+			@Override
+			public boolean onTouch(View arg0, MotionEvent arg1)
+			{
+				
 				if (arg1.getAction() == MotionEvent.ACTION_DOWN)
 				{
 					TableRow row = (TableRow)arg0;
 					row.setBackgroundColor(Color.WHITE);
 					return true;
 				}
+			
 				else if (arg1.getAction() == MotionEvent.ACTION_UP)
-				{					
+				{	
 					final TrackRow row = (TrackRow)arg0;
 					row.setBackgroundColor(row.originalColor);
 					AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);
@@ -354,21 +413,21 @@ public class SearchActivity extends BackableActivity
 			                	   refreshQueue();
 			                   }
 			               });
-			        //builder.create();
-			        builder.show();
-					return true;
+				        //builder.create();
+				        builder.show();
+						return true;
 				}
 				else if (arg1.getAction() == MotionEvent.ACTION_CANCEL)
 				{
 					TrackRow row = (TrackRow)arg0;
 					row.setBackgroundColor(row.originalColor);
+					row.setTranslationX(0);
 					return true;
 				}
 				return false;
 			}
-		
 		};
-		
+				
 		
 		findViewById(R.id.SearchOK).setOnClickListener(new OnClickListener(){
 
@@ -474,6 +533,7 @@ public class SearchActivity extends BackableActivity
 										tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
 										tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
 										tableRowToAdd.setOnTouchListener(rowTap);
+										//tableRowToAdd.setOnDragListener(swipeListener);
 		
 											//JSONObject array = response.getJSONObject("thumbnail_url");
 											//String thumbnail = array.toString();
@@ -732,6 +792,44 @@ public class SearchActivity extends BackableActivity
 		return true;
 	}
 	
+	public void slideToRight(final View view){
+		TranslateAnimation animate = new TranslateAnimation(0,view.getWidth(),0,0);
+		animate.setDuration(900);
+		animate.setFillAfter(true);
+		view.startAnimation(animate);
+		animate.setAnimationListener(new AnimationListener()
+		{
+
+			@Override
+			public void onAnimationEnd(Animation animation)
+			{
+				int index = queueTab.indexOfChild((TrackRow) view);
+				if (index >= 0 && index < queueTab.getChildCount())
+				{
+					if (myapp.queue.get(index).mUri.equals(((TrackRow) view).getSpotifyUri()))
+					{
+						myapp.queue.remove(index);
+						((LinearLayout)view.getParent()).removeView(view);
+						for (int i = 0; i < myapp.queue.size(); i++)
+							Log.d("after queue", ""+myapp.queue.get(i).mTrack);
+					}
+				}
+			}
+
+			@Override
+			public void onAnimationStart(Animation animation)
+			{
+				
+			}
+
+			@Override
+			public void onAnimationRepeat(Animation animation)
+			{
+								
+			}
+			
+		});		
+	}
 	/**
 	 * Shows the progress UI and hides the login form.
 	 */
