@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,7 +31,6 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -125,7 +123,10 @@ public class HostActivity extends BackableActivity
 		myapp = (MyApplication) this.getApplicationContext();
 				
 		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 		
 		letsParty.setOnClickListener(new View.OnClickListener()
 		{
@@ -194,8 +195,18 @@ public class HostActivity extends BackableActivity
 		String zipcode = "00000";
 		if(currLocation == null)
 		{
-			String locationProvider = LocationManager.NETWORK_PROVIDER;
-			currLocation = locationManager.getLastKnownLocation(locationProvider);
+			String locationProvider = "";
+			if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) 
+			{
+				locationProvider = LocationManager.NETWORK_PROVIDER;
+				currLocation = locationManager.getLastKnownLocation(locationProvider);
+			}
+			else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) 
+			{
+				locationProvider = LocationManager.GPS_PROVIDER;
+				currLocation = locationManager.getLastKnownLocation(locationProvider);
+			}
+			
 		}
 
 		Geocoder geocoder = new Geocoder(this, Locale.getDefault());
@@ -381,6 +392,7 @@ public class HostActivity extends BackableActivity
 		zipcode = getZipcode();
 		if(myapp.zipcode == null || myapp.zipcode.equals("00000"))
     		myapp.zipcode = getZipcode();
+		
     	if(myapp.zipcode.equals("00000"))
     	{
     		noLocationNotification();
