@@ -37,6 +37,9 @@ public class HostSoundVisualizationActivity extends Activity {
 		
 		dirty = false;
 		data = new String[VisualizerView.NUM_BANDS];
+		for (int i = 0; i < data.length; i++) {
+			data[i] = "none";
+		}
 		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
