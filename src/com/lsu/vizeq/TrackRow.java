@@ -22,6 +22,8 @@ public class TrackRow extends TableRow
 	public LinearLayout trackRowLayout;
 	public TextView trackView;
 	public TextView artistView;
+	public boolean moved = false;
+	public boolean animationStarted = false;
 	private Context context;
 	
 	public TrackRow(Context context, String track, String album, String artist, String uri) {

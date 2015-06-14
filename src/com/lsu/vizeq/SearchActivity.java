@@ -25,16 +25,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.DragEvent;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnDragListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -230,36 +230,36 @@ public class SearchActivity extends BackableActivity
 	    swipeListener = new OnTouchListener()
 	    {
 	    	View lastTouched;
-			boolean moved = false;
+
+			Point screenSize = new Point();
+			
 			@Override
 			public boolean onTouch(View arg0, MotionEvent arg1)
 			{
+				TrackRow row = (TrackRow)arg0;
 				if (arg1.getAction() == MotionEvent.ACTION_DOWN)
 				{
 					lastTouched = arg0;
-					moved = false;
+					row.moved = false;
 					return true;
 				}
 				else if (arg1.getAction() == MotionEvent.ACTION_MOVE)
 				{
+					row.moved = true;
 					if (arg1.getHistorySize() > 1)
 					{
-						if (Math.abs(arg1.getHistoricalX(arg1.getHistorySize() - 1)) - (arg1.getHistoricalX(arg1.getHistorySize() - 2)) > .2)
-						{
-							lastTouched.setTranslationX(arg1.getX());
-							//lastTouched.refreshDrawableState();
-							lastTouched.invalidate();
-							moved = true;
-						}
+						if (!row.animationStarted)
+							lastTouched.setPadding((int)arg1.getHistoricalX(0, arg1.getHistorySize() - 1), lastTouched.getPaddingTop(), lastTouched.getPaddingRight(), lastTouched.getPaddingBottom());
+						
+						Log.d("gesture", "swiping " + arg1.getHistoricalX(0, arg1.getHistorySize() - 1));
 					}
-					Log.d("gesture", "swiping " + arg1.getX());
+					
 				}
 			
 				else if (arg1.getAction() == MotionEvent.ACTION_UP)
 				{	
-					if (!moved)
+					if (!row.moved)
 					{
-				        moved = false;
 						return true;
 					}
 					else
@@ -267,18 +267,30 @@ public class SearchActivity extends BackableActivity
 						//Determine if it dragged far enough
 						for (int i = 0; i < myapp.queue.size(); i++)
 							Log.d("before queue", ""+myapp.queue.get(i).mTrack);
-						slideToRight(arg0);
+						
+						getWindowManager().getDefaultDisplay().getSize(screenSize);
+						if (lastTouched.getPaddingLeft() > screenSize.x / 4)
+						{
+							row.animationStarted = true;
+							slideToRight(arg0);
+							return false;
+						}
+						else if (!row.animationStarted)
+							lastTouched.setPadding(0, lastTouched.getPaddingTop(), lastTouched.getPaddingRight(), lastTouched.getPaddingBottom());
 						
 						Log.d("gesture", "animating");
 					}
+					row.moved = false;
 				}
 				else if (arg1.getAction() == MotionEvent.ACTION_CANCEL)
 				{
-					TrackRow row = (TrackRow)arg0;
-					row.setBackgroundColor(row.originalColor);
-					row.setTranslationX(0);
-					moved = false;
-					return true;
+					if (!row.animationStarted)
+					{
+						row.setBackgroundColor(row.originalColor);
+						lastTouched.setPadding(0, lastTouched.getPaddingTop(), lastTouched.getPaddingRight(), lastTouched.getPaddingBottom());
+						row.moved = false;
+						return true;
+					}
 				}
 				return false;
 			}
@@ -794,7 +806,7 @@ public class SearchActivity extends BackableActivity
 	
 	public void slideToRight(final View view){
 		TranslateAnimation animate = new TranslateAnimation(0,view.getWidth(),0,0);
-		animate.setDuration(900);
+		animate.setDuration(700);
 		animate.setFillAfter(true);
 		view.startAnimation(animate);
 		animate.setAnimationListener(new AnimationListener()
