@@ -43,9 +43,10 @@ public class LibSpotifyWrapper {
 	private static Handler handler = new Handler();
 	private static LoginDelegate mLoginDelegate;
 	private static PlayerUpdateDelegate mPlayerPositionDelegate;
+	public static boolean nativeAnalysis;
+	private static boolean polling;
 
 	private static String[] colors = {"#F00000", "#000000"};
-	private static int num = 0;
 	
 	native public static void init(ClassLoader loader, String storagePath);
 
@@ -68,33 +69,42 @@ public class LibSpotifyWrapper {
 	native public static boolean isStarred();
 	
 	public static void BeginPolling() {
-		Thread thread = new Thread() {
-			public void run() {
-				try {
-					while (true) {
-						sleep(30);
-						poll();
+		if (!polling) {
+			Thread thread = new Thread() {
+				public void run() {
+					try {
+						while (true) {
+							sleep(100);
+							poll();
+						}
+					}
+					catch (InterruptedException e) {
+						e.printStackTrace();
 					}
 				}
-				catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		};
-		thread.start();
-		
+			};
+			thread.start();
+			polling = true;
+		}		
 	}
 	
-	public static void myFunc(int i) {
-		if (num == 0) {
-			num = 1;
+	public static void flash(int i) {
+		Log.d("Beat occurred", String.valueOf(i));
+		if (!MyApplication.tapToFlash) {
+			HostSoundVisualizationActivity.flash = true;
 		}
-		else {
-			num = 0;
+	}
+	
+	public static void setCircleValues(String[] values)
+	{
+		for (int i = 0; i < HostSoundVisualizationActivity.data.length; i++) {
+			if (values[i] != null) {
+				HostSoundVisualizationActivity.data[i] = values[i];
+				//Log.d("nativeAnalysis", "value: " + values[i]);
+			}
 		}
-//		Log.d("Beat occurred", String.valueOf(i));
-		//PlayerActivity.SendBeat(colors[num]);
-		PlayerActivity.flash = 1;
+		HostSoundVisualizationActivity.dirty = true;
+		
 	}
 	
 	public static void loginUser(String username, String password, LoginDelegate loginDelegate) {
@@ -206,5 +216,4 @@ public class LibSpotifyWrapper {
 			}
 		}, 1000);
 	}
-
 }

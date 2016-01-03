@@ -53,7 +53,12 @@ public class HostSoundVisualizationActivity extends Activity {
 			protected String doInBackground(Void... params) {
 				while (!isCancelled()) {
 					try {
-						Thread.sleep(20);
+						if (MyApplication.nativeAnalysis) {
+							Thread.sleep(100);
+						}
+						else {
+							Thread.sleep(20);
+						}
 					}
 					catch (InterruptedException e) {
 						e.printStackTrace();
@@ -66,6 +71,12 @@ public class HostSoundVisualizationActivity extends Activity {
 					{
 						vizView.flash = true;
 						flash = false;
+					}
+					
+					if ((flash || dirty) && MyApplication.nativeAnalysis)
+					{
+						String strFlash = flash ? "yes" : "no";
+						PlayerActivity.SendBeat(data, strFlash);
 					}
 					//if (flashTime == 1)
 						//vizView.flash = false;
@@ -87,43 +98,69 @@ public class HostSoundVisualizationActivity extends Activity {
 		
 		vizView.init(this, true);
 		
-		LinearLayout controls = new LinearLayout(this);
-		controls.setOrientation(LinearLayout.VERTICAL);
-		controls.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-		LinearLayout text = new LinearLayout(this);
-		text.setOrientation(LinearLayout.HORIZONTAL);
-		text.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-		LinearLayout text2 = new LinearLayout(this);
-		text2.setOrientation(LinearLayout.HORIZONTAL);
-		text2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-		LinearLayout text3 = new LinearLayout(this);
-		text3.setOrientation(LinearLayout.HORIZONTAL);
-		text3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-		SeekBar freqSlider = new SeekBar(this);
-		RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		params.setMargins(3,3,3,3);
-		freqSlider.setLayoutParams(params);
-		freqSlider.setMax(PlayerActivity.NUM_FLASH_BANDS - 1);
-		freqSlider.setProgress(saveSlider);
-		TextView lowText = new TextView(this);
-		lowText.setText("Bass drum");
-		TextView highText = new TextView(this);
-		highText.setText("Hi-hat");
-		//lowText.setGravity(Gravity.LEFT);
-		//highText.setGravity(Gravity.RIGHT);
-		text2.setGravity(Gravity.LEFT);
-		text3.setGravity(Gravity.RIGHT);
-		lowText.setTextColor(Color.WHITE);
-		highText.setTextColor(Color.WHITE);
-		Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Light.otf");
-		lowText.setTypeface(font);
-		highText.setTypeface(font);
-		text2.addView(lowText);
-		text3.addView(highText);
-		controls.addView(freqSlider);
-		text.addView(text2);
-		text.addView(text3);
-		controls.addView(text);
+		if (!MyApplication.nativeAnalysis)
+		{
+			LinearLayout controls = new LinearLayout(this);
+			controls.setOrientation(LinearLayout.VERTICAL);
+			controls.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+			LinearLayout text = new LinearLayout(this);
+			text.setOrientation(LinearLayout.HORIZONTAL);
+			text.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+			LinearLayout text2 = new LinearLayout(this);
+			text2.setOrientation(LinearLayout.HORIZONTAL);
+			text2.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+			LinearLayout text3 = new LinearLayout(this);
+			text3.setOrientation(LinearLayout.HORIZONTAL);
+			text3.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+			SeekBar freqSlider = new SeekBar(this);
+			RelativeLayout.LayoutParams params =  new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			params.setMargins(3,3,3,3);
+			freqSlider.setLayoutParams(params);
+			freqSlider.setMax(PlayerActivity.NUM_FLASH_BANDS - 1);
+			freqSlider.setProgress(saveSlider);
+			TextView lowText = new TextView(this);
+			lowText.setText("Bass drum");
+			TextView highText = new TextView(this);
+			highText.setText("Hi-hat");
+			//lowText.setGravity(Gravity.LEFT);
+			//highText.setGravity(Gravity.RIGHT);
+			text2.setGravity(Gravity.LEFT);
+			text3.setGravity(Gravity.RIGHT);
+			lowText.setTextColor(Color.WHITE);
+			highText.setTextColor(Color.WHITE);
+			Typeface font = Typeface.createFromAsset(getAssets(), "Mission Gothic Light.otf");
+			lowText.setTypeface(font);
+			highText.setTypeface(font);
+			text2.addView(lowText);
+			text3.addView(highText);
+			controls.addView(freqSlider);
+			text.addView(text2);
+			text.addView(text3);
+			controls.addView(text);
+			((ViewGroup) findViewById(R.id.host_viz_daddy)).addView(controls);
+			
+			freqSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+				
+	            @Override
+	            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+	                PlayerActivity.BAND_TO_FLASH = progress;
+	            }
+
+	            @Override
+	            public void onStartTrackingTouch(SeekBar seekBar) {;
+	                
+	               
+	               // dialog.show();
+	            }
+
+	            @Override
+	            public void onStopTrackingTouch(SeekBar seekBar) {
+	                // TODO Auto-generated method stub
+	            	saveSlider = PlayerActivity.BAND_TO_FLASH;
+	            }
+
+	        });
+		}
 		
 		ToggleButton tog = (ToggleButton)findViewById(R.id.taptoflash);
 		tog.setChecked(!MyApplication.tapToFlash);
@@ -144,30 +181,6 @@ public class HostSoundVisualizationActivity extends Activity {
 			}
 			
 		});
-		((ViewGroup) findViewById(R.id.host_viz_daddy)).addView(controls);
-		
-freqSlider.setOnSeekBarChangeListener(new OnSeekBarChangeListener(){
-			
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                PlayerActivity.BAND_TO_FLASH = progress;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {;
-                
-               
-               // dialog.show();
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-            	saveSlider = PlayerActivity.BAND_TO_FLASH;
-            }
-
-        });
-
 	}
 
 	@Override

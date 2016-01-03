@@ -66,7 +66,10 @@ JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_init(JNIEnv * je, jc
 	pthread_setname_np(tid, "Spotify Thread");
 	pthread_create(&tid, NULL, start_spotify, (void *) storage_path);
 
-	init_audio_player();
+	jboolean nativeAnalysis = get_bool_field("nativeAnalysis");
+	log("nativeAnalysis", nativeAnalysis);
+
+	init_audio_player(nativeAnalysis);
 }
 
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_login(JNIEnv *je, jclass jc, jstring j_username, jstring j_password) {
@@ -135,23 +138,36 @@ JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_destroy(JNIEnv *je, 
 JNIEXPORT void JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_poll(JNIEnv *je, jclass jc) {
 	static int i = 0;
 
-
 	if (beatOccurrence) {
 		log("calling my func");
-		call_static_void_int_method("myFunc", i);
+		call_static_void_int_method("flash", i);
 		beatOccurrence = false;
 	}
 
+	jstring jstr = je->NewStringUTF("");
+	int argc = 4;
+	jobjectArray str_array = je->NewObjectArray(argc, je->FindClass("java/lang/String"), jstr);
 
+    // Pass arguments to Java
+       for( i = 0; i < argc; i++ ) {
+       	jstr = je->NewStringUTF (&circleValues[i][0]);
+         	if (jstr == 0) {
+         		fprintf(stderr, "Out of memory\n");
+         		return;
+    	}
+        	je->SetObjectArrayElement(str_array, i, jstr);
+       }
+
+	call_static_void_stringArray_method("setCircleValues", str_array);
 }
 
 void call_static_void_int_method(const char *method_name, int arg) {
 	JNIEnv *env;
-		jclass classLibSpotify = find_class_from_native_thread(&env);
+	jclass classLibSpotify = find_class_from_native_thread(&env);
 
-		jmethodID methodId = env->GetStaticMethodID(classLibSpotify, method_name, "(I)V");
-		env->CallStaticVoidMethod(classLibSpotify, methodId, arg);
-		env->DeleteLocalRef(classLibSpotify);
+	jmethodID methodId = env->GetStaticMethodID(classLibSpotify, method_name, "(I)V");
+	env->CallStaticVoidMethod(classLibSpotify, methodId, arg);
+	env->DeleteLocalRef(classLibSpotify);
 }
 
 // Helper for calling the specified static void/void java-method
@@ -162,6 +178,26 @@ void call_static_void_method(const char *method_name) {
 	jmethodID methodId = env->GetStaticMethodID(classLibSpotify, method_name, "()V");
 	env->CallStaticVoidMethod(classLibSpotify, methodId);
 	env->DeleteLocalRef(classLibSpotify);
+}
+
+void call_static_void_stringArray_method(const char *method_name, jobjectArray values) {
+	JNIEnv *env;
+	jclass classLibSpotify = find_class_from_native_thread(&env);
+
+
+	jmethodID methodId = env->GetStaticMethodID(classLibSpotify, method_name, "([Ljava/lang/String;)V");
+	env->CallStaticVoidMethod (classLibSpotify, methodId, values);
+	env->DeleteLocalRef(classLibSpotify);
+}
+
+jboolean get_bool_field(const char *field_name) {
+	JNIEnv *env;
+	jclass classLibSpotify = find_class_from_native_thread(&env);
+
+	jfieldID fieldId = env->GetStaticFieldID(classLibSpotify, field_name, "Z");
+	jboolean boolField = env->GetStaticBooleanField(classLibSpotify, fieldId);
+	env->DeleteLocalRef(classLibSpotify);
+	return boolField;
 }
 
 // Makes it possible to do callbacks from native threads
@@ -186,7 +222,7 @@ jclass find_class_from_native_thread(JNIEnv **envSetter) {
 	jstring className = env->NewStringUTF("com/lsu/vizeq/LibSpotifyWrapper");
 	jclass result = (jclass) env->CallObjectMethod(s_java_class_loader, methodLoadClass, className);
 	if (!result) {
-		exitl("Cant find the LibSpotify class");
+		exitl("Can't find the LibSpotify class");
 	}
 
 	env->DeleteLocalRef(className);

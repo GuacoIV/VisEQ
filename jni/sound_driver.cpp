@@ -37,7 +37,7 @@
  * The two buffers have a fixed size which could casue problems if libspotify is delivering more data then it fits. In this case the
  * parts that cant fit is rejected which casues sound-glitches, but should be rare if the buffers are big (half a second or more).
  *
- * When intitializing the soundbuffer the PCM format is set in a static fasion. This should be changed if Spotify supports other PCM
+ * When initializing the soundbuffer the PCM format is set in a static fashion. This should be changed if Spotify supports other PCM
  * formats.
  */
 
@@ -89,117 +89,140 @@ static int *next_buffer_size = &buffer2_size;
 
 static pthread_mutex_t g_buffer_mutex;
 bool beatOccurrence;
-static bool foundBeat = false;
+bool buffer_dirty;
+static bool flash = false;
 
 static kiss_fft_cfg cfg;
 
-static const int EVERY_NTH_SAMPLE = 1;
+static const int EVERY_NTH_SAMPLE = 64;
+static bool mNativeAnalysis;
 
 //Beat confidence
-static int64_t timeHistory[15];
-static int64_t bufferStartTime;
-static int timeHistoryIndex = 0;
-static bool consistent = false;
-static int64_t nextPredictedBeat;
+//static int64_t timeHistory[15];
+//static int64_t bufferStartTime;
+//static int timeHistoryIndex = 0;
+//static bool consistent = false;
+//static int64_t nextPredictedBeat;
 
 /// Round up to next higher power of 2 (return x if it's already a power
 /// of 2).
-inline int
-pow2roundup (int x)
-{
-    if (x < 0)
-        return 0;
-    --x;
-    x |= x >> 1;
-    x |= x >> 2;
-    x |= x >> 4;
-    x |= x >> 8;
-    x |= x >> 16;
-    return x+1;
+inline int pow2roundup(int x) {
+	if (x < 0)
+		return 0;
+	--x;
+	x |= x >> 1;
+	x |= x >> 2;
+	x |= x >> 4;
+	x |= x >> 8;
+	x |= x >> 16;
+	return x + 1;
 }
 
-// contains the last 20 frames (~1 second)
-const int HISTORY_LENGTH = 7;
+// contains the last 10 frames
+const int HISTORY_LENGTH = 10;
 static int history_pos = 0;
-static double C = 6;
+static double C = 1.1;
 static int fftBufSize;
-const int NUM_BANDS = 128;
+const int NUM_BANDS = 4;
+string circleValues[4] = {"none", "none", "none", "none"};
 static double band_energy_history_r[HISTORY_LENGTH][NUM_BANDS];
 static double band_energy_history_l[HISTORY_LENGTH][NUM_BANDS];
 
 //Time function
 int64_t getTimeNsec() {
-    struct timespec now;
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    return (int64_t) now.tv_sec*1000000000LL + now.tv_nsec;
+	struct timespec now;
+	clock_gettime(CLOCK_MONOTONIC, &now);
+	return (int64_t) now.tv_sec * 1000000000LL + now.tv_nsec;
 }
 
 void analyze_samples(short *buffer, int size) {
 	kiss_fft_cpx fin_l[fftBufSize];
 	kiss_fft_cpx fout_l[fftBufSize];
-	kiss_fft_cpx fin_r[fftBufSize];
-	kiss_fft_cpx fout_r[fftBufSize];
+	//kiss_fft_cpx fin_r[fftBufSize];
+	//kiss_fft_cpx fout_r[fftBufSize];
 
 	double freqMagn_l[fftBufSize];
-	double freqMagn_r[fftBufSize];
+	//double freqMagn_r[fftBufSize];
 
-	int band_width = fftBufSize/NUM_BANDS;
+	int band_width = fftBufSize / NUM_BANDS;
 
 	//log("%d", fftBufSize);
 
-	memset(fin_r, 0, sizeof(fin_r));
+	//memset(fin_r, 0, sizeof(fin_r));
 	memset(fin_l, 0, sizeof(fin_l));
 
-	for (int i = 0; i < SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE/NR_CHANNELS; i++) {
-		fin_l[i].r = buffer[2*(i*EVERY_NTH_SAMPLE)];
+	for (int i = 0; i < SAMPLES_PER_BUFFER / EVERY_NTH_SAMPLE / NR_CHANNELS; i++) {
+		fin_l[i].r = buffer[2 * (i * EVERY_NTH_SAMPLE)];
 	}
-	for (int i = 0; i < SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE/NR_CHANNELS; i++) {
-		fin_r[i].r = buffer[2*(i*EVERY_NTH_SAMPLE) + 1];
-	}
+	/*for (int i = 0; i < SAMPLES_PER_BUFFER / EVERY_NTH_SAMPLE / NR_CHANNELS;
+			i++) {
+		fin_r[i].r = buffer[2 * (i * EVERY_NTH_SAMPLE) + 1];
+	}*/
 
 	kiss_fft(cfg, fin_l, fout_l);
-	kiss_fft(cfg, fin_r, fout_r);
+	//kiss_fft(cfg, fin_r, fout_r);
 
 	for (int i = 0; i < fftBufSize; i++) {
-		float im2 = fout_l[i].i*fout_l[i].i;
-		float re2 = fout_l[i].r*fout_l[i].r;
+		float im2 = fout_l[i].i * fout_l[i].i;
+		float re2 = fout_l[i].r * fout_l[i].r;
 		freqMagn_l[i] = im2 + re2;
 	}
-	for (int i = 0; i < fftBufSize; i++) {
-		float im2 = fout_r[i].i*fout_r[i].i;
-		float re2 = fout_r[i].r*fout_r[i].r;
+	/*for (int i = 0; i < fftBufSize; i++) {
+		float im2 = fout_r[i].i * fout_r[i].i;
+		float re2 = fout_r[i].r * fout_r[i].r;
 		freqMagn_r[i] = im2 + re2;
-	}
+	}*/
 
-	foundBeat = false;
+	flash = false;
+
+	//for (int i = 0; i < NUM_BANDS; i++)
+		//circleValues[i] = "none";
 
 	int startBand = 0;
 	int endBand = NUM_BANDS;
+	//TODO: Currently only left channel is actually being examined.  Address this.
 
 	for (int j = startBand; j < endBand; j++) {
+		bool isOnThisFrame = false;
 		double instant_energy = 0;
 
 		for (int i = 0; i < band_width; i++) {
-			instant_energy += freqMagn_l[j*band_width + i];
+			instant_energy += freqMagn_l[j * band_width + i];
 		}
-		instant_energy /= 1000.;
-		band_energy_history_l[history_pos][j] = instant_energy;
+
+		//Let the history "warmup"
+		if (history_pos < HISTORY_LENGTH)
+			band_energy_history_l[history_pos++][j] = instant_energy;
+		else if (history_pos == HISTORY_LENGTH)
+		{
+			//Shift everything
+			for (int i = 0; i < HISTORY_LENGTH - 1; i++)
+				band_energy_history_l[i][j] = band_energy_history_l[i+1][j];
+			//Then fill the last slot
+			band_energy_history_l[HISTORY_LENGTH - 1][j] = instant_energy;
+		}
+
+		//band_energy_history_l[history_pos][j] = instant_energy;
 		double local_avg_energy = 0;
 		for (int i = 0; i < HISTORY_LENGTH; i++) {
 			local_avg_energy += band_energy_history_l[i][j];
 		}
 		local_avg_energy /= (double)HISTORY_LENGTH;
 
-		if (instant_energy > C * local_avg_energy && j < (startBand-endBand)/3) {
-			foundBeat = true;
+		if (instant_energy > C * local_avg_energy) {
+			flash = true;
+			circleValues[j] = "on";
+		}
+		else {
+			circleValues[j] = "off";
 		}
 	}
 
-	for (int j = startBand; j < endBand; j++) {
+	/*for (int j = startBand; j < endBand; j++) {
 		double instant_energy = 0;
 
 		for (int i = 0; i < band_width; i++) {
-			instant_energy += freqMagn_r[j*band_width + i];
+			instant_energy += freqMagn_r[j * band_width + i];
 		}
 		instant_energy /= 1000.;
 		band_energy_history_r[history_pos][j] = instant_energy;
@@ -207,36 +230,37 @@ void analyze_samples(short *buffer, int size) {
 		for (int i = 0; i < HISTORY_LENGTH; i++) {
 			local_avg_energy += band_energy_history_r[i][j];
 		}
-		local_avg_energy /= (double)HISTORY_LENGTH;
+		local_avg_energy /= (double) HISTORY_LENGTH;
 
-	}
+	}*/
+
 
 	//int64_t currentTime = getTimeNsec();
 	//if (consistent && nextPredictedBeat - currentTime < 10000)
-		//beatOccurrence = true;
-
-	if (foundBeat) {
-		beatOccurrence = true;
+	//beatOccurrence = true;
+	//log("analyzing samples");
+	if (flash) {
+		beatOccurrence = true; //JNI
 		//log("beat");
 		/*timeHistory[timeHistoryIndex] = currentTime;
-		timeHistoryIndex = (++timeHistoryIndex % 14);
-		if (timeHistoryIndex > 4)
-		{
-			//See if the timings are fairly equally spaced
-			for (int i = 1; i < timeHistoryIndex; i++)
-			{
-				if (abs(timeHistory[i] - timeHistory[i-1] < 10000)) consistent = true; //Less than 10ms
-				else consistent = false;
-			}
-		}*/
+		 timeHistoryIndex = (++timeHistoryIndex % 14);
+		 if (timeHistoryIndex > 4)
+		 {
+		 //See if the timings are fairly equally spaced
+		 for (int i = 1; i < timeHistoryIndex; i++)
+		 {
+		 if (abs(timeHistory[i] - timeHistory[i-1] < 10000)) consistent = true; //Less than 10ms
+		 else consistent = false;
+		 }
+		 }*/
 	}
 	/*if (consistent && timeHistoryIndex > 1)
-	{
-		//Predict the next beat
-		//Instead of averaging history, let's just take last interval since we know its within 10ms, to save computing time
-		int64_t nanoSpace = timeHistory[timeHistoryIndex-1] - timeHistory[timeHistoryIndex-2]/1000;
-		nextPredictedBeat = currentTime + nanoSpace;
-	}*/
+	 {
+	 //Predict the next beat
+	 //Instead of averaging history, let's just take last interval since we know its within 10ms, to save computing time
+	 int64_t nanoSpace = timeHistory[timeHistoryIndex-1] - timeHistory[timeHistoryIndex-2]/1000;
+	 nextPredictedBeat = currentTime + nanoSpace;
+	 }*/
 }
 
 // Tell openSL to play the filled buffer and switch to filling the other buffer
@@ -251,7 +275,7 @@ void enqueue(short *buffer, int size) {
 	next_buffer = (buffer == buffer1) ? buffer2 : buffer1;
 	next_buffer_size = (buffer == buffer1) ? &buffer2_size : &buffer1_size;
 
-
+	buffer_dirty = true;
 
 //	for (int i = 0; i < fftBufSize; i++) {
 //		log("output: %f", fout[i].r);
@@ -260,7 +284,6 @@ void enqueue(short *buffer, int size) {
 	// FFT values range from 0 Hz to SAMPLE_RATE/2 = 22050 Hz
 	// frequency interval is SAMPLE_RATE/(2*SAMPLES_PER_BUFFER) = 2 Hz
 	// Take the magnitude of output[i] to get amplitude of corresponding frequency
-
 
 //	double instant_energy = 0;
 //	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
@@ -291,8 +314,6 @@ void enqueue(short *buffer, int size) {
 //		log("instant_energy: %f, local_avg_energy: %f", instant_energy, local_avg_energy);
 //	}
 
-
-
 //	complex pSignal[p];
 //	complex output[p];
 //
@@ -309,14 +330,13 @@ void enqueue(short *buffer, int size) {
 //		log("Output: %f", output[i].m_re);
 //	}
 
-
 //	int s = size/sizeof(int16_t);
 //	log("%d", s);
 //	for (int i = 0; i < SAMPLES_PER_BUFFER; i++) {
 //		log("value: %.0f, i: %d", pSignal[i].m_re, i);
 //	}
 //
-	}
+}
 
 int music_delivery(sp_session *sess, const sp_audioformat *format, const void *frames, int num_frames) {
 	if (num_frames == 0) {
@@ -354,7 +374,9 @@ int music_delivery(sp_session *sess, const sp_audioformat *format, const void *f
 		if (total_samples > SAMPLES_PER_BUFFER) {
 			int total_size = total_samples * sizeof(int16_t) * format->channels;
 
-			//analyze_samples(current_buffer, total_size);
+			if (mNativeAnalysis) {
+				analyze_samples(current_buffer, total_size);
+			}
 
 			// play the buffer if both buffers are empty (no sound is playing)
 			if (buffer1_size == 0 && buffer2_size == 0) {
@@ -371,16 +393,15 @@ int music_delivery(sp_session *sess, const sp_audioformat *format, const void *f
 			position = 0;
 
 			// start fill the next buffer
-			current_buffer_size = (current_buffer == buffer1) ? &buffer2_size : &buffer1_size;
+			current_buffer_size =
+					(current_buffer == buffer1) ? &buffer2_size : &buffer1_size;
 			current_buffer = (current_buffer == buffer1) ? buffer2 : buffer1;
 		}
 	} else {
-		// if both buffers are filled then tell libspotify it cant get more.
-		logPlayback("Both buffers are filled");
+		// if both buffers are filled then tell libspotify it can't get more.
+		//logPlayback("Both buffers are filled");
 		num_frames = 0;
 	}
-
-
 
 	pthread_mutex_unlock(&g_buffer_mutex);
 	return num_frames;
@@ -397,7 +418,7 @@ void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context) {
 
 	// reset the buffer that was played so it can be filled again
 	*current_buffer_size = 0;
-	logPlayback("Buffer %d has been consumed", (next_buffer == buffer1) ? 2 : 1);
+	//logPlayback("Buffer %d has been consumed", (next_buffer == buffer1) ? 2 : 1);
 
 	// play next buffer if ready and then flip to the other buffer
 	if (*next_buffer_size != 0) {
@@ -417,7 +438,7 @@ static SLEngineItf engineEngine;
 static SLObjectItf outputMixObject = NULL;
 static SLObjectItf bqPlayerObject = NULL;
 static SLPlayItf bqPlayerPlay;
-void init_audio_player() {
+void init_audio_player(bool nativeAnalysis) {
 
 	pthread_mutex_init(&g_buffer_mutex, NULL);
 
@@ -426,63 +447,77 @@ void init_audio_player() {
 	result = slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
 
 	// realize the engine
-	result = (*engineObject)->Realize(engineObject, SL_BOOLEAN_FALSE );
+	result = (*engineObject)->Realize(engineObject, SL_BOOLEAN_FALSE);
 	assert(SL_RESULT_SUCCESS == result);
 
 	// get the engine interface, which is needed in order to create other objects
-	result = (*engineObject)->GetInterface(engineObject, SL_IID_ENGINE, &engineEngine);
+	result = (*engineObject)->GetInterface(engineObject, SL_IID_ENGINE,
+			&engineEngine);
 	assert(SL_RESULT_SUCCESS == result);
 
 	const SLInterfaceID ids[] = { SL_IID_VOLUME };
 	const SLboolean req[] = { SL_BOOLEAN_FALSE };
-	result = (*engineEngine)->CreateOutputMix(engineEngine, &outputMixObject, 1, ids, req);
+	result = (*engineEngine)->CreateOutputMix(engineEngine, &outputMixObject, 1,
+			ids, req);
 	assert(SL_RESULT_SUCCESS == result);
-	result = (*outputMixObject)->Realize(outputMixObject, SL_BOOLEAN_FALSE );
+	result = (*outputMixObject)->Realize(outputMixObject, SL_BOOLEAN_FALSE);
 	assert(SL_RESULT_SUCCESS == result);
 
 	// The source is the buffer
-	SLDataLocator_AndroidSimpleBufferQueue loc_bufq = { SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2 };
-	SLDataFormat_PCM format_pcm = { SL_DATAFORMAT_PCM, 2, SL_SAMPLINGRATE_44_1, SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
-			SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT, SL_BYTEORDER_LITTLEENDIAN };
+	SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {
+			SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2 };
+	SLDataFormat_PCM format_pcm = { SL_DATAFORMAT_PCM, 2, SL_SAMPLINGRATE_44_1,
+			SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
+			SL_SPEAKER_FRONT_LEFT | SL_SPEAKER_FRONT_RIGHT,
+			SL_BYTEORDER_LITTLEENDIAN };
 	SLDataSource audioSrc = { &loc_bufq, &format_pcm };
 
 	// configure audio sink as the outputMix
-	SLDataLocator_OutputMix loc_outmix = { SL_DATALOCATOR_OUTPUTMIX, outputMixObject };
+	SLDataLocator_OutputMix loc_outmix = { SL_DATALOCATOR_OUTPUTMIX,
+			outputMixObject };
 	SLDataSink audioSnk = { &loc_outmix, NULL };
 
 	// Create audio player with source and sink
 	const SLInterfaceID ids1[] = { SL_IID_ANDROIDSIMPLEBUFFERQUEUE };
 	const SLboolean req1[] = { SL_BOOLEAN_TRUE };
-	result = (*engineEngine)->CreateAudioPlayer(engineEngine, &(bqPlayerObject), &audioSrc, &audioSnk, 1, ids1, req1);
+	result = (*engineEngine)->CreateAudioPlayer(engineEngine, &(bqPlayerObject),
+			&audioSrc, &audioSnk, 1, ids1, req1);
 	assert(SL_RESULT_SUCCESS == result);
-	result = (*bqPlayerObject)->Realize(bqPlayerObject, SL_BOOLEAN_FALSE );
+	result = (*bqPlayerObject)->Realize(bqPlayerObject, SL_BOOLEAN_FALSE);
 
 	// get the play interface
-	result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_PLAY, &bqPlayerPlay);
+	result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_PLAY,
+			&bqPlayerPlay);
 	assert(SL_RESULT_SUCCESS == result);
 
 	// get the buffer queue interface
-	result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_BUFFERQUEUE, &bqPlayerBufferQueue);
+	result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_BUFFERQUEUE,
+			&bqPlayerBufferQueue);
 	assert(SL_RESULT_SUCCESS == result);
 
 	// register callback on the buffer queue
-	result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue, bqPlayerCallback, NULL);
+	result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue,
+			bqPlayerCallback, NULL);
 	assert(SL_RESULT_SUCCESS == result);
 
 	// set the player's state to playing
-	result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, SL_PLAYSTATE_PLAYING );
+	result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, SL_PLAYSTATE_PLAYING);
 
 	log("OpenSL was initiated with 16 bit 44100 sample rate and 2 channels");
 
 	log("buffer size is");
 	log("%d", BUFFER_SIZE);
 
-	fftBufSize = kiss_fft_next_fast_size(SAMPLES_PER_BUFFER/EVERY_NTH_SAMPLE/NR_CHANNELS);
-	bufferStartTime = getTimeNsec();
+	mNativeAnalysis = nativeAnalysis;
+	if (nativeAnalysis)
+	{
+		fftBufSize = kiss_fft_next_fast_size(SAMPLES_PER_BUFFER / EVERY_NTH_SAMPLE / NR_CHANNELS);
+		//bufferStartTime = getTimeNsec();
 
-	cfg = kiss_fft_alloc(fftBufSize, 0, 0, 0);
-	for (int i = 0; i < 15; i++)
-		timeHistory[i] = 0;
+		cfg = kiss_fft_alloc(fftBufSize, 0, 0, 0);
+		//for (int i = 0; i < 15; i++)
+		//timeHistory[i] = 0;
+	}
 
 }
 

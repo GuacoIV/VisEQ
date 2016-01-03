@@ -176,6 +176,14 @@ public class VisualizerView extends View {
 				}
 				if (flash)
 				{
+					mActivity.runOnUiThread(new Runnable()
+					{
+						public void run()
+						{
+							setBackgroundColor(Color.WHITE);
+						}
+					});
+					
 					try
 					{
 				        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH) && MyApplication.doFlash) 
@@ -197,6 +205,15 @@ public class VisualizerView extends View {
 						public void run()
 						{
 							flash = false;
+							
+							mActivity.runOnUiThread(new Runnable()
+							{
+								public void run()
+								{
+									setBackgroundColor(Color.BLACK);
+								}
+							});
+							
 							try 
 							{
 						        if (context.getPackageManager().hasSystemFeature(
@@ -221,9 +238,10 @@ public class VisualizerView extends View {
 	
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
-		if (flash == false || MyApplication.doBackground == false) this.setBackgroundColor(Color.BLACK);
-		else 
-		{
+		if (flash == false || MyApplication.doBackground == false) {
+			this.setBackgroundColor(Color.BLACK);
+		}
+		else {
 			this.setBackgroundColor(Color.WHITE);
 		}
 		for (int i = 0; i < circles.length; i++) {

@@ -466,9 +466,19 @@ public class HostActivity extends BackableActivity
 	{
 		switch(type)
 		{
-		case SERVER_ERROR: connectionErrorNotification(); break;
-		case LOCATION_ERROR: noLocationNotification(); break;
-		case SAME_NAME_ERROR: changeNameNotification(); break;
+			case SERVER_ERROR:
+				connectionErrorNotification();
+				break;
+			case LOCATION_ERROR: noLocationNotification();
+				break;
+			case SAME_NAME_ERROR: changeNameNotification();
+				break;
+			case NO_ERROR:
+				break;
+			case NO_PARTIES_ERROR:
+				break;
+			default:
+				break;
 		}
 	}
 	

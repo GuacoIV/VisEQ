@@ -26,10 +26,13 @@
  */
 
 #include <jni.h>
+#include <string.h>
 
 jclass find_class_from_native_thread(JNIEnv **envSetter);
 void call_static_void_method(const char *method_name);
 void call_static_void_int_method(const char *method_name, int arg);
+void call_static_void_stringArray_method(const char *method_name, jobjectArray values);
+jboolean get_bool_field(const char *method_name);
 
 extern "C" {
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved);
@@ -47,3 +50,5 @@ JNIEXPORT bool JNICALL Java_com_lsu_vizeq_LibSpotifyWrapper_isStarred(JNIEnv *je
 }
 
 extern bool beatOccurrence;
+//TODO: Change 4 to NUM_BANDS
+extern std::string circleValues[4];

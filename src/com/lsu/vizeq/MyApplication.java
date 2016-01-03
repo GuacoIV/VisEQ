@@ -30,6 +30,7 @@ public class MyApplication extends Application {
 	public static boolean doFlash;
 	public static boolean doBackground;
 	public static boolean tapToFlash = false;
+	public static boolean nativeAnalysis;
 	@Override
 	public void onCreate()
 	{

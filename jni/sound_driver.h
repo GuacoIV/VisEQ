@@ -35,7 +35,7 @@
 #ifndef SOUND_DRIVER_H_
 #define SOUND_DRIVER_H_
 
-void init_audio_player();
+void init_audio_player(bool nativeAnalysis);
 void destroy_audio_player();
 
 #endif /* SOUND_DRIVER_H_ */

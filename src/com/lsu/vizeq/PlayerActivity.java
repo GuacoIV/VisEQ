@@ -581,136 +581,143 @@ public class PlayerActivity extends Activity {
 			isOnLastFrame[i] = true;
 		}
 		
-		Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
-
-			@Override
-			public void onWaveFormDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
-				// TODO Auto-generated method stub
-			}
-			/*Old code
-			 * 	foundBeat = false;
-
-	int startBand = 0;
-	int endBand = NUM_BANDS;
-
-	for (int j = startBand; j < endBand; j++) {
-		double instant_energy = 0;
-
-		for (int i = 0; i < band_width; i++) {
-			instant_energy += freqMagn_l[j*band_width + i];
-		}
-		instant_energy /= 1000.;
-		band_energy_history_l[history_pos][j] = instant_energy;
-		double local_avg_energy = 0;
-		for (int i = 0; i < HISTORY_LENGTH; i++) {
-			local_avg_energy += band_energy_history_l[i][j];
-		}
-		local_avg_energy /= (double)HISTORY_LENGTH;
-
-		if (instant_energy > C * local_avg_energy && j < (startBand-endBand)/3) {
-			foundBeat = true;
-		}
-	}
-
-	for (int j = startBand; j < endBand; j++) {
-		double instant_energy = 0;
-
-		for (int i = 0; i < band_width; i++) {
-			instant_energy += freqMagn_r[j*band_width + i];
-		}
-		instant_energy /= 1000.;
-		band_energy_history_r[history_pos][j] = instant_energy;
-		double local_avg_energy = 0;
-		for (int i = 0; i < HISTORY_LENGTH; i++) {
-			local_avg_energy += band_energy_history_r[i][j];
-		}
-		local_avg_energy /= (double)HISTORY_LENGTH;
-
-	}*/
-
-			private float threshold = 1.1f;
-			
-			@Override
-			public void onFftDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
-				int bandWidth = arg1.length/VisualizerView.NUM_BANDS;
-				int flashBandEnergy = 0;
-				boolean needToSend = false;
-				String[] sendValues = new String[VisualizerView.NUM_BANDS];
-				for (int i = 0; i < sendValues.length; i++) {
-					sendValues[i] = "none";
+		if (!MyApplication.nativeAnalysis) {		
+			Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
+	
+				@Override
+				public void onWaveFormDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
+					// TODO Auto-generated method stub
 				}
-				for (int j = 0; j < VisualizerView.NUM_BANDS; j++) {
-					float thisEnergy = 0;
-					for (int i = bandWidth*j; i < bandWidth*(j+1); i++) {
-						thisEnergy += Math.abs(arg1[i]);
-					}
-					thisEnergy /= bandWidth;
+				/*Old code
+				 * 	foundBeat = false;
+	
+		int startBand = 0;
+		int endBand = NUM_BANDS;
+	
+		for (int j = startBand; j < endBand; j++) {
+			double instant_energy = 0;
+	
+			for (int i = 0; i < band_width; i++) {
+				instant_energy += freqMagn_l[j*band_width + i];
+			}
+			instant_energy /= 1000.;
+			band_energy_history_l[history_pos][j] = instant_energy;
+			double local_avg_energy = 0;
+			for (int i = 0; i < HISTORY_LENGTH; i++) {
+				local_avg_energy += band_energy_history_l[i][j];
+			}
+			local_avg_energy /= (double)HISTORY_LENGTH;
+	
+			if (instant_energy > C * local_avg_energy && j < (startBand-endBand)/3) {
+				foundBeat = true;
+			}
+		}
+	
+		for (int j = startBand; j < endBand; j++) {
+			double instant_energy = 0;
+	
+			for (int i = 0; i < band_width; i++) {
+				instant_energy += freqMagn_r[j*band_width + i];
+			}
+			instant_energy /= 1000.;
+			band_energy_history_r[history_pos][j] = instant_energy;
+			double local_avg_energy = 0;
+			for (int i = 0; i < HISTORY_LENGTH; i++) {
+				local_avg_energy += band_energy_history_r[i][j];
+			}
+			local_avg_energy /= (double)HISTORY_LENGTH;
+	
+		}*/
+	
+				private float threshold = 1.1f;
+				
+				@Override
+				public void onFftDataCapture(Visualizer arg0, byte[] arg1, int arg2) {
+	
 					
-					boolean isOnThisFrame = false;
-
-					if (thisEnergy > threshold*prevEnergies[j]) {
-						isOnThisFrame = true;
+					int bandWidth = arg1.length/VisualizerView.NUM_BANDS;
+					int flashBandEnergy = 0;
+					boolean needToSend = false;
+					String[] sendValues = new String[VisualizerView.NUM_BANDS];
+					for (int i = 0; i < sendValues.length; i++) {
+						sendValues[i] = "none";
 					}
-					if (isOnLastFrame[j] ^ isOnThisFrame) {
-						needToSend = true;
+					for (int j = 0; j < VisualizerView.NUM_BANDS; j++)
+					{
+						float thisEnergy = 0;
+						for (int i = bandWidth*j; i < bandWidth*(j+1); i++) {
+							thisEnergy += Math.abs(arg1[i]);
+						}
+						thisEnergy /= bandWidth;
+						
+						boolean isOnThisFrame = false;
+	
+						if (thisEnergy > threshold*prevEnergies[j]) {
+							isOnThisFrame = true;
+						}
+						if (isOnLastFrame[j] ^ isOnThisFrame) {
+							needToSend = true;
+							if (isOnThisFrame) {
+								sendValues[j] = "on";
+							}
+							else {
+								sendValues[j] = "off";
+							}
+						}
+						
 						if (isOnThisFrame) {
-							sendValues[j] = "on";
+							isOnLastFrame[j] = true;
 						}
 						else {
-							sendValues[j] = "off";
+							isOnLastFrame[j] = false;
 						}
+						prevEnergies[j] = thisEnergy;
 					}
+	
 					
-					if (isOnThisFrame) {
-						isOnLastFrame[j] = true;
-					}
-					else {
-						isOnLastFrame[j] = false;
-					}
-					prevEnergies[j] = thisEnergy;
-				}
-
-				
-				//Flashing background
-				bandWidth = arg1.length/NUM_FLASH_BANDS;
-				if (bandWidth > 0)
-				{
-					for (int i = bandWidth*BAND_TO_FLASH; i < bandWidth*(BAND_TO_FLASH+1); i++) 
+					//Flashing background
+					bandWidth = arg1.length/NUM_FLASH_BANDS;
+					if (bandWidth > 0)
 					{
-						flashBandEnergy += Math.abs(arg1[i]);
+						for (int i = bandWidth*BAND_TO_FLASH; i < bandWidth*(BAND_TO_FLASH+1); i++) 
+						{
+							flashBandEnergy += Math.abs(arg1[i]);
+						}
+						
+						flashBandEnergy /= bandWidth;
 					}
 					
-					flashBandEnergy /= bandWidth;
+					//Compare to average of history
+					int averageLocalEnergy = 0;
+					for (int i = 0; i < 10; i++)
+						averageLocalEnergy += flashEnergyHistory[i];
+					averageLocalEnergy /= 10;
+					
+					if (flashBandEnergy > averageLocalEnergy && MyApplication.tapToFlash == false)
+					{
+						HostSoundVisualizationActivity.flash = true;
+						SendBeat(sendValues, "yes");
+					}
+					else if (needToSend) SendBeat(sendValues, "no");
+					
+					//Let the history "warmup"
+					if (flashHistoryIndex < 10)
+						flashEnergyHistory[flashHistoryIndex++] = flashBandEnergy;
+					else if (flashHistoryIndex == 10)
+					{
+						//Shift everything
+						for (int i = 0; i < 10 - 1; i++)
+							flashEnergyHistory[i] = flashEnergyHistory[i+1];
+						//Then fill the last slot
+						flashEnergyHistory[9] = flashBandEnergy;
+					}
 				}
-				
-				//Compare to average of history
-				int averageLocalEnergy = 0;
-				for (int i = 0; i < 10; i++)
-					averageLocalEnergy += flashEnergyHistory[i];
-				averageLocalEnergy /= 10;
-				
-				if (flashBandEnergy > averageLocalEnergy && MyApplication.tapToFlash == false)
-				{
-					HostSoundVisualizationActivity.flash = true;
-					SendBeat(sendValues, "yes");
-				}
-				else if (needToSend) SendBeat(sendValues, "no");
-				
-				//Let the history "warmup"
-				if (flashHistoryIndex < 10) flashEnergyHistory[flashHistoryIndex++] = flashBandEnergy;
-				else if (flashHistoryIndex == 10)
-				{
-					//Shift everything
-					for (int i = 0; i < 10 - 1; i++)
-						flashEnergyHistory[i] = flashEnergyHistory[i+1];
-					//Then fill the last slot
-					flashEnergyHistory[9] = flashBandEnergy;
-				}
-			}
-		};
-		
-		mVisualizer.setDataCaptureListener(captureListener, captureRate, false, true);
-		mVisualizer.setEnabled(true);	
+			};
+			
+			
+			mVisualizer.setDataCaptureListener(captureListener, captureRate, false, true);
+			mVisualizer.setEnabled(true);	
+		}
 		
 		//Makes volume buttons control music stream even when nothing playing
 		setVolumeControlStream(AudioManager.STREAM_MUSIC); 
@@ -844,7 +851,8 @@ public class PlayerActivity extends Activity {
 			}
 		});*/
 		
-		//LibSpotifyWrapper.BeginPolling();
+		if (MyApplication.nativeAnalysis)
+			LibSpotifyWrapper.BeginPolling();
 	}
 
 	@Override
