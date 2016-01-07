@@ -65,12 +65,9 @@ public class HostSoundVisualizationActivity extends Activity {
 					}
 					if (dirty) {
 						vizView.SetCircleStates(data);
-						dirty = false;
 					}
-					if (flash)
-					{
+					if (flash) {
 						vizView.flash = true;
-						flash = false;
 					}
 					
 					if ((flash || dirty) && MyApplication.nativeAnalysis)
@@ -78,10 +75,12 @@ public class HostSoundVisualizationActivity extends Activity {
 						String strFlash = flash ? "yes" : "no";
 						PlayerActivity.SendBeat(data, strFlash);
 					}
-					//if (flashTime == 1)
-						//vizView.flash = false;
-					
-					//flashTime = ++flashTime % 2;
+					if (dirty) {
+						dirty = false;
+					}
+					if (flash) {
+						flash = false;
+					}
 				}
 				return "hostsoundvisualization asynctask canceled";
 			}
