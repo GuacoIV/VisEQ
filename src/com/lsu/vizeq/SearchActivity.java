@@ -317,112 +317,25 @@ public class SearchActivity extends BackableActivity
 			        builder.setMessage(R.string.QueueTopOrBottom)
 			               .setPositiveButton("Top", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                	   Thread coverThread = new Thread(new Runnable()
-									{
-										public void run()
-										{
-										URI url;
-										Track tempTrack = row.getTrack();
-										//Get the album art
-										try
-										{									
-											url = new URI("https://embed.spotify.com/oembed/?url=" + tempTrack.mUri);
-											HttpClient httpClient = new DefaultHttpClient();
-											HttpResponse response2 = httpClient.execute(new HttpGet(url));
-											HttpEntity entity = response2.getEntity();
-											String s = EntityUtils.toString(entity, "UTF-8");
-											int numThumb = s.indexOf("thumbnail_url");
-											String thumbnail = s.substring(numThumb + 16);
-											thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
-											thumbnail = thumbnail.replace("\\", "");
-											//Size options are 60, 85, 120, 300, 640
-											thumbnail = thumbnail.replace("/cover/", "/640/");
-											tempTrack.mThumbnail = thumbnail;
-										} catch (URISyntaxException e)
-										{
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										} catch (ClientProtocolException e)
-										{
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										} catch (IOException e)
-										{
-											// TODO Auto-generated catch block
-											e.printStackTrace();
-										}	
-		
-					                	   if (PlayerActivity.mIndex > 0) 
-					                	   {
-					                		   myapp.queue.add(PlayerActivity.mIndex + 1, tempTrack);
-					                	   }
-					                	   else if (myapp.queue.size() == 0) myapp.queue.add(PlayerActivity.mIndex, tempTrack);
-					                	   else if (myapp.queue.size() > 0 && PlayerActivity.mIndex >= 0) myapp.queue.add(PlayerActivity.mIndex + 1, tempTrack);
-										}
-									});
-			                	   coverThread.start();
-			                	   
-			                	   try
-			                	   {
-			                		   coverThread.join(2000);
-			                	   } catch (InterruptedException e)
-			                	   {
-			                		   // TODO Auto-generated catch block
-			                		   e.printStackTrace();
-			                	   }
-			                	   searchLayout.removeView(row);
-			                	   refreshQueue();
+									Track tempTrack = row.getTrack();
+									
+									if (PlayerActivity.mIndex > 0) 
+										myapp.queue.add(PlayerActivity.mIndex + 1, tempTrack);
+									else if (myapp.queue.size() == 0)
+										myapp.queue.add(PlayerActivity.mIndex, tempTrack);
+									else if (myapp.queue.size() > 0 && PlayerActivity.mIndex >= 0)
+										myapp.queue.add(PlayerActivity.mIndex + 1, tempTrack);
+		                	   
+									searchLayout.removeView(row);
+									refreshQueue();
 			                   }
 			               })
 			               .setNegativeButton("Bottom", new DialogInterface.OnClickListener() {
 			                   public void onClick(DialogInterface dialog, int id) {
-			                	   Thread coverThread = new Thread(new Runnable()
-									{
-										public void run()
-										{
-					                	    URI url;
-											Track tempTrack = row.getTrack();
-											//Get the album art
-											try
-											{									
-												url = new URI("https://embed.spotify.com/oembed/?url=" + tempTrack.mUri);
-												HttpClient httpClient = new DefaultHttpClient();
-												HttpResponse response2 = httpClient.execute(new HttpGet(url));
-												HttpEntity entity = response2.getEntity();
-												String s = EntityUtils.toString(entity, "UTF-8");
-												int numThumb = s.indexOf("thumbnail_url");
-												String thumbnail = s.substring(numThumb + 16);
-												thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
-												thumbnail = thumbnail.replace("\\", "");
-												thumbnail = thumbnail.replace("/cover/", "/640/");
-												tempTrack.mThumbnail = thumbnail;
-											} catch (URISyntaxException e)
-											{
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											} catch (ClientProtocolException e)
-											{
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											} catch (IOException e)
-											{
-												// TODO Auto-generated catch block
-												e.printStackTrace();
-											}	
-					                	   myapp.queue.add(tempTrack);
-										}
-									});		
-			                	   coverThread.start();
-			                	   try
-			                	   {
-			                		   coverThread.join(2000);
-			                	   } catch (InterruptedException e)
-			                	   {
-			                		   // TODO Auto-generated catch block
-			                		   e.printStackTrace();
-			                	   }
-			                	   searchLayout.removeView(row);
-			                	   refreshQueue();
+									Track tempTrack = row.getTrack();											
+									myapp.queue.add(tempTrack);
+									searchLayout.removeView(row);
+									refreshQueue();
 			                   }
 			               });
 				        //builder.create();
@@ -461,7 +374,9 @@ public class SearchActivity extends BackableActivity
 					strSearch = searchText.getText().toString().replace(' ', '+');
 					e1.printStackTrace();
 				}
-				searchClient.get("http://ws.spotify.com/search/1/track.json?q=" + strSearch, new JsonHttpResponseHandler() {
+				
+				//Search documented at: https://developer.spotify.com/web-api/endpoint-reference/
+				searchClient.get("https://api.spotify.com/v1/search?q=" + strSearch + "&type=track", new JsonHttpResponseHandler() {
 
 					public void onSuccess(final JSONObject response) {
 						new Thread(new Runnable()
@@ -469,8 +384,7 @@ public class SearchActivity extends BackableActivity
 							public void run()
 							{
 								try {
-									JSONArray tracks = response.getJSONArray("tracks");
-									//JSONObject track = tracks.getJSONObject(0);
+									JSONObject tracks = response.getJSONObject("tracks");
 									
 									//Calculate start and end colors
 									int startColor = 0;
@@ -521,7 +435,8 @@ public class SearchActivity extends BackableActivity
 											spinner.setVisibility(Spinner.GONE);
 										}
 									});
-									if (tracks.length()==0) 
+									JSONArray items = tracks.getJSONArray("items");
+									if (items.length()==0) 
 									{
 										final TextView noResults = new TextView(SearchActivity.this);
 										noResults.setText("There are no results.");
@@ -534,55 +449,20 @@ public class SearchActivity extends BackableActivity
 										});
 										
 									}
-									for (int i = 0; i < tracks.length(); i++)
+									for (int i = 0; i < items.length(); i++)
 									{
-										String trackName = tracks.getJSONObject(i).getString("name");
-										String trackArtist = tracks.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
-										final String uri = tracks.getJSONObject(i).getString("href");
-										String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
-										//Log.d("Search", trackName + ": " + trackArtist);
+										String trackName = items.getJSONObject(i).getString("name");
+										String trackArtist = items.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
+										final String uri = items.getJSONObject(i).getString("uri");
+										String trackAlbum = items.getJSONObject(i).getJSONObject("album").getString("name");
+										//Image options: 640px, 300px, 64px
+										String thumbnail = items.getJSONObject(i).getJSONObject("album").getJSONArray("images").getJSONObject(0).getString("url");
 										final TrackRow tableRowToAdd = new TrackRow(SearchActivity.this, trackName, trackAlbum, trackArtist, uri);//Context context, String track, String album, String artist, String uri
+										tableRowToAdd.mThumbnail = thumbnail;
 										tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
 										tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
 										tableRowToAdd.setOnTouchListener(rowTap);
 										//tableRowToAdd.setOnDragListener(swipeListener);
-		
-											//JSONObject array = response.getJSONObject("thumbnail_url");
-											//String thumbnail = array.toString();
-											
-											Thread coverThread = new Thread(new Runnable()
-											{
-												public void run()
-												{
-													URI url;
-													try
-													{
-														url = new URI("https://embed.spotify.com/oembed/?url=" + uri);
-														HttpClient httpClient = new DefaultHttpClient();
-														HttpResponse response2 = httpClient.execute(new HttpGet(url));
-														HttpEntity entity = response2.getEntity();
-														String s = EntityUtils.toString(entity, "UTF-8");
-														int numThumb = s.indexOf("thumbnail_url");
-														String thumbnail = s.substring(numThumb + 16);
-														thumbnail = thumbnail.substring(0, thumbnail.indexOf("\""));
-														thumbnail = thumbnail.replace("\\", "");
-														tableRowToAdd.mThumbnail = thumbnail;
-														//System.out.println(s);
-													} catch (URISyntaxException e)
-													{
-														// TODO Auto-generated catch block
-														e.printStackTrace();
-													} catch (ClientProtocolException e)
-													{
-														// TODO Auto-generated catch block
-														e.printStackTrace();
-													} catch (IOException e)
-													{
-														// TODO Auto-generated catch block
-														e.printStackTrace();
-													}	
-												}
-											});
 		
 										tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
 										tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
@@ -600,17 +480,11 @@ public class SearchActivity extends BackableActivity
 											}
 										});
 									}
-									
-									//mAlbumUri = album.getString("spotify");
-									//mImageUri = album.getString("image");
-									// Now get track details from the webapi
-									//LSU Team, it looks like .get(http://ws.spotify.com/search/1/track?q=kaizers+orchestra) is the way to do a search
-									//mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
-		
 								} 
 								catch (JSONException e) {
 									//throw new RuntimeException("Could not parse the results");
 									e.printStackTrace();
+									spinner.setVisibility(Spinner.GONE);
 								}
 							}
 						}).start();
