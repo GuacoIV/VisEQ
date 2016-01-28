@@ -22,15 +22,16 @@ public class MyApplication extends Application {
 	public String myName = "";
 	public String zipcode = null;
 	public String myIp;
-	public boolean joined = false;
-	public boolean hosting = false;
+	public boolean joined;
+	public boolean hosting;
 	public JedisPool jedisPool = new JedisPool(new JedisPoolConfig(), Redis.host, Redis.port);
 	String brand = Build.BRAND; // for getting BrandName
 	String model = Build.MODEL; // for getting Model of the device
 	public static boolean doFlash;
 	public static boolean doBackground;
-	public static boolean tapToFlash = false;
+	public static boolean tapToFlash;
 	public static boolean nativeAnalysis;
+	public static boolean foundSound;
 	@Override
 	public void onCreate()
 	{

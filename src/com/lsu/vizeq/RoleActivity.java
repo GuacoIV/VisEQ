@@ -1,5 +1,7 @@
 package com.lsu.vizeq;
 
+import com.lsu.vizeq.util.TunnelPlayerWorkaround;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -118,18 +120,14 @@ public class RoleActivity extends Activity
 
 		myapp = (MyApplication) this.getApplicationContext();
 		
-		//final String useAwesome = SystemProperties.get("persist.sys.media.use-awesome");
 		final String usesTunnel = SystemProperties.get("tunnel.decode");
-
-		//Toast.makeText(this, "Awesome Player audio value: " + useAwesome + "\n"
-							//+ "Tunnel Player audio value: " + usesTunnel, Toast.LENGTH_LONG).show();
 		
-		if (usesTunnel.compareTo("true") == 0)
+		//Note: when using native analysis, if a debugger is attached, it usually falls behind
+		if (usesTunnel.compareTo("true") == 0 || !MyApplication.foundSound)
 		{
 			MyApplication.nativeAnalysis = true;
 			LibSpotifyWrapper.nativeAnalysis = true;
-		}
-		
+		}			
 		
 		findViewById(R.id.DJ).setOnTouchListener(new View.OnTouchListener()
 		{

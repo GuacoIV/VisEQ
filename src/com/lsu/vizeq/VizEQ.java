@@ -8,6 +8,7 @@ import java.util.TimerTask;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.audiofx.Visualizer;
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -74,29 +75,62 @@ public class VizEQ extends Activity
 		
 		//load anything if necessary
 		
+		final Visualizer visualizer = new Visualizer(0);
+		if (visualizer.getEnabled()) {
+			visualizer.setEnabled(false);
+		}
+		visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[0]);
+		Visualizer.OnDataCaptureListener captureListener = new Visualizer.OnDataCaptureListener() {
+
+			@Override
+			public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate)
+			{
+				for (int i = 0; i < fft.length; i++)
+				{
+					if (fft[i] != 0)
+						MyApplication.foundSound = true;
+				}
+			}
+
+			@Override
+			public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate)
+			{
+				for (int i = 0; i < waveform.length; i++)
+				{
+					if (waveform[i] != -128)
+						MyApplication.foundSound = true;
+				}
+			}
+			
+		};
+		visualizer.setDataCaptureListener(captureListener, Visualizer.getMaxCaptureRate()/4, true, true);
+		visualizer.setEnabled(true);
+		
 		Thread splashThread = new Thread()
 		{
 			 public void run() { 
-					 try
-					 {
-						MediaPlayer mediaPlayer = MediaPlayer.create(VizEQ.this, R.raw.vizeqintro);
-						AudioManager audio = (AudioManager) VizEQ.this.getSystemService(VizEQ.this.AUDIO_SERVICE);
-						if (audio.getRingerMode() == AudioManager.RINGER_MODE_NORMAL) mediaPlayer.start(); // no need to call prepare(); create() does that for you
-						sleep(mediaPlayer.getDuration()); //length of track
-						mediaPlayer.release();
-					 }
-					 catch (Exception e)
-					 {
-//						 Log.d("Activity", "Login activity not started.");
-					 }
-					 finally
-					 {
-						 
-						 finish();
-						 Intent nextIntent = new Intent(VizEQ.this, RoleActivity.class);
-						startActivity(nextIntent);	
-					 }
-		        }
+				 try
+				 {
+					MediaPlayer mediaPlayer = MediaPlayer.create(VizEQ.this, R.raw.vizeqintro);
+									
+					//AudioManager audio = (AudioManager) VizEQ.this.getSystemService(Context.AUDIO_SERVICE);
+					//if (audio.getRingerMode() == AudioManager.RINGER_MODE_NORMAL)
+						mediaPlayer.start();
+					sleep(mediaPlayer.getDuration()); //length of track
+					mediaPlayer.release();
+					visualizer.release();
+				 }
+				 catch (Exception e)
+				 {
+
+				 }
+				 finally
+				 { 
+					 finish();
+					 Intent nextIntent = new Intent(VizEQ.this, RoleActivity.class);
+					 startActivity(nextIntent);	
+				 }
+	        }
 		};
 		splashThread.start();
 
