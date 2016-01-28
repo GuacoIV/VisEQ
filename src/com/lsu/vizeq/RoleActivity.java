@@ -1,7 +1,5 @@
 package com.lsu.vizeq;
 
-import com.lsu.vizeq.util.TunnelPlayerWorkaround;
-
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;

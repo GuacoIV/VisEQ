@@ -83,7 +83,6 @@ import android.widget.Toast;
 
 import com.lsu.vizeq.ServiceBinder.ServiceBinderDelegate;
 import com.lsu.vizeq.SpotifyService.PlayerUpdateDelegate;
-import com.lsu.vizeq.util.TunnelPlayerWorkaround;
 
 public class PlayerActivity extends Activity {
 	boolean isPlaying = false;
