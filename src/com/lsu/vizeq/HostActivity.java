@@ -407,8 +407,7 @@ public class HostActivity extends BackableActivity
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
-				alertType alert = alertType.SERVER_ERROR;
+				AlertType alert = AlertType.SERVER_ERROR;
 				
 				Jedis jedis = null;
 				try
@@ -419,10 +418,10 @@ public class HostActivity extends BackableActivity
 
 					long reply = jedis.setnx(zipcode + ":" + partyName, ip);
 					if(reply == 0)
-						alert = alertType.SAME_NAME_ERROR;
+						alert = AlertType.SAME_NAME_ERROR;
 					else
 					{
-						alert = alertType.NO_ERROR;
+						alert = AlertType.NO_ERROR;
 						jedis.expire(zipcode + ":" + partyName, 500);
 						jedis.sadd(zipcode, partyName);
 					}
@@ -441,14 +440,14 @@ public class HostActivity extends BackableActivity
 						myapp.jedisPool.returnResource(jedis);
 				}
 				
-				final alertType finalAlert = alert;
+				final AlertType finalAlert = alert;
 				runOnUiThread(new Runnable()
 				{
 
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						if(finalAlert == alertType.NO_ERROR)
+						if(finalAlert == AlertType.NO_ERROR)
 						{
 							setName(partyName);
 							setIp(ip);
@@ -462,7 +461,7 @@ public class HostActivity extends BackableActivity
 		startPartyOnServerThread.start();	
 	}
 	
-	private void showAlert(alertType type)
+	private void showAlert(AlertType type)
 	{
 		switch(type)
 		{

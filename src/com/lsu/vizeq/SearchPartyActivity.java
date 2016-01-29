@@ -47,7 +47,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-enum alertType { NO_ERROR, LOCATION_ERROR, SERVER_ERROR, NO_PARTIES_ERROR, SAME_NAME_ERROR };
+enum AlertType { NO_ERROR, LOCATION_ERROR, SERVER_ERROR, NO_PARTIES_ERROR, SAME_NAME_ERROR };
 
 public class SearchPartyActivity extends BackableActivity {
 	
@@ -56,6 +56,7 @@ public class SearchPartyActivity extends BackableActivity {
 	SearchPartyActivity thisActivity;
 	ActionBar actionBar;
 	Location currLocation = null;
+	boolean joinInProgress;
 	
 	@Override
 	protected void onStart(){
@@ -176,8 +177,8 @@ public class SearchPartyActivity extends BackableActivity {
 				@Override
 				public void onClick(View arg0) {
 //					Log.d("Join", "Joining party");
-					joinParty(myapp.zipcode + ":" + name);
-					//new JoinTask().execute((InetAddress) pairs.getValue());
+					if (!joinInProgress)
+						joinParty(myapp.zipcode + ":" + name);
 				}
 			});
 			
@@ -268,6 +269,20 @@ public class SearchPartyActivity extends BackableActivity {
 		alert.show();
 	}
 	
+	public void sameNameNotification()
+	{
+		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
+		builder.setMessage("This username has already been chosen. Please choose a different one.").setCancelable(false)
+		.setPositiveButton("ok", new DialogInterface.OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int id)
+			{
+
+			}
+		});
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
 	
 	private void searchServer()
 	{
@@ -286,7 +301,7 @@ public class SearchPartyActivity extends BackableActivity {
 			@Override
 			public void run() {
 				
-				alertType alert = alertType.SERVER_ERROR;
+				AlertType alert = AlertType.SERVER_ERROR;
 				final ArrayList<String> partyNames = new ArrayList<String>();
 				Jedis jedis = null;
 				try
@@ -310,9 +325,9 @@ public class SearchPartyActivity extends BackableActivity {
 						else partyNames.add(name);
 					}
 					
-					if (partyNames.size() <= 0) alert = alertType.NO_PARTIES_ERROR;
-					else alert = alertType.NO_ERROR;
-					if (zipcode.equals("00000")) alert = alertType.LOCATION_ERROR;
+					if (partyNames.size() <= 0) alert = AlertType.NO_PARTIES_ERROR;
+					else alert = AlertType.NO_ERROR;
+					if (zipcode.equals("00000")) alert = AlertType.LOCATION_ERROR;
 				}
 				catch (JedisConnectionException e)
 				{
@@ -329,13 +344,12 @@ public class SearchPartyActivity extends BackableActivity {
 						myapp.jedisPool.returnResource(jedis);
 				}
 				
-				final alertType finalAlert = alert;
+				final AlertType finalAlert = alert;
 				runOnUiThread(new Runnable()
 				{
 
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
 						refreshPartyList(partyNames);
 						showAlert(finalAlert);
 					}
@@ -346,105 +360,31 @@ public class SearchPartyActivity extends BackableActivity {
     	contactServerThread.start();
 	}
 	
-	private void showAlert(alertType type)
+	private void showAlert(AlertType type)
 	{
 		switch(type)
 		{
-		case SERVER_ERROR: connectionErrorNotification(); break;
-		case LOCATION_ERROR: noLocationNotification(); break;
-		case NO_PARTIES_ERROR: noPartiesNotification(); break;
-		}
-	}
-	
-	private class ContactServerTask extends AsyncTask<String, Integer, ArrayList<String>>
-	{
-
-		@Override
-		//params[0] = party name
-		//params[1] = zipcode
-		protected ArrayList<String> doInBackground(String... params) {
-//			Log.d("ContactServerTask", "Trying to contact server");
-			String partyName = params[0];
-			String zipcode = params[1];
-			Log.d("zipcode: ", zipcode);
-			Integer result = 2;
-			ArrayList<String> partyNames = new ArrayList<String>();
-			Jedis jedis = myapp.jedisPool.getResource();
-			try
-			{
-				jedis.auth(Redis.auth);
-				Set<String> names = jedis.smembers(zipcode);
-				
-				//Check if they all have valid ips
-				Iterator<String> it = names.iterator();
-				
-				while(it.hasNext())
-				{
-					String name = it.next();
-					boolean check = jedis.exists(zipcode + ":" + name);
-					if(!check)
-					{
-						jedis.srem(zipcode, name);
-						it.remove();
-					}
-					else partyNames.add(name);
-				}
-				
-				if (partyNames.size() <= 0) result = 1;
-				else result = 0;
-				if (zipcode.equals("00000")) result = 3;
-				publishProgress(result);
-			}
-			catch (JedisConnectionException e)
-			{
-				e.printStackTrace();
-				if(jedis != null)
-				{
-					myapp.jedisPool.returnBrokenResource(jedis);
-					jedis = null;
-				}
-			}
-			finally
-			{
-				if(jedis != null)
-					myapp.jedisPool.returnResource(jedis);
-			}
-			return partyNames;
-		}
-
-		@Override
-		protected void onPostExecute(ArrayList<String> result) {
-			// TODO Auto-generated method stub
-//			Log.d("ContactServerTask", "Finished");
-			refreshPartyList(result);
-		}
-
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			// TODO Auto-generated method stub
-			if(values[0] == 0)
-			{
-				//good to go
-			}
-			else if(values[0] == 1)
-			{
-				noPartiesNotification();
-			}
-			else if(values[0] == 2)
-			{
+			case SERVER_ERROR:
 				connectionErrorNotification();
-			}
-			else if(values[0] == 3)
-			{
+				break;
+			case LOCATION_ERROR:
 				noLocationNotification();
-			}
-			
+				break;
+			case NO_PARTIES_ERROR:
+				noPartiesNotification();
+				break;
+			case NO_ERROR:
+				break;
+			case SAME_NAME_ERROR:
+				sameNameNotification();
+				break;
+			default:
+				break;
 		}
-		
 	}
 	
 	//there's a better way of doing this. but i'm in a hurry. sorry!
-	private void finishJoining(String result)
+	private void showMessage(String result)
 	{
 		final String s = result;
 		AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
@@ -469,7 +409,7 @@ public class SearchPartyActivity extends BackableActivity {
 		//check if not entered username
 		if(!checkIfNameEntered())
 		{
-			finishJoining("Must enter name first");
+			showMessage("Must enter name first");
 			return;
 		}
 		
@@ -480,7 +420,7 @@ public class SearchPartyActivity extends BackableActivity {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
+				joinInProgress = true;
 				Jedis jedis = null;
 				String ip = null;
 				try
@@ -502,8 +442,7 @@ public class SearchPartyActivity extends BackableActivity {
 
 						@Override
 						public void run() {
-							// TODO Auto-generated method stub
-							finishJoining("Error connecting to server");
+							showMessage("Error connecting to server");
 							return;
 						}
 						
@@ -517,71 +456,77 @@ public class SearchPartyActivity extends BackableActivity {
 			
 				DatagramSocket sendSocket;
 				DatagramSocket listenSocket;
-				// TODO Auto-generated method stub
 				//send join request
-//				Log.d("join party", "Clicked");
 				try {
 					sendSocket = new DatagramSocket();
 					listenSocket = new DatagramSocket(7771);
+					listenSocket.setSoTimeout(6000);
 					//send join request
 					byte[] sendData = new byte[1024];
 					byte[] receiveData = new byte[1024];
 					String searchString = "join\n"+myapp.myName;
 					sendData = searchString.getBytes();
-					
-					
-//					Log.d("join thru server", "host ip: "+ip);
+
 					
 					InetAddress ipaddress = InetAddress.getByName(ip);
 					
-//					Log.d("join party", "Sending to " + ipaddress.getHostName());
 					DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7771);
 					sendSocket.send(searchPacket);
-//					Log.d("join party", "join sent to "+ipaddress.getHostName());
-					//now wait for response
-					boolean joined = false;
-					while(!joined)
+
+					try
 					{
-//						Log.d("listen for join", "listening");
-						try
-						{
 						DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
 						listenSocket.receive(receivePacket); //When no WiFi, but there is cell network - it dies at this line
 						String message = PacketParser.getHeader(receivePacket);
-//						Log.d("listen for join", message);
 						
 						if(message.equals("accept"))
 						{
-//							Log.d("listen for join", "we are joined");
 							myapp.joined = true;
 							myapp.hostAddress = receivePacket.getAddress();
-							joined = true;
 							VizEQ.nowPlaying = PacketParser.getArgs(receivePacket)[0];
-						}
-						}
-						catch (Exception e)
-						{
+							
 							runOnUiThread(new Runnable()
 							{
 								@Override
 								public void run() {
-									Toast.makeText(thisActivity, "Please connect to the same WiFi network as the host to join this party.", Toast.LENGTH_SHORT).show();
+									showMessage("Joined!");
 									return;
-								}			
-							});							
+								}		
+							});
 						}
 					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+						runOnUiThread(new Runnable()
+						{
+							@Override
+							public void run() {
+								showMessage("Failed to join. Please connect to the same WiFi network as the host to join this party.");
+								return;
+							}			
+						});							
+					}
+					finally
+					{
+						listenSocket.disconnect();
+						listenSocket.close();
+						sendSocket.disconnect();
+						sendSocket.close();
+					}
+				} catch (Exception e) {
 					runOnUiThread(new Runnable()
 					{
 						@Override
 						public void run() {
-							finishJoining("Joined!");
+							showMessage("Failed to join");
 							return;
 						}		
 					});
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
+				}
+				finally {
+					joinInProgress = false;
 				}
 
 			}
@@ -592,109 +537,6 @@ public class SearchPartyActivity extends BackableActivity {
 		
 	}
 	
-	public class JoinTaskServer extends AsyncTask<String, Void, String>
-	{
-
-		@Override
-		protected String doInBackground(String... params) {
-			//check if not entered username
-			if(!checkIfNameEntered()) return "Must enter name first";
-			String ip = "0.0.0.0";
-			Jedis jedis = myapp.jedisPool.getResource();
-			try
-			{
-				jedis.auth(Redis.auth);
-				ip = jedis.get(params[0]);
-			}
-			catch (JedisConnectionException e)
-			{
-				e.printStackTrace();
-				if(jedis != null)
-				{
-					myapp.jedisPool.returnBrokenResource(jedis);
-					jedis = null;
-				}
-				return "Error connecting to server";
-			}
-			finally
-			{
-				if(jedis != null)
-					myapp.jedisPool.returnResource(jedis);
-			}
-		
-			DatagramSocket sendSocket;
-			DatagramSocket listenSocket;
-			// TODO Auto-generated method stub
-			//send join request
-//			Log.d("join party", "Clicked");
-			try {
-				sendSocket = new DatagramSocket();
-				listenSocket = new DatagramSocket(7771);
-				//send join request
-				byte[] sendData = new byte[1024];
-				byte[] receiveData = new byte[1024];
-				String searchString = "join\n"+myapp.myName;
-				sendData = searchString.getBytes();
-				
-				
-//				Log.d("join thru server", "host ip: "+ip);
-				
-				InetAddress ipaddress = InetAddress.getByName(ip);
-				
-//				Log.d("join party", "Sending to " + ipaddress.getHostName());
-				DatagramPacket searchPacket = new DatagramPacket(sendData, sendData.length, ipaddress, 7771);
-				sendSocket.send(searchPacket);
-//				Log.d("join party", "join sent to "+ipaddress.getHostName());
-				//now wait for response
-				boolean joined = false;
-				while(!joined)
-				{
-//					Log.d("listen for join", "listening");
-					DatagramPacket receivePacket = new DatagramPacket(receiveData,receiveData.length);
-					listenSocket.receive(receivePacket);
-					String message = PacketParser.getHeader(receivePacket);
-//					Log.d("listen for join", message);
-					if(message.equals("accept"))
-					{
-//						Log.d("listen for join", "we are joined");
-						myapp.joined = true;
-						myapp.hostAddress = receivePacket.getAddress();
-						joined = true;
-						VizEQ.nowPlaying = PacketParser.getArgs(receivePacket)[0];
-					}
-				}
-				return "Joined!";
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		return "Failed!";
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			// TODO Auto-generated method stub
-			final String s = result;
-			AlertDialog.Builder builder = new AlertDialog.Builder(thisActivity);
-			builder.setMessage(result).setCancelable(false)
-			.setPositiveButton("ok", new DialogInterface.OnClickListener()
-			{
-				public void onClick(DialogInterface dialog, int id)
-				{
-					if(s.equals("Joined!"))
-					{	
-						Intent nextIntent = new Intent(SearchPartyActivity.this, SoundVisualizationActivity.class);
-						startActivity(nextIntent);
-					}
-				}
-			});
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
-		
-	}
-	
-
 	/**
 	 * Set up the {@link android.app.ActionBar}.
 	 */
