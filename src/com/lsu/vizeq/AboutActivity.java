@@ -2,10 +2,11 @@ package com.lsu.vizeq;
 
 import android.os.Bundle;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Menu;
+import android.widget.TextView;
 
 public class AboutActivity extends BackableActivity
 {
@@ -15,6 +16,17 @@ public class AboutActivity extends BackableActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_about);
+		TextView txtAbout = (TextView)findViewById(R.id.txtAbout);
+		CharSequence text = txtAbout.getText();
+		String versionNumber = "";
+		try
+		{
+			versionNumber = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+		} catch (NameNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		txtAbout.setText("Version: " + versionNumber + text);
 		
 		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
 		ActionBar actionBar = getActionBar();

@@ -317,7 +317,6 @@ public class SoundVisualizationActivity extends Activity
 		FrameLayout FL = (FrameLayout) findViewById(R.id.light);
 		@Override
 		protected void onCancelled() {
-			// TODO Auto-generated method stub
 			if (receiveSocket != null)
 			receiveSocket.close();
 		}
@@ -352,7 +351,6 @@ public class SoundVisualizationActivity extends Activity
 
 							@Override
 							public void run() {
-								// TODO Auto-generated method stub
 								textViewNowPlaying.setText(args[0]);
 							}
 							
@@ -364,7 +362,8 @@ public class SoundVisualizationActivity extends Activity
 			} 
 			catch (Exception e) 
 			{
-				// TODO Auto-generated catch block
+				receiveSocket.disconnect();
+				receiveSocket.close();
 				e.printStackTrace();
 			}
 			return null;
@@ -372,14 +371,11 @@ public class SoundVisualizationActivity extends Activity
 
 		@Override
 		protected void onPostExecute(String result) {
-			// TODO Auto-generated method stub
 			receiveSocket.close();
 		}
 
 		@Override
 		protected void onProgressUpdate(String... values) {
-			// TODO Auto-generated method stub
-			//int color = Color.parseColor(values[0]);
 			FL.setBackgroundColor(Color.parseColor(values[0]));
 		}
 		

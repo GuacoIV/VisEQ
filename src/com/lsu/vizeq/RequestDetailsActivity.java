@@ -131,12 +131,13 @@ public class RequestDetailsActivity extends BackableActivity
 			String trackArtist = tracks.get(i).mArtist;
 			String trackAlbum = tracks.get(i).mAlbum;
 			String trackUri = tracks.get(i).mUri;
+			String trackThumbnail = tracks.get(i).mThumbnail;
 
 			if (redStart + addRed < 255 && i < 16) redStart += addRed;
 			if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
 			if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
 
-			TrackRow trackRowToAdd = new TrackRow(this, trackName, trackAlbum, trackArtist, trackUri);
+			TrackRow trackRowToAdd = new TrackRow(this, trackName, trackAlbum, trackArtist, trackUri, trackThumbnail);
 
 			trackRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
 			trackRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));

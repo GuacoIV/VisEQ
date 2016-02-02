@@ -26,12 +26,13 @@ public class TrackRow extends TableRow
 	public boolean animationStarted = false;
 	private Context context;
 	
-	public TrackRow(Context context, String track, String album, String artist, String uri) {
+	public TrackRow(Context context, String track, String album, String artist, String uri, String thumbnail) {
 		super(context);
 		mTrack = track;
 		mAlbum = album;
 		mArtist = artist;
 		mUri = uri;
+		mThumbnail = thumbnail;
 		
 		trackView = new TextView(context);
 		artistView = new TextView(context);

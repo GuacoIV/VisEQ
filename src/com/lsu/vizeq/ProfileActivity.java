@@ -49,7 +49,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 
 
-public class ProfileActivity extends BackableActivity implements OnItemSelectedListener{
+public class ProfileActivity extends BackableActivity implements OnItemSelectedListener, UseSearchResults {
 	
 	public String mColor;
 	Spinner spinner;
@@ -58,6 +58,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 	ActionBar actionBar;
 	ProgressBar progress;
 	public MyApplication myapp;
+	OnTouchListener rowTap;
 	
 	AsyncHttpClient searchClient = new AsyncHttpClient();
 	
@@ -179,7 +180,6 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 		
 		customSearchLayout = (LinearLayout) findViewById(R.id.customSearchLayout);
 		final EditText searchText = (EditText) findViewById(R.id.CustomSearchField);
-		final OnTouchListener rowTap;
 
 		TabHost tabhost = (TabHost) findViewById(android.R.id.tabhost);
 	    tabhost.setup();
@@ -223,7 +223,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
-				myapp.doFlash = isChecked;		
+				MyApplication.doFlash = isChecked;		
 				saver.putBoolean("cameraFlash", isChecked);
 				saver.commit();
 			}
@@ -234,7 +234,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 			{
-				myapp.doBackground = isChecked;
+				MyApplication.doBackground = isChecked;
 				saver.putBoolean("backgroundFlash", isChecked);
 				saver.commit();
 			}
@@ -291,7 +291,6 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 			@Override
 			public void onClick(View arg0)
 			{
-				// TODO Auto-generated method stub
 				customSearchLayout.removeAllViews();
 				String strSearch;
 				searchText.clearFocus();
@@ -304,133 +303,11 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 					strSearch = searchText.getText().toString().replace(' ', '+');
 					e1.printStackTrace();
 				}
-				searchClient.get("http://ws.spotify.com/search/1/track.json?q=" + strSearch, new JsonHttpResponseHandler() {
-	
-					public void onSuccess(final JSONObject response) {
-						new Thread(new Runnable()
-						{
-							public void run()
-							{
-						
-								try {
-									JSONArray tracks = response.getJSONArray("tracks");
-									//JSONObject track = tracks.getJSONObject(0);
-									//Calculate start and end colors
-									int startColor = 0;
-									int endColor = 0;
-									SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
-									int posi = memory.getInt("colorPos", -1);
-									if (posi > 0) VizEQ.numRand = posi;	
-									switch (VizEQ.numRand)
-									{
-										case 1:
-											startColor = getResources().getColor(R.color.Red); //203, 32, 38
-											endColor = Color.rgb(203+50, 32+90, 38+90);
-											break;
-										case 2:
-											startColor = getResources().getColor(R.color.Green);//100, 153, 64
-											endColor = Color.rgb(100+90, 153+90, 64+90);
-											break;
-										case 3:
-											startColor = getResources().getColor(R.color.Blue); //0, 153, 204
-											endColor = Color.rgb(0+90, 153+90, 204+50);
-											break;
-										case 4:
-											startColor = getResources().getColor(R.color.Purple); //155, 105, 172
-											endColor = Color.rgb(155+70, 105+70, 172+70);
-											break;
-										case 5:
-											startColor = getResources().getColor(R.color.Orange); //245, 146, 30
-											endColor = Color.rgb(245, 146+90, 30+90);
-											break;
-									}
-									
-									int redStart = Color.red(startColor);
-									int redEnd = Color.red(endColor);
-									int addRed = (redEnd - redStart)/15;
-									
-									int greenStart = Color.green(startColor);
-									int greenEnd = Color.green(endColor);
-									int addGreen = (greenEnd - greenStart)/15;
-									
-									int blueStart = Color.blue(startColor);
-									int blueEnd = Color.blue(endColor);
-									int addBlue = (blueEnd - blueStart)/15;
-									
-									runOnUiThread(new Runnable()
-									{
-										@Override
-										public void run()
-										{
-											progress.setVisibility(Spinner.GONE);
-										}
-									});
-									
-									if (tracks.length()==0) 
-									{
-										final TextView noResults = new TextView(ProfileActivity.this);
-										noResults.setText("There are no results.");
-										runOnUiThread(new Runnable()
-										{
-											public void run()
-											{
-												customSearchLayout.addView(noResults);
-											}
-										});
-									}
-									for (int i = 0; i < tracks.length(); i++)
-									{
-										String trackName = tracks.getJSONObject(i).getString("name");
-										String trackArtist = tracks.getJSONObject(i).getJSONArray("artists").getJSONObject(0).getString("name");
-										String uri = tracks.getJSONObject(i).getString("href");
-										String trackAlbum = tracks.getJSONObject(i).getJSONObject("album").getString("name");
-										//Log.d("Search", trackName + ": " + trackArtist);
-										final TrackRow tableRowToAdd = new TrackRow(ProfileActivity.this, trackName, trackAlbum, trackArtist, uri);//Context context, String track, String album, String artist, String uri
-										tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
-										tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
-										tableRowToAdd.setOnTouchListener(rowTap);
-										if (redStart + addRed < 255 && i < 16) redStart += addRed;
-										if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
-										if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
-										runOnUiThread(new Runnable()
-										{
-											public void run()
-											{
-												customSearchLayout.addView(tableRowToAdd);
-											}
-										});
-										
-									}
-									
-									//mAlbumUri = album.getString("spotify");
-									//mImageUri = album.getString("image");
-									// Now get track details from the webapi
-									//LSU Team, it looks like .get(http://ws.spotify.com/search/1/track?q=kaizers+orchestra) is the way to do a search
-									//mSpotifyWebClient.get("http://ws.spotify.com/lookup/1/.json?uri=" + album.getString("spotify") + "&extras=track", SpotifyWebResponseHandler);
-			
-								} 
-								catch (JSONException e) {
-									//throw new RuntimeException("Could not parse the results");
-								}
-							}
-						}).start();
-					}
+				
+				final String search = strSearch;
+				final SearchProvider searchProvider = new SearchProvider(ProfileActivity.this);
 
-					@Override
-					public void onFailure(Throwable e, JSONArray errorResponse)
-					{
-						runOnUiThread(new Runnable()
-						{
-							@Override
-							public void run()
-							{
-								progress.setVisibility(Spinner.GONE);
-							}
-						});
-						NoConnectionNotification();
-						super.onFailure(e, errorResponse);
-					}
-				});
+				searchProvider.SearchForTrack(search, ProfileActivity.this);
 			}
 		});
 		findViewById(R.id.SubmitCustomList).setOnClickListener(new OnClickListener()
@@ -449,9 +326,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 				}
 				else
 				{
-//					Log.d("yo", "yo");
 					sendRequest();
-//					Log.d("lol","lol");
 				}
 			}
 
@@ -563,7 +438,6 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 
 						@Override
 						public void run() {
-							// TODO Auto-generated method stub
 							refreshQueue();
 						}
 						
@@ -628,7 +502,7 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 		
 		for(int i=0; i<myapp.queue.size(); i++)
 		{
-			TrackRow queueRow = new TrackRow(this.getBaseContext(), myapp.queue.get(i).mTrack, myapp.queue.get(i).mAlbum, myapp.queue.get(i).mArtist, myapp.queue.get(i).mUri);
+			TrackRow queueRow = new TrackRow(this.getBaseContext(), myapp.queue.get(i).mTrack, myapp.queue.get(i).mAlbum, myapp.queue.get(i).mArtist, myapp.queue.get(i).mUri, myapp.queue.get(i).mThumbnail);
 			queueRow.setOnTouchListener(null);
 			int r,g,b;
 			
@@ -666,4 +540,82 @@ public class ProfileActivity extends BackableActivity implements OnItemSelectedL
 		alert.show();
 	}
 
+	@Override
+	public void useResults(SearchResults searchResults)
+	{
+		progress.setVisibility(Spinner.GONE);
+		
+		if (searchResults.mConnectionError) {
+			NoConnectionNotification();
+			return;
+		}
+		if (searchResults.mJsonError) {
+			return;
+		}
+		if (searchResults.mResults.length == 0) {
+			final TextView noResults = new TextView(ProfileActivity.this);
+			noResults.setText("There are no results.");
+			customSearchLayout.addView(noResults);
+			return;
+		}
+		
+		//Calculate start and end colors
+		int startColor = 0;
+		int endColor = 0;
+		SharedPreferences memory = getSharedPreferences("VizEQ",MODE_PRIVATE);
+		int posi = memory.getInt("colorPos", -1);
+		if (posi > 0) VizEQ.numRand = posi;	
+		switch (VizEQ.numRand)
+		{
+			case 1:
+				startColor = getResources().getColor(R.color.Red); //203, 32, 38
+				endColor = Color.rgb(203+50, 32+90, 38+90);
+				break;
+			case 2:
+				startColor = getResources().getColor(R.color.Green);//100, 153, 64
+				endColor = Color.rgb(100+90, 153+90, 64+90);
+				break;
+			case 3:
+				startColor = getResources().getColor(R.color.Blue); //0, 153, 204
+				endColor = Color.rgb(0+90, 153+90, 204+50);
+				break;
+			case 4:
+				startColor = getResources().getColor(R.color.Purple); //155, 105, 172
+				endColor = Color.rgb(155+70, 105+70, 172+70);
+				break;
+			case 5:
+				startColor = getResources().getColor(R.color.Orange); //245, 146, 30
+				endColor = Color.rgb(245, 146+90, 30+90);
+				break;
+		}
+		
+		int redStart = Color.red(startColor);
+		int redEnd = Color.red(endColor);
+		int addRed = (redEnd - redStart)/15;
+		
+		int greenStart = Color.green(startColor);
+		int greenEnd = Color.green(endColor);
+		int addGreen = (greenEnd - greenStart)/15;
+		
+		int blueStart = Color.blue(startColor);
+		int blueEnd = Color.blue(endColor);
+		int addBlue = (blueEnd - blueStart)/15;
+		
+
+		for (int i = 0; i < searchResults.mResults.length; i++)
+		{
+			TrackRow tableRowToAdd = searchResults.mResults[i];
+			tableRowToAdd.setBackgroundColor(Color.argb(255, redStart, greenStart, blueStart));
+			tableRowToAdd.originalColor = (Color.argb(255, redStart, greenStart, blueStart));
+			tableRowToAdd.setOnTouchListener(rowTap);
+			
+			if (redStart + addRed < 255 && i < 16) redStart += addRed;
+			if (greenStart + addGreen < 255 && i < 16) greenStart += addGreen;
+			if (blueStart + addBlue < 255 && i < 16) blueStart += addBlue;
+			final LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.setMargins(0, 2, 0, 2);
+			
+			customSearchLayout.addView(tableRowToAdd, params);
+		}
+	}
 }
