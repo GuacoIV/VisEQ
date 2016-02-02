@@ -123,6 +123,10 @@ public class VisualizerView extends View {
 	public void uninit() {
 		flashThread.interrupt();
 		flashThread = null;
+		if (cam != null) {
+			cam.stopPreview();
+			cam.release();
+		}
 	}
 	
 	public void SetCircleStates(final String[] states) {
@@ -144,19 +148,26 @@ public class VisualizerView extends View {
 		
 //		Log.d("setting energy", " ");
 	}
-	Parameters p;
+	Parameters flashOnParams;
+	Parameters flashOffParams;
 	Thread flashThread = new Thread(new Runnable()
 	{
 		public void run()
 		{
-			if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH) && MyApplication.doFlash) 
+			final boolean flashCapable = context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+			if (flashCapable) 
 	        {
 				try
 				{
 		            cam = Camera.open();		            
-		            p = cam.getParameters();
-		            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-		            cam.setParameters(p);
+		            flashOnParams = cam.getParameters();
+		            flashOnParams.setFlashMode(Parameters.FLASH_MODE_TORCH);
+		            
+		            flashOffParams = cam.getParameters();
+		            flashOffParams.setFlashMode(Parameters.FLASH_MODE_OFF);
+		            
+		            cam.setParameters(flashOffParams);
+		            cam.startPreview();
 				}
 				catch( Exception e)
 				{
@@ -164,39 +175,39 @@ public class VisualizerView extends View {
 				}
 	            
 	        }
+			final Object lock = new Object();
+
 			while (true)
 			{
 				try
 				{
-					Thread.sleep(30);
+					Thread.sleep(40);
 				} catch (InterruptedException e1)
 				{
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				if (flash)
 				{
-					mActivity.runOnUiThread(new Runnable()
-					{
-						public void run()
-						{
-							setBackgroundColor(Color.WHITE);
+					if (MyApplication.doFlash && flashCapable) {
+						try {
+				        	synchronized (lock) {					         
+					            cam.setParameters(flashOnParams);
+				        	}
 						}
-					});
-					
-					try
-					{
-				        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH) && MyApplication.doFlash) 
-				        {
-				            cam.startPreview();
-				            p.setFlashMode(Parameters.FLASH_MODE_TORCH);
-				            cam.setParameters(p);
-				        }
+						catch (Exception e) {
+					        e.printStackTrace();
+					    }
 					}
-					catch (Exception e) {
-				        e.printStackTrace();
-//				        Log.d("Flashlight", "Exception flashLightOn");
-				    }
+					
+					if (MyApplication.doBackground) {
+						mActivity.runOnUiThread(new Runnable()
+						{
+							public void run()
+							{
+								setBackgroundColor(Color.WHITE);
+							}
+						});
+					}
 					//Time it
 					Timer persistFlash = new Timer();
 					persistFlash.schedule(new TimerTask(){
@@ -214,21 +225,16 @@ public class VisualizerView extends View {
 								}
 							});
 							
-							try 
-							{
-						        if (context.getPackageManager().hasSystemFeature(
-						                PackageManager.FEATURE_CAMERA_FLASH)) {
-						            cam.stopPreview();
-						            p.setFlashMode(Parameters.FLASH_MODE_OFF);
-						            cam.setParameters(p);
-						           // cam = null;
-						        }
-						    } 
-							catch (Exception e) 
-							{
-						        e.printStackTrace();
-//						        Log.d("Flashlight", "Exception flashLightOff");
-						    }
+					        if (flashCapable) {
+								try {
+						        	synchronized (lock) {
+							            cam.setParameters(flashOffParams);
+						        	}
+							    } 
+								catch (Exception e) {
+							        e.printStackTrace();
+							    }
+					        }
 						}	
 					}, 40);
 				}

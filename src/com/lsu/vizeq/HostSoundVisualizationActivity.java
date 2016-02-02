@@ -193,8 +193,7 @@ public class HostSoundVisualizationActivity extends Activity {
 	public void onDestroy() {
 		super.onDestroy();
 		my_task.cancel(true);
-		if (VisualizerView.cam != null) VisualizerView.cam.release();
-		VisualizerView.cam = null;
+		vizView.uninit();
 	}
 
 	
